@@ -168,6 +168,8 @@ Fase 10: ░░░░░░░░░░░░░░░░░░░░  0%
 - ✅ CRUD de currículums implementado
 - ✅ Dashboard protegido con requireAuth
 - ✅ authService integrado en frontend
+- ✅ Botones del Dashboard alineados perfectamente
+- ✅ Git inicializado y proyecto subido a GitHub
 
 ---
 
@@ -327,6 +329,10 @@ App nativa para iOS y Android
 - ✅ Sistema de autenticación completo con sesiones
 - ✅ CRUD de currículums implementado en backend
 - ✅ Dashboard protegido con autenticación
+- ✅ **Repositorio GitHub**: https://github.com/mauconig/curriculai
+- ✅ Git configurado con usuario: Mauricio Conigliaro
+- ✅ Primer commit incluye 45 archivos y 12,447 líneas de código
+- ✅ Playwright MCP configurado para testing visual
 - ⚠️ Se necesitará cuenta Stripe en Fase 9 (pagos)
 - ℹ️ PWA y app móvil son fases opcionales post-MVP
 - ℹ️ El flujo de autenticación está listo para probar en navegador
@@ -353,6 +359,10 @@ App nativa para iOS y Android
 - ✅ **31 Enero 2026**: CRUD de currículums implementado
 - ✅ **31 Enero 2026**: Dashboard con autenticación funcional
 - ✅ **31 Enero 2026**: authService creado en frontend
+- ✅ **31 Enero 2026**: Botones del Dashboard corregidos (altura, iconos, alineación)
+- ✅ **31 Enero 2026**: Git inicializado con configuración de usuario
+- ✅ **31 Enero 2026**: Proyecto subido a GitHub (https://github.com/mauconig/curriculai)
+- ✅ **31 Enero 2026**: .gitignore configurado correctamente
 
 ---
 
