@@ -4,6 +4,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ContactForm from './pages/editor/ContactForm';
+import ExperienceForm from './pages/editor/ExperienceForm';
 import './App.css';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/editor/contacto" element={<ContactForm />} />
+        <Route path="/editor/experiencia" element={<ExperienceForm />} />
       </Routes>
     </Router>
   );

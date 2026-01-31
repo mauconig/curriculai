@@ -161,13 +161,16 @@ const ContactForm = () => {
       return;
     }
 
-    // Si no hay resumeId, crear el currículum primero
+    // Si no hay resumeId, crear el currículum borrador primero
     if (!currentResumeId) {
       try {
-        await createResume('Mi Currículum');
-        toast.success('Currículum creado');
+        const newResume = await createResume('Borrador de Currículum');
+        // Navegar manualmente con el nuevo ID (sin toast, es temporal)
+        navigate(`/editor/experiencia?id=${newResume.id}`);
+        return;
       } catch (error) {
-        toast.error('Error al crear el currículum');
+        console.error('Error:', error);
+        toast.error('Error al iniciar el currículum');
         return;
       }
     }

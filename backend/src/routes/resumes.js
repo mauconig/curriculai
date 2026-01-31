@@ -43,15 +43,10 @@ router.get('/:id', async (req, res) => {
       });
     }
 
-    // Parsear el JSON del campo data
-    const resumeData = {
-      ...resume,
-      data: JSON.parse(resume.data)
-    };
-
+    // El modelo ya parsea el JSON
     res.json({
       success: true,
-      resume: resumeData
+      resume
     });
   } catch (error) {
     console.error('❌ Error al obtener currículum:', error);
@@ -84,16 +79,11 @@ router.post('/', async (req, res) => {
       template: template || 'modern'
     });
 
-    // Parsear el JSON del campo data
-    const resumeData = {
-      ...resume,
-      data: JSON.parse(resume.data)
-    };
-
+    // El modelo ya parsea el JSON
     res.status(201).json({
       success: true,
       message: 'Currículum creado exitosamente',
-      resume: resumeData
+      resume
     });
   } catch (error) {
     console.error('❌ Error al crear currículum:', error);
@@ -122,7 +112,7 @@ router.put('/:id', async (req, res) => {
       });
     }
 
-    const updatedResume = Resume.update(req.params.id, req.user.id, {
+    const updatedResume = Resume.update(req.params.id, {
       title,
       data: data ? (typeof data === 'string' ? data : JSON.stringify(data)) : undefined,
       template
@@ -135,16 +125,11 @@ router.put('/:id', async (req, res) => {
       });
     }
 
-    // Parsear el JSON del campo data
-    const resumeData = {
-      ...updatedResume,
-      data: JSON.parse(updatedResume.data)
-    };
-
+    // El modelo ya parsea el JSON
     res.json({
       success: true,
       message: 'Currículum actualizado exitosamente',
-      resume: resumeData
+      resume: updatedResume
     });
   } catch (error) {
     console.error('❌ Error al actualizar currículum:', error);

@@ -300,17 +300,25 @@ CREATE TABLE pdfs (
 
 ---
 
-### 🔄 Fase 3: Editor de Currículum Multi-Paso (DÍA 2-4)
+### 🔄 Fase 3: Editor de Currículum Multi-Paso (DÍA 2-5)
 
 **Objetivo**: Crear un wizard paso a paso para crear currículums con asistencia de IA.
 
-**Flujo del Wizard:**
+**Flujo del Wizard (8 pasos):**
 1. **Contacto** - Información básica + foto opcional
-2. **Experiencia** - Experiencia laboral
+2. **Experiencia** - Experiencia laboral con IA
 3. **Educación** - Formación académica
 4. **Habilidades** - Skills técnicas y blandas
-5. **Resumen** - Resumen profesional
-6. **Finalizar & Preview** - Vista previa y guardar
+5. **Resumen** - Resumen profesional con IA
+6. **Plantilla** - Selección de diseño del CV
+7. **Preview** - Vista previa final y edición
+8. **Pago** - Pagar $1 USD para exportar PDF
+
+**Modelo de Negocio:**
+- Currículum se guarda como BORRADOR durante todo el proceso
+- Solo se marca como COMPLETADO después del pago
+- Pago único de $1 USD por CV exportado
+- Sin suscripciones ni membresías
 
 **Cada paso incluye:**
 - Formulario con validación

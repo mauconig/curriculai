@@ -6,7 +6,9 @@ export const WIZARD_STEPS = [
   { id: 3, name: 'Educación', path: '/editor/educacion' },
   { id: 4, name: 'Habilidades', path: '/editor/habilidades' },
   { id: 5, name: 'Resumen', path: '/editor/resumen' },
-  { id: 6, name: 'Preview', path: '/editor/preview' }
+  { id: 6, name: 'Plantilla', path: '/editor/plantilla' },
+  { id: 7, name: 'Preview', path: '/editor/preview' },
+  { id: 8, name: 'Pago', path: '/editor/pago' }
 ];
 
 export const FORM_LABELS = {
