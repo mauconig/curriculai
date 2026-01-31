@@ -300,44 +300,131 @@ CREATE TABLE pdfs (
 
 ---
 
-### 🔄 Fase 3: CRUD de Currículums (DÍA 4)
+### 🔄 Fase 3: Editor de Currículum Multi-Paso (DÍA 2-4)
 
-**Objetivo**: Crear endpoints y servicios para gestionar currículums.
+**Objetivo**: Crear un wizard paso a paso para crear currículums con asistencia de IA.
+
+**Flujo del Wizard:**
+1. **Contacto** - Información básica + foto opcional
+2. **Experiencia** - Experiencia laboral
+3. **Educación** - Formación académica
+4. **Habilidades** - Skills técnicas y blandas
+5. **Resumen** - Resumen profesional
+6. **Finalizar & Preview** - Vista previa y guardar
+
+**Cada paso incluye:**
+- Formulario con validación
+- Botón "Mejorar con IA" para profesionalizar el contenido
+- Navegación siguiente/anterior
+- Auto-guardado de progreso
+- Indicador de paso actual
 
 **Archivos a crear:**
 
-1. **`backend/src/routes/resumes.js`** - CRUD de currículums
-   - `POST /api/resumes` - Crear currículum
-   - `GET /api/resumes` - Listar currículums del usuario
-   - `GET /api/resumes/:id` - Obtener currículum específico
-   - `PUT /api/resumes/:id` - Actualizar currículum
-   - `DELETE /api/resumes/:id` - Eliminar currículum
+### Parte 1: Formulario de Contacto ⏳
 
-2. **`frontend/src/services/authService.js`** - Gestión de sesión
-   - `login()` - Redirigir a Google OAuth
-   - `logout()` - Cerrar sesión
-   - `getCurrentUser()` - Obtener usuario actual
-   - `isAuthenticated()` - Verificar autenticación
+1. **`frontend/src/pages/editor/ContactForm.jsx`**
+   - Campos: nombre, apellido, email, teléfono, ubicación
+   - Campo opcional: foto de perfil
+   - Upload de imagen
+   - Botón "Mejorar con IA" para sugerencias de ubicación/presentación
+   - Validación con Zod
 
-3. **`frontend/src/services/resumeService.js`** - API client para currículums
-   - `createResume(data)`
-   - `getResumes()`
-   - `getResume(id)`
-   - `updateResume(id, data)`
-   - `deleteResume(id)`
+2. **`frontend/src/services/resumeService.js`** - API client
+   - `createResume(data)` - Crear nuevo CV
+   - `getResumes()` - Listar CVs del usuario
+   - `getResume(id)` - Obtener CV específico
+   - `updateResume(id, data)` - Actualizar CV
+   - `deleteResume(id)` - Eliminar CV
+   - `uploadPhoto(file)` - Subir foto de perfil
 
-4. **`frontend/src/utils/constants.js`** - Textos en español
-   - Todos los labels, mensajes, botones
-   - Categorías de habilidades
+3. **`frontend/src/components/editor/WizardProgress.jsx`**
+   - Indicador visual de pasos
+   - Muestra paso actual
+   - Navegación entre pasos completados
+
+4. **`frontend/src/components/editor/AIButton.jsx`**
+   - Botón reutilizable "Mejorar con IA"
+   - Loading state
+   - Integración con backend AI
+
+5. **`frontend/src/hooks/useResumeWizard.js`**
+   - Gestión de estado del wizard
+   - Navegación entre pasos
+   - Auto-guardado con debounce
+   - Validación por paso
+
+6. **`frontend/src/utils/constants.js`** - Textos en español
+   - Labels de formularios
    - Mensajes de validación
-   - Formato de fechas
+   - Textos de ayuda
+   - Pasos del wizard
 
-**Verificación:**
-- [ ] Puedo crear un currículum (POST funciona)
-- [ ] Puedo listar mis currículums (GET funciona)
-- [ ] Puedo editar un currículum (PUT funciona)
-- [ ] Puedo eliminar un currículum (DELETE funciona)
-- [ ] Solo veo mis currículums (no de otros usuarios)
+### Parte 2: Formulario de Experiencia ⏳
+
+7. **`frontend/src/pages/editor/ExperienceForm.jsx`**
+   - Array dinámico de experiencias
+   - Campos: empresa, puesto, ubicación, fechas, descripción
+   - Checkbox "Trabajo actual"
+   - Botón "Mejorar con IA" por experiencia
+   - Añadir/eliminar experiencias
+
+### Parte 3: Formulario de Educación ⏳
+
+8. **`frontend/src/pages/editor/EducationForm.jsx`**
+   - Array dinámico de estudios
+   - Campos: institución, título, campo, ubicación, fechas
+   - Checkbox "Estudiando actualmente"
+   - Botón "Mejorar con IA" por estudio
+
+### Parte 4: Formulario de Habilidades ⏳
+
+9. **`frontend/src/pages/editor/SkillsForm.jsx`**
+   - Categorías de habilidades
+   - Input de tags/chips
+   - Botón "Sugerir habilidades con IA"
+   - Arrastrar y soltar para ordenar
+
+### Parte 5: Formulario de Resumen ⏳
+
+10. **`frontend/src/pages/editor/SummaryForm.jsx`**
+    - Textarea para resumen profesional
+    - Contador de caracteres
+    - Botón "Generar con IA" basado en datos previos
+    - Sugerencias de mejora
+
+### Parte 6: Preview y Finalización ⏳
+
+11. **`frontend/src/pages/editor/PreviewStep.jsx`**
+    - Vista previa del CV completo
+    - Selector de plantilla
+    - Botón "Guardar CV"
+    - Botón "Exportar PDF"
+    - Editar cualquier sección
+
+**Backend Updates:**
+
+12. **`backend/src/routes/photos.js`** - Upload de fotos
+    - `POST /api/photos/upload` - Subir foto
+    - Resize y optimización con sharp
+    - Guardar en filesystem o DB
+
+13. **`backend/src/services/aiService.js`** - Servicios de IA
+    - `improveSummary(text)` - Mejorar resumen
+    - `improveExperience(experience)` - Mejorar experiencia
+    - `improveEducation(education)` - Mejorar educación
+    - `suggestSkills(profile)` - Sugerir habilidades
+
+**Verificación Fase 3:**
+- [ ] Wizard de 6 pasos funciona
+- [ ] Navegación entre pasos
+- [ ] Validación en cada paso
+- [ ] Auto-guardado funciona
+- [ ] Upload de foto funciona
+- [ ] Botón "Mejorar con IA" en cada paso
+- [ ] Vista previa muestra datos correctos
+- [ ] Puedo guardar CV completo
+- [ ] Puedo editar CV guardado
 
 ---
 

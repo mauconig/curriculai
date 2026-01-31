@@ -42,8 +42,7 @@ const Dashboard = () => {
   };
 
   const handleCreateResume = () => {
-    // TODO: Navegar al editor
-    alert('Función de crear currículum - próximamente');
+    navigate('/editor/contacto');
   };
 
   if (loading) {

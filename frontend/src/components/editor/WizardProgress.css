@@ -1,0 +1,125 @@
+.wizard-progress {
+  width: 100%;
+  padding: 2rem 0;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+}
+
+.wizard-steps {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.wizard-step-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.wizard-connector {
+  flex: 1;
+  height: 2px;
+  background: #e5e7eb;
+  margin: 0 0.5rem;
+  transition: background 0.3s;
+}
+
+.wizard-connector.completed {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.wizard-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 80px;
+}
+
+.wizard-step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.3s;
+  background: #f3f4f6;
+  color: #9ca3af;
+  border: 2px solid #e5e7eb;
+}
+
+.wizard-step.current .wizard-step-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.wizard-step.completed .wizard-step-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.wizard-step-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  transition: color 0.3s;
+}
+
+.wizard-step.current .wizard-step-name {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.wizard-step.completed .wizard-step-name {
+  color: #374151;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .wizard-steps {
+    padding: 0 1rem;
+  }
+
+  .wizard-step {
+    min-width: 60px;
+  }
+
+  .wizard-step-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
+
+  .wizard-step-name {
+    font-size: 0.625rem;
+  }
+
+  .wizard-connector {
+    margin: 0 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .wizard-step-name {
+    display: none;
+  }
+
+  .wizard-step {
+    min-width: auto;
+  }
+}
