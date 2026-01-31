@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Upload, X, User } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
+import ImageCropModal from '../../components/editor/ImageCropModal';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { FORM_LABELS, FORM_PLACEHOLDERS, BUTTON_LABELS, HELP_TEXTS } from '../../utils/constants';
 import toast from 'react-hot-toast';
@@ -32,6 +33,8 @@ const ContactForm = () => {
 
   const [photoPreview, setPhotoPreview] = useState(null);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [imageToCrop, setImageToCrop] = useState(null);
   const [errors, setErrors] = useState({});
 
   // Cargar datos existentes
@@ -65,39 +68,42 @@ const ContactForm = () => {
       return;
     }
 
-    // Validar tamaño (máximo 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('La imagen debe pesar menos de 2MB');
+    // Validar tamaño (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen debe pesar menos de 5MB');
       return;
     }
 
     try {
       setUploadingPhoto(true);
 
-      // Preview local
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-
-      // Subir a backend (cuando esté implementado)
-      // const response = await resumeService.uploadPhoto(file);
-      // const photoUrl = response.url;
-
-      // Por ahora guardamos el base64
+      // Convertir a base64 para preview
       const base64 = await convertToBase64(file);
-      const updatedData = { ...formData, photo: base64 };
-      setFormData(updatedData);
-      updateResumeData('personalInfo', updatedData);
 
-      toast.success('Foto subida correctamente');
+      // Mostrar modal de recorte
+      setImageToCrop(base64);
+      setShowCropModal(true);
     } catch (error) {
-      console.error('Error al subir foto:', error);
-      toast.error('Error al subir la foto');
+      console.error('Error al procesar imagen:', error);
+      toast.error('Error al procesar la imagen');
     } finally {
       setUploadingPhoto(false);
     }
+  };
+
+  const handleCropComplete = (croppedImage) => {
+    setPhotoPreview(croppedImage);
+    const updatedData = { ...formData, photo: croppedImage };
+    setFormData(updatedData);
+    updateResumeData('personalInfo', updatedData);
+    setShowCropModal(false);
+    setImageToCrop(null);
+    toast.success('Foto recortada correctamente');
+  };
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
+    setImageToCrop(null);
   };
 
   const convertToBase64 = (file) => {
@@ -169,6 +175,14 @@ const ContactForm = () => {
 
   return (
     <div className="contact-form-page">
+      {showCropModal && imageToCrop && (
+        <ImageCropModal
+          image={imageToCrop}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
+      )}
+
       <WizardProgress currentStep={currentStep} />
 
       <div className="contact-form-container">

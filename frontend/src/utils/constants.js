@@ -94,7 +94,7 @@ export const TOAST_MESSAGES = {
 };
 
 export const HELP_TEXTS = {
-  photo: 'Sube una foto profesional (opcional). Formatos: JPG, PNG. Máximo 2MB.',
+  photo: 'Sube una foto profesional (opcional). Podrás recortarla a tu gusto. Formatos: JPG, PNG. Máximo 5MB.',
   location: 'Ciudad y país donde resides o buscas empleo',
   summary: 'Un breve párrafo que resuma tu experiencia profesional y objetivos',
   experience: 'Describe tus responsabilidades principales y logros medibles',
