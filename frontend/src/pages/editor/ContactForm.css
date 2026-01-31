@@ -189,6 +189,13 @@
   margin-top: 2rem;
   padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
+  gap: 1rem;
+}
+
+.form-navigation-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .auto-save-indicator {
@@ -201,15 +208,32 @@
   font-style: italic;
 }
 
+.btn-back,
 .btn-prev,
 .btn-next {
-  padding: 0.75rem 2rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-back {
+  background: white;
+  color: #6b7280;
+  border: 2px solid #e5e7eb;
+}
+
+.btn-back:hover {
+  background: #f9fafb;
+  color: #374151;
+  border-color: #d1d5db;
 }
 
 .btn-prev {
@@ -256,5 +280,26 @@
   .photo-upload-placeholder {
     width: 120px;
     height: 120px;
+  }
+
+  .form-navigation {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-navigation-right {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .btn-back,
+  .btn-prev,
+  .btn-next {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .auto-save-indicator {
+    text-align: center;
   }
 }

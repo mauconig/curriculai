@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Upload, X, User } from 'lucide-react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { Upload, X, User, ArrowLeft } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ImageCropModal from '../../components/editor/ImageCropModal';
+import ConfirmModal from '../../components/common/ConfirmModal';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { FORM_LABELS, FORM_PLACEHOLDERS, BUTTON_LABELS, HELP_TEXTS } from '../../utils/constants';
 import toast from 'react-hot-toast';
@@ -10,6 +11,7 @@ import './ContactForm.css';
 
 const ContactForm = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const resumeId = searchParams.get('id');
 
   const {
@@ -35,6 +37,7 @@ const ContactForm = () => {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [showCropModal, setShowCropModal] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(null);
+  const [showCancelModal, setShowCancelModal] = useState(false);
   const [errors, setErrors] = useState({});
 
   // Cargar datos existentes
@@ -172,6 +175,18 @@ const ContactForm = () => {
     nextStep();
   };
 
+  const handleBack = () => {
+    setShowCancelModal(true);
+  };
+
+  const handleConfirmCancel = () => {
+    setShowCancelModal(false);
+    navigate('/dashboard');
+  };
+
+  const handleCancelCancel = () => {
+    setShowCancelModal(false);
+  };
 
   return (
     <div className="contact-form-page">
@@ -182,6 +197,17 @@ const ContactForm = () => {
           onCancel={handleCropCancel}
         />
       )}
+
+      <ConfirmModal
+        isOpen={showCancelModal}
+        title="¿Cancelar creación del currículum?"
+        message="Si vuelves al dashboard, perderás todos los cambios que no se hayan guardado."
+        confirmText="Sí, cancelar"
+        cancelText="Continuar editando"
+        onConfirm={handleConfirmCancel}
+        onCancel={handleCancelCancel}
+        variant="warning"
+      />
 
       <WizardProgress currentStep={currentStep} />
 
@@ -316,17 +342,28 @@ const ContactForm = () => {
 
         {/* Navigation */}
         <div className="form-navigation">
-          <div className="auto-save-indicator">
-            {saving && <span className="saving-text">Guardando...</span>}
-          </div>
-
           <button
             type="button"
-            className="btn-next"
-            onClick={handleNext}
+            className="btn-back"
+            onClick={handleBack}
           >
-            {BUTTON_LABELS.next}
+            <ArrowLeft size={18} />
+            Volver al Dashboard
           </button>
+
+          <div className="form-navigation-right">
+            <div className="auto-save-indicator">
+              {saving && <span className="saving-text">Guardando...</span>}
+            </div>
+
+            <button
+              type="button"
+              className="btn-next"
+              onClick={handleNext}
+            >
+              {BUTTON_LABELS.next}
+            </button>
+          </div>
         </div>
       </div>
     </div>
