@@ -303,3 +303,97 @@
     text-align: center;
   }
 }
+
+/* Ajustar header para el botón de tema */
+.contact-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Modo Oscuro */
+.dark .contact-form-page {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.dark .contact-form-container {
+  background: transparent;
+}
+
+.dark .contact-form-header h1 {
+  color: #f3f4f6;
+}
+
+.dark .contact-form-header p {
+  color: #d1d5db;
+}
+
+.dark .contact-form {
+  background: #1f2937;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark .form-section label,
+.dark .form-group label {
+  color: #f3f4f6;
+}
+
+.dark .form-group input,
+.dark .form-group textarea {
+  background: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .form-group input:focus,
+.dark .form-group textarea:focus {
+  border-color: #667eea;
+  background: #374151;
+}
+
+.dark .form-group input::placeholder,
+.dark .form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.dark .help-text {
+  color: #9ca3af;
+}
+
+.dark .photo-upload-area {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.dark .photo-upload-area p {
+  color: #d1d5db;
+}
+
+.dark .upload-photo-btn {
+  background: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .upload-photo-btn:hover {
+  background: #667eea;
+}
+
+.dark .remove-photo-btn {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.dark .btn-back {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.dark .btn-back:hover {
+  background: #4b5563;
+}
+
+.dark .btn-next {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}

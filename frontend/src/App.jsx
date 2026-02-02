@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -9,7 +10,8 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <ThemeProvider>
+      <Router>
       <Toaster
         position="top-center"
         toastOptions={{
@@ -33,7 +35,8 @@ function App() {
         <Route path="/editor/contacto" element={<ContactForm />} />
         <Route path="/editor/experiencia" element={<ExperienceForm />} />
       </Routes>
-    </Router>
+      </Router>
+    </ThemeProvider>
   );
 }
 

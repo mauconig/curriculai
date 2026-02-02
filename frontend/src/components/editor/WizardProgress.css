@@ -123,3 +123,44 @@
     min-width: auto;
   }
 }
+
+/* Modo Oscuro */
+.dark .wizard-progress {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.dark .wizard-connector {
+  background: #374151;
+}
+
+.dark .wizard-step-circle {
+  background: #374151;
+  color: #9ca3af;
+  border-color: #4b5563;
+}
+
+.dark .wizard-step.current .wizard-step-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.dark .wizard-step.completed .wizard-step-circle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.dark .wizard-step-name {
+  color: #9ca3af;
+}
+
+.dark .wizard-step.current .wizard-step-name {
+  color: #a5b4fc;
+}
+
+.dark .wizard-step.completed .wizard-step-name {
+  color: #d1d5db;
+}

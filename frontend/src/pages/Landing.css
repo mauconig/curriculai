@@ -13,7 +13,7 @@
   --header-bg: rgba(255, 255, 255, 0.95);
 }
 
-.dark-mode {
+.dark {
   /* Dark mode colors */
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
@@ -199,7 +199,7 @@
   transition: transform 0.3s, background-color 0.3s;
 }
 
-.dark-mode .template-mockup {
+.dark .template-mockup {
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
@@ -298,7 +298,7 @@
   transform: translateY(-5px);
 }
 
-.dark-mode .feature-card:hover {
+.dark .feature-card:hover {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
@@ -356,8 +356,8 @@
   transform: translateY(-5px);
 }
 
-.dark-mode .template-card:hover,
-.dark-mode .template-card.active {
+.dark .template-card:hover,
+.dark .template-card.active {
   box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
 }
 
@@ -418,7 +418,7 @@
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.dark-mode .pricing-card {
+.dark .pricing-card {
   box-shadow: 0 20px 60px rgba(59, 130, 246, 0.3);
 }
 
@@ -559,7 +559,7 @@
   transition: background 0.3s ease;
 }
 
-.dark-mode .landing-footer {
+.dark .landing-footer {
   background: #0f172a;
   border-top: 1px solid var(--border-color);
 }
@@ -584,12 +584,12 @@
   font-size: 0.875rem;
 }
 
-.dark-mode .footer-text {
+.dark .footer-text {
   color: #cbd5e1;
 }
 
 /* Dark mode for html element */
-html.dark-mode {
+html.dark {
   background: var(--bg-primary);
 }
 

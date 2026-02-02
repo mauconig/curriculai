@@ -1,0 +1,32 @@
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theme-toggle-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Modo oscuro */
+.dark .theme-toggle-btn {
+  color: #d1d5db;
+}
+
+.dark .theme-toggle-btn:hover {
+  background: #374151;
+  color: #f3f4f6;
+}

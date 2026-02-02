@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import AIButton from './AIButton';
+import CustomDatePicker from '../common/CustomDatePicker';
 import { FORM_LABELS, FORM_PLACEHOLDERS, HELP_TEXTS } from '../../utils/constants';
 import './ExperienceItem.css';
 
@@ -110,16 +111,29 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
             />
           </div>
 
+          <div className="form-group current-job-toggle">
+            <label className="toggle-switch-label">
+              <input
+                type="checkbox"
+                checked={experience.current || false}
+                onChange={(e) => handleCurrentChange(e.target.checked)}
+                className="toggle-checkbox"
+              />
+              <span className="toggle-slider"></span>
+              <span className="toggle-text">Trabajo Actual</span>
+            </label>
+          </div>
+
           <div className="form-row">
             <div className="form-group">
               <label htmlFor={`startDate-${experience.id}`}>
                 {FORM_LABELS.startDate} *
               </label>
-              <input
-                type="month"
-                id={`startDate-${experience.id}`}
-                value={experience.startDate}
-                onChange={(e) => handleChange('startDate', e.target.value)}
+              <CustomDatePicker
+                selected={experience.startDate ? new Date(experience.startDate) : null}
+                onChange={(date) => handleChange('startDate', date ? date.toISOString().split('T')[0] : '')}
+                placeholderText="Selecciona fecha de inicio"
+                maxDate={experience.endDate ? new Date(experience.endDate) : new Date()}
               />
             </div>
 
@@ -127,25 +141,15 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
               <label htmlFor={`endDate-${experience.id}`}>
                 {FORM_LABELS.endDate} {!experience.current && '*'}
               </label>
-              <input
-                type="month"
-                id={`endDate-${experience.id}`}
-                value={experience.endDate}
-                onChange={(e) => handleChange('endDate', e.target.value)}
+              <CustomDatePicker
+                selected={experience.endDate ? new Date(experience.endDate) : null}
+                onChange={(date) => handleChange('endDate', date ? date.toISOString().split('T')[0] : '')}
+                placeholderText={experience.current ? 'Trabajo actual' : 'Selecciona fecha de fin'}
                 disabled={experience.current}
+                minDate={experience.startDate ? new Date(experience.startDate) : null}
+                maxDate={new Date()}
               />
             </div>
-          </div>
-
-          <div className="form-group checkbox-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={experience.current}
-                onChange={(e) => handleCurrentChange(e.target.checked)}
-              />
-              <span>{FORM_LABELS.current}</span>
-            </label>
           </div>
 
           <div className="form-group">

@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Plus, ArrowLeft, ArrowRight } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import ThemeToggle from '../../components/common/ThemeToggle';
 import ExperienceItem from '../../components/editor/ExperienceItem';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { BUTTON_LABELS } from '../../utils/constants';
@@ -59,9 +60,18 @@ const ExperienceForm = () => {
   };
 
   const updateExperience = (id, field, value) => {
-    setExperiences(experiences.map(exp =>
-      exp.id === id ? { ...exp, [field]: value } : exp
-    ));
+    // Si se marca como trabajo actual, desmarcar las demás
+    if (field === 'current' && value === true) {
+      setExperiences(experiences.map(exp =>
+        exp.id === id
+          ? { ...exp, [field]: value }
+          : { ...exp, current: false }
+      ));
+    } else {
+      setExperiences(experiences.map(exp =>
+        exp.id === id ? { ...exp, [field]: value } : exp
+      ));
+    }
   };
 
   const removeExperience = (id) => {
@@ -142,8 +152,11 @@ const ExperienceForm = () => {
 
       <div className="experience-form-container">
         <div className="experience-form-header">
-          <h1>Experiencia Laboral</h1>
-          <p>Añade tu experiencia profesional más relevante</p>
+          <div>
+            <h1>Experiencia Laboral</h1>
+            <p>Añade tu experiencia profesional más relevante</p>
+          </div>
+          <ThemeToggle />
         </div>
 
         <div className="experiences-list">

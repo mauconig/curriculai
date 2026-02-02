@@ -401,3 +401,91 @@
     width: 100%;
   }
 }
+
+/* Modo Oscuro */
+.dark .dashboard {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.dark .dashboard-header {
+  background: #1f2937;
+  border-bottom-color: #374151;
+}
+
+.dark .header-logo,
+.dark .user-name {
+  color: #f3f4f6;
+}
+
+.dark .logout-btn {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.dark .logout-btn:hover {
+  background: #4b5563;
+}
+
+.dark .welcome-section h2,
+.dark .resumes-section h3 {
+  color: #f3f4f6;
+}
+
+.dark .welcome-section p {
+  color: #d1d5db;
+}
+
+.dark .create-resume-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.dark .empty-state {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .empty-state h4 {
+  color: #f3f4f6;
+}
+
+.dark .empty-state p {
+  color: #d1d5db;
+}
+
+.dark .resume-card {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .resume-card:hover {
+  border-color: #667eea;
+}
+
+.dark .resume-card h4 {
+  color: #f3f4f6;
+}
+
+.dark .resume-date,
+.dark .resume-template {
+  color: #9ca3af;
+}
+
+.dark .btn-edit {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.dark .btn-edit:hover {
+  background: #4b5563;
+}
+
+.dark .btn-download {
+  border-color: #667eea;
+  color: #a5b4fc;
+}
+
+.dark .btn-download:hover {
+  background: rgba(102, 126, 234, 0.1);
+}

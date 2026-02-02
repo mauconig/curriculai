@@ -1,36 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Sparkles, Download, Layout, CheckCircle, ArrowRight, Moon, Sun } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
 import './Landing.css';
 
 const Landing = () => {
   const navigate = useNavigate();
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
-
-  // Theme state - default to light, check localStorage and system preference
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    // Check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
-
-  // Apply theme on mount and when it changes
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
-    }
-  }, [isDarkMode]);
-
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  const { isDark, toggleTheme } = useTheme();
 
   const features = [
     {
@@ -99,7 +76,7 @@ const Landing = () => {
               onClick={toggleTheme}
               aria-label="Toggle theme"
             >
-              {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+              {isDark ? <Sun size={20} /> : <Moon size={20} />}
             </button>
             <button className="btn-primary" onClick={() => navigate('/login')}>
               Empezar Gratis

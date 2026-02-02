@@ -8,7 +8,8 @@ export const WIZARD_STEPS = [
   { id: 5, name: 'Resumen', path: '/editor/resumen' },
   { id: 6, name: 'Plantilla', path: '/editor/plantilla' },
   { id: 7, name: 'Preview', path: '/editor/preview' },
-  { id: 8, name: 'Pago', path: '/editor/pago' }
+  { id: 8, name: 'Pago', path: '/editor/pago' },
+  { id: 9, name: 'Exportación', path: '/editor/exportacion' }
 ];
 
 export const FORM_LABELS = {
@@ -79,7 +80,9 @@ export const BUTTON_LABELS = {
   removePhoto: 'Quitar Foto',
   preview: 'Vista Previa',
   exportPDF: 'Exportar PDF',
-  finish: 'Finalizar'
+  downloadPDF: 'Descargar PDF',
+  finish: 'Finalizar',
+  backToDashboard: 'Volver al Dashboard'
 };
 
 export const TOAST_MESSAGES = {
@@ -90,9 +93,14 @@ export const TOAST_MESSAGES = {
   success: 'Éxito',
   photoUploaded: 'Foto subida correctamente',
   photoRemoved: 'Foto eliminada',
-  resumeCreated: 'Currículum creado',
+  resumeCreated: 'Currículum creado exitosamente',
   resumeUpdated: 'Currículum actualizado',
-  resumeDeleted: 'Currículum eliminado'
+  resumeDeleted: 'Currículum eliminado',
+  paymentSuccess: 'Pago procesado correctamente',
+  paymentError: 'Error al procesar el pago',
+  pdfGenerating: 'Generando PDF...',
+  pdfReady: 'PDF listo para descargar',
+  pdfError: 'Error al generar el PDF'
 };
 
 export const HELP_TEXTS = {

@@ -161,3 +161,58 @@
     text-align: center;
   }
 }
+
+/* Ajustar header para el botón de tema */
+.experience-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* Modo Oscuro */
+.dark .experience-form-page {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.dark .experience-form-container {
+  background: transparent;
+}
+
+.dark .experience-form-header h1 {
+  color: #f3f4f6;
+}
+
+.dark .experience-form-header p {
+  color: #d1d5db;
+}
+
+.dark .experiences-list {
+  gap: 1.5rem;
+}
+
+.dark .add-experience-btn {
+  background: #374151;
+  color: #e5e7eb;
+  border-color: #4b5563;
+}
+
+.dark .add-experience-btn:hover {
+  background: #4b5563;
+  border-color: #667eea;
+  color: #a5b4fc;
+}
+
+.dark .btn-back {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.dark .btn-back:hover {
+  background: #4b5563;
+}
+
+.dark .btn-next {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}

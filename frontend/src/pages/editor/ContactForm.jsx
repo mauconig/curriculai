@@ -4,8 +4,10 @@ import { Upload, X, User, ArrowLeft } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ImageCropModal from '../../components/editor/ImageCropModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import ThemeToggle from '../../components/common/ThemeToggle';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { FORM_LABELS, FORM_PLACEHOLDERS, BUTTON_LABELS, HELP_TEXTS } from '../../utils/constants';
+import { uploadImage } from '../../services/uploadService';
 import toast from 'react-hot-toast';
 import './ContactForm.css';
 
@@ -94,14 +96,30 @@ const ContactForm = () => {
     }
   };
 
-  const handleCropComplete = (croppedImage) => {
-    setPhotoPreview(croppedImage);
-    const updatedData = { ...formData, photo: croppedImage };
-    setFormData(updatedData);
-    updateResumeData('personalInfo', updatedData);
+  const handleCropComplete = async (croppedBlob) => {
     setShowCropModal(false);
     setImageToCrop(null);
-    toast.success('Foto recortada correctamente');
+
+    try {
+      setUploadingPhoto(true);
+      toast.loading('Subiendo foto...', { id: 'upload-photo' });
+
+      // Subir el blob directamente al servidor
+      const imageUrl = await uploadImage(croppedBlob);
+
+      // Guardar URL de la imagen
+      const updatedData = { ...formData, photo: imageUrl };
+      setFormData(updatedData);
+      setPhotoPreview(imageUrl);
+      updateResumeData('personalInfo', updatedData);
+
+      toast.success('Foto subida correctamente', { id: 'upload-photo' });
+    } catch (error) {
+      console.error('Error al subir foto:', error);
+      toast.error('Error al subir la foto. Intenta de nuevo.', { id: 'upload-photo' });
+    } finally {
+      setUploadingPhoto(false);
+    }
   };
 
   const handleCropCancel = () => {
@@ -216,8 +234,11 @@ const ContactForm = () => {
 
       <div className="contact-form-container">
         <div className="contact-form-header">
-          <h1>Información de Contacto</h1>
-          <p>Comencemos con tu información básica de contacto</p>
+          <div>
+            <h1>Información de Contacto</h1>
+            <p>Comencemos con tu información básica de contacto</p>
+          </div>
+          <ThemeToggle />
         </div>
 
         <form className="contact-form">

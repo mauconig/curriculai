@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, Plus, LogOut, User, FileDown } from 'lucide-react';
+import ThemeToggle from '../components/common/ThemeToggle';
 import authService from '../services/authService';
 import './Dashboard.css';
 
@@ -75,6 +76,7 @@ const Dashboard = () => {
               )}
               <span className="user-name">{user?.name}</span>
             </div>
+            <ThemeToggle />
             <button className="logout-btn" onClick={handleLogout}>
               <LogOut size={18} />
               <span>Cerrar Sesión</span>

@@ -7,7 +7,8 @@
       "Bash(node -e:*)",
       "Bash(curl:*)",
       "Bash(npm run dev:*)",
-      "Bash(node screenshot.js:*)"
+      "Bash(node screenshot.js:*)",
+      "Bash(find:*)"
     ]
   },
   "mcpServers": {

@@ -82,7 +82,7 @@ const ImageCropModal = ({ image, onCropComplete, onCancel }) => {
   );
 };
 
-// Helper function to crop the image
+// Helper function to crop the image and return a blob
 const getCroppedImg = (imageSrc, pixelCrop) => {
   return new Promise((resolve, reject) => {
     const image = new Image();
@@ -109,19 +109,14 @@ const getCroppedImg = (imageSrc, pixelCrop) => {
         size
       );
 
-      // Convert to base64
+      // Convert to blob (más eficiente que base64 para Cloudinary)
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Canvas is empty'));
           return;
         }
-        const fileUrl = URL.createObjectURL(blob);
-        const reader = new FileReader();
-        reader.readAsDataURL(blob);
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-      }, 'image/jpeg', 0.95);
+        resolve(blob);
+      }, 'image/jpeg', 0.92);
     };
     image.onerror = reject;
   });
