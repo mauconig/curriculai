@@ -1,0 +1,341 @@
+.education-item {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.education-item.expanded {
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+  border-color: #667eea;
+}
+
+.education-item-header {
+  padding: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.02));
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.education-item-header:hover {
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.03), rgba(102, 126, 234, 0.05));
+}
+
+.education-item.expanded .education-item-header {
+  border-bottom-color: #e5e7eb;
+  background: #f9fafb;
+}
+
+.education-item-title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.education-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.education-preview {
+  font-size: 0.9375rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.education-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remove-education-btn,
+.education-item .toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-education-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.education-item .toggle-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.education-item-content {
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  animation: slideDown 0.3s ease-out;
+  background: white;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.education-item .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.education-item .form-group {
+  margin-bottom: 1rem;
+}
+
+.education-item .form-group label {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.education-item .form-group input,
+.education-item .form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.education-item .form-group input:focus,
+.education-item .form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.education-item .form-group input:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.education-item .form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.education-item .help-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Current Education Toggle */
+.current-education-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.current-education-toggle:hover {
+  background: #f3f4f6;
+}
+
+.current-education-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.current-education-slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: #cbd5e1;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.current-education-slider::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  top: 3px;
+  left: 3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.current-education-slider.checked {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.current-education-slider.checked::after {
+  transform: translateX(20px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .education-item-header {
+    padding: 1rem;
+  }
+
+  .education-item-content {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .education-item .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .education-preview {
+    font-size: 0.875rem;
+  }
+}
+
+/* Modo Oscuro */
+.dark .education-item {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark .education-item.expanded {
+  border-color: #667eea;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.dark .education-item-header {
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.05));
+}
+
+.dark .education-item-header:hover {
+  background: linear-gradient(to right, rgba(102, 126, 234, 0.08), rgba(102, 126, 234, 0.12));
+}
+
+.dark .education-item.expanded .education-item-header {
+  border-bottom-color: #374151;
+  background: #374151;
+}
+
+.dark .education-item-content {
+  background: #1f2937;
+}
+
+.dark .education-number {
+  color: #a5b4fc;
+}
+
+.dark .education-preview {
+  color: #e5e7eb;
+}
+
+.dark .remove-education-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.dark .education-item .toggle-btn:hover {
+  background: #4b5563;
+}
+
+.dark .education-item .form-group label {
+  color: #e5e7eb;
+}
+
+.dark .education-item .form-group input,
+.dark .education-item .form-group textarea {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .education-item .form-group input:focus,
+.dark .education-item .form-group textarea:focus {
+  background: #1f2937;
+  border-color: #667eea;
+}
+
+.dark .education-item .form-group input::placeholder,
+.dark .education-item .form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.dark .education-item .form-group input:disabled {
+  background: #1f2937;
+  color: #6b7280;
+}
+
+.dark .education-item .help-text {
+  color: #9ca3af;
+}
+
+.dark .education-item .custom-date-input input {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .education-item .custom-date-input input:focus {
+  background: #1f2937;
+}
+
+.dark .education-item .custom-date-input.disabled input {
+  background: #1f2937;
+  color: #6b7280;
+}
+
+/* Dark Mode Toggle */
+.dark .current-education-toggle {
+  background: #374151;
+}
+
+.dark .current-education-toggle:hover {
+  background: #4b5563;
+}
+
+.dark .current-education-text {
+  color: #e5e7eb;
+}
+
+.dark .current-education-slider {
+  background: #4b5563;
+}
+
+.dark .current-education-slider.checked {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}

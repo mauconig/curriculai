@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ContactForm from './pages/editor/ContactForm';
 import ExperienceForm from './pages/editor/ExperienceForm';
+import EducationForm from './pages/editor/EducationForm';
 import './App.css';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/editor/contacto" element={<ContactForm />} />
         <Route path="/editor/experiencia" element={<ExperienceForm />} />
+        <Route path="/editor/educacion" element={<EducationForm />} />
       </Routes>
       </Router>
     </ThemeProvider>
