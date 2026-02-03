@@ -75,3 +75,14 @@
     height: 14px;
   }
 }
+
+/* Modo Oscuro */
+.dark .ai-button.secondary {
+  background: #374151;
+  color: #a5b4fc;
+  border-color: #667eea;
+}
+
+.dark .ai-button.secondary:hover:not(:disabled) {
+  background: #4b5563;
+}

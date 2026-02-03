@@ -8,6 +8,7 @@ import ContactForm from './pages/editor/ContactForm';
 import ExperienceForm from './pages/editor/ExperienceForm';
 import EducationForm from './pages/editor/EducationForm';
 import SkillsForm from './pages/editor/SkillsForm';
+import SummaryForm from './pages/editor/SummaryForm';
 import './App.css';
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
         <Route path="/editor/experiencia" element={<ExperienceForm />} />
         <Route path="/editor/educacion" element={<EducationForm />} />
         <Route path="/editor/habilidades" element={<SkillsForm />} />
+        <Route path="/editor/resumen" element={<SummaryForm />} />
       </Routes>
       </Router>
     </ThemeProvider>
