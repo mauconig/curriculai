@@ -23,7 +23,7 @@ const CustomInput = forwardRef(({ value, onClick, placeholder, disabled }, ref) 
 
 CustomInput.displayName = 'CustomInput';
 
-const CustomDatePicker = ({ selected, onChange, placeholderText, disabled, minDate, maxDate }) => {
+const CustomDatePicker = ({ selected, onChange, placeholderText, disabled, minDate, maxDate, children }) => {
   const { isDark } = useTheme();
 
   return (
@@ -43,7 +43,9 @@ const CustomDatePicker = ({ selected, onChange, placeholderText, disabled, minDa
       dropdownMode="select"
       yearDropdownItemNumber={50}
       scrollableYearDropdown
-    />
+    >
+      {children}
+    </DatePicker>
   );
 };
 

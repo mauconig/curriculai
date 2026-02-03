@@ -62,13 +62,13 @@ const ExperienceForm = () => {
   const updateExperience = (id, field, value) => {
     // Si se marca como trabajo actual, desmarcar las demás
     if (field === 'current' && value === true) {
-      setExperiences(experiences.map(exp =>
+      setExperiences(prev => prev.map(exp =>
         exp.id === id
           ? { ...exp, [field]: value }
           : { ...exp, current: false }
       ));
     } else {
-      setExperiences(experiences.map(exp =>
+      setExperiences(prev => prev.map(exp =>
         exp.id === id ? { ...exp, [field]: value } : exp
       ));
     }

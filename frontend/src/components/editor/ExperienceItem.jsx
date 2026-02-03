@@ -20,6 +20,18 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
     }
   };
 
+  const handleEndDateChange = (date) => {
+    if (date) {
+      // Si selecciona una fecha, desmarcar "trabajo actual"
+      if (experience.current) {
+        handleChange('current', false);
+      }
+      handleChange('endDate', date.toISOString().split('T')[0]);
+    } else {
+      handleChange('endDate', '');
+    }
+  };
+
   const handleImproveWithAI = async () => {
     if (!experience.description.trim()) {
       return;
@@ -111,19 +123,6 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
             />
           </div>
 
-          <div className="form-group current-job-toggle">
-            <label className="toggle-switch-label">
-              <input
-                type="checkbox"
-                checked={experience.current || false}
-                onChange={(e) => handleCurrentChange(e.target.checked)}
-                className="toggle-checkbox"
-              />
-              <span className="toggle-slider"></span>
-              <span className="toggle-text">Trabajo Actual</span>
-            </label>
-          </div>
-
           <div className="form-row">
             <div className="form-group">
               <label htmlFor={`startDate-${experience.id}`}>
@@ -143,12 +142,19 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
               </label>
               <CustomDatePicker
                 selected={experience.endDate ? new Date(experience.endDate) : null}
-                onChange={(date) => handleChange('endDate', date ? date.toISOString().split('T')[0] : '')}
-                placeholderText={experience.current ? 'Trabajo actual' : 'Selecciona fecha de fin'}
-                disabled={experience.current}
+                onChange={handleEndDateChange}
+                placeholderText={experience.current ? 'Presente' : 'Selecciona fecha de fin'}
                 minDate={experience.startDate ? new Date(experience.startDate) : null}
                 maxDate={new Date()}
+                disabled={experience.current}
               />
+              <div
+                className="current-job-toggle"
+                onClick={() => handleCurrentChange(!experience.current)}
+              >
+                <span className="current-job-text">Trabajo aquí actualmente</span>
+                <span className={`current-job-slider ${experience.current ? 'checked' : ''}`}></span>
+              </div>
             </div>
           </div>
 

@@ -39,7 +39,9 @@ export const useResumeWizard = (initialStep = 1, resumeId = null) => {
       setLoading(true);
       const resume = await resumeService.getResume(id);
       if (resume && resume.data) {
-        setResumeData(JSON.parse(resume.data));
+        // resume.data ya viene parseado desde el backend
+        const data = typeof resume.data === 'string' ? JSON.parse(resume.data) : resume.data;
+        setResumeData(data);
       }
       setCurrentResumeId(id);
     } catch (error) {

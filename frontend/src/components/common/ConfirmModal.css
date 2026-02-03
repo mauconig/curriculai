@@ -128,6 +128,37 @@
   background: #dc2626;
 }
 
+/* Modo Oscuro */
+.dark .confirm-modal {
+  background: #1f2937;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.dark .confirm-modal-icon.warning {
+  background: rgba(245, 158, 11, 0.15);
+}
+
+.dark .confirm-modal-icon.danger {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.dark .confirm-modal-content h3 {
+  color: #f3f4f6;
+}
+
+.dark .confirm-modal-content p {
+  color: #9ca3af;
+}
+
+.dark .confirm-btn-cancel {
+  background: #374151;
+  color: #e5e7eb;
+}
+
+.dark .confirm-btn-cancel:hover {
+  background: #4b5563;
+}
+
 /* Mobile Responsive */
 @media (max-width: 480px) {
   .confirm-modal {

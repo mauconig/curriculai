@@ -11,7 +11,7 @@ const resumeService = {
    */
   async createResume(data) {
     const response = await axios.post(`${API_URL}/resumes`, data);
-    return response.data;
+    return response.data.resume;
   },
 
   /**
@@ -19,7 +19,7 @@ const resumeService = {
    */
   async getResumes() {
     const response = await axios.get(`${API_URL}/resumes`);
-    return response.data;
+    return response.data.resumes;
   },
 
   /**
@@ -27,7 +27,7 @@ const resumeService = {
    */
   async getResume(id) {
     const response = await axios.get(`${API_URL}/resumes/${id}`);
-    return response.data;
+    return response.data.resume;
   },
 
   /**
@@ -35,7 +35,7 @@ const resumeService = {
    */
   async updateResume(id, data) {
     const response = await axios.put(`${API_URL}/resumes/${id}`, data);
-    return response.data;
+    return response.data.resume;
   },
 
   /**
