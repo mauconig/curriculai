@@ -1,0 +1,216 @@
+.skill-category {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s;
+}
+
+.skill-category:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+  border-color: #d1d5db;
+}
+
+.skill-category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.skill-category-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0;
+}
+
+.remove-category-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 0.375rem;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.remove-category-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #667eea;
+  transition: all 0.2s;
+}
+
+.skill-tag:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.remove-skill-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #667eea;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.remove-skill-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.skill-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.skill-input {
+  width: 140px;
+  padding: 0.5rem 0.75rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  background: transparent;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.skill-input:focus {
+  outline: none;
+  border-color: #667eea;
+  border-style: solid;
+  background: white;
+}
+
+.skill-input::placeholder {
+  color: #9ca3af;
+}
+
+.add-skill-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0.7;
+}
+
+.add-skill-btn:hover:not(:disabled) {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.add-skill-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .skill-category {
+    padding: 1rem;
+  }
+
+  .skill-input {
+    width: 120px;
+  }
+}
+
+/* Modo Oscuro */
+.dark .skill-category {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark .skill-category:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  border-color: #4b5563;
+}
+
+.dark .skill-category-title {
+  color: #e5e7eb;
+}
+
+.dark .remove-category-btn {
+  color: #6b7280;
+}
+
+.dark .remove-category-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.dark .skill-tag {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  border-color: rgba(102, 126, 234, 0.3);
+  color: #a5b4fc;
+}
+
+.dark .skill-tag:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.25) 0%, rgba(118, 75, 162, 0.25) 100%);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.dark .remove-skill-btn {
+  color: #a5b4fc;
+}
+
+.dark .remove-skill-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+.dark .skill-input {
+  border-color: #4b5563;
+  color: #e5e7eb;
+  background: transparent;
+}
+
+.dark .skill-input:focus {
+  border-color: #667eea;
+  background: #374151;
+}
+
+.dark .skill-input::placeholder {
+  color: #6b7280;
+}
