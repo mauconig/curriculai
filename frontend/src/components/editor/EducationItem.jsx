@@ -140,6 +140,20 @@ const EducationItem = ({ education, index, onUpdate, onRemove, canRemove }) => {
           </div>
 
           <div className="form-group">
+            <label htmlFor={`gpa-${education.id}`}>
+              GPA / Promedio (Opcional)
+            </label>
+            <input
+              type="text"
+              id={`gpa-${education.id}`}
+              value={education.gpa || ''}
+              onChange={(e) => handleChange('gpa', e.target.value)}
+              placeholder="3.8 / 4.0 o 9.2 / 10"
+            />
+            <p className="help-text">Incluye tu promedio académico si es relevante para el puesto</p>
+          </div>
+
+          <div className="form-group">
             <label htmlFor={`description-${education.id}`}>
               Logros y actividades
             </label>

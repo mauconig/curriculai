@@ -330,6 +330,12 @@
   resize: none;
 }
 
+.section-item-fields .help-text {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
 .add-item-btn {
   display: flex;
   align-items: center;
@@ -802,6 +808,10 @@
   color: #6b7280;
 }
 
+.dark .section-item-fields .help-text {
+  color: #9ca3af;
+}
+
 .dark .add-item-btn {
   border-color: #4b5563;
   color: #9ca3af;
@@ -903,5 +913,122 @@
 
   .add-section-menu-items {
     max-height: 50vh;
+  }
+}
+
+/* Certificate Photo Upload */
+.photo-upload-group {
+  margin-top: 1rem;
+}
+
+.photo-upload-group .help-text {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-top: 0.375rem;
+}
+
+.certificate-photo-preview {
+  position: relative;
+  display: inline-block;
+  max-width: 200px;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 2px solid #e5e7eb;
+}
+
+.certificate-photo-preview img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  object-fit: cover;
+}
+
+.certificate-photo-preview .remove-photo-btn {
+  position: absolute;
+  top: 0.375rem;
+  right: 0.375rem;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.certificate-photo-preview .remove-photo-btn:hover {
+  background: #ef4444;
+  transform: scale(1.1);
+}
+
+.certificate-upload {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.certificate-upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem 2rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.certificate-upload-placeholder:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.upload-icon-small {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  opacity: 0.5;
+}
+
+/* Dark Mode - Certificate Photo Upload */
+.dark .photo-upload-group .help-text {
+  color: #9ca3af;
+}
+
+.dark .certificate-photo-preview {
+  border-color: #4b5563;
+}
+
+.dark .certificate-upload-placeholder {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .certificate-upload-placeholder:hover {
+  border-color: #667eea;
+  color: #a5b4fc;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* Mobile Responsive - Certificate Photo */
+@media (max-width: 768px) {
+  .certificate-photo-preview {
+    max-width: 100%;
+  }
+
+  .certificate-upload-placeholder {
+    width: 100%;
   }
 }

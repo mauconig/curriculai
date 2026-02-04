@@ -2,13 +2,15 @@ import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, FileText, Plus, FolderKanban, Award,
-  BookOpen, Users, GraduationCap, UserCheck, X, Trash2, ChevronDown, ChevronUp
+  BookOpen, Users, GraduationCap, UserCheck, X, Trash2, ChevronDown, ChevronUp,
+  Upload, Image
 } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import AIButton from '../../components/editor/AIButton';
 import aiService from '../../services/aiService';
+import { uploadImage } from '../../services/uploadService';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { BUTTON_LABELS, FORM_LABELS, FORM_PLACEHOLDERS, HELP_TEXTS } from '../../utils/constants';
 import toast from 'react-hot-toast';
@@ -85,6 +87,7 @@ const SummaryForm = () => {
   const [showAddSectionMenu, setShowAddSectionMenu] = useState(false);
   const [additionalSections, setAdditionalSections] = useState([]);
   const [expandedSections, setExpandedSections] = useState({});
+  const [uploadingPhoto, setUploadingPhoto] = useState({});
   const addMenuRef = useRef(null);
 
   // Load existing data
@@ -218,13 +221,13 @@ const SummaryForm = () => {
       case 'projects':
         return { ...baseItem, name: '', description: '', technologies: '', link: '' };
       case 'certifications':
-        return { ...baseItem, name: '', issuer: '', date: '', credentialId: '' };
+        return { ...baseItem, name: '', issuer: '', date: '', credentialId: '', photo: '' };
       case 'coursework':
-        return { ...baseItem, name: '', institution: '', date: '' };
+        return { ...baseItem, name: '', institution: '', date: '', photo: '' };
       case 'involvement':
         return { ...baseItem, organization: '', role: '', description: '', dates: '' };
       case 'academic':
-        return { ...baseItem, name: '', issuer: '', date: '', description: '' };
+        return { ...baseItem, name: '', issuer: '', date: '', description: '', photo: '' };
       case 'references':
         return { ...baseItem, name: '', position: '', company: '', email: '', phone: '' };
       default:
@@ -283,6 +286,89 @@ const SummaryForm = () => {
       ...prev,
       [instanceId]: !prev[instanceId]
     }));
+  };
+
+  // Photo upload handler for certifications, courses, and honors
+  const handlePhotoUpload = async (instanceId, itemId, file) => {
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor selecciona una imagen válida');
+      return;
+    }
+
+    // Validate size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('La imagen debe pesar menos de 5MB');
+      return;
+    }
+
+    const uploadKey = `${instanceId}-${itemId}`;
+    setUploadingPhoto(prev => ({ ...prev, [uploadKey]: true }));
+    toast.loading('Subiendo imagen...', { id: `upload-${uploadKey}` });
+
+    try {
+      const imageUrl = await uploadImage(file);
+      handleUpdateItem(instanceId, itemId, 'photo', imageUrl);
+      toast.success('Imagen subida correctamente', { id: `upload-${uploadKey}` });
+    } catch (error) {
+      console.error('Error al subir imagen:', error);
+      toast.error('Error al subir la imagen', { id: `upload-${uploadKey}` });
+    } finally {
+      setUploadingPhoto(prev => ({ ...prev, [uploadKey]: false }));
+    }
+  };
+
+  const handleRemovePhoto = (instanceId, itemId) => {
+    handleUpdateItem(instanceId, itemId, 'photo', '');
+    toast.success('Imagen eliminada');
+  };
+
+  const renderPhotoUpload = (section, item) => {
+    const uploadKey = `${section.instanceId}-${item.id}`;
+    const isUploading = uploadingPhoto[uploadKey];
+
+    return (
+      <div className="form-group photo-upload-group">
+        <label>Foto del Certificado (Opcional)</label>
+        {item.photo ? (
+          <div className="certificate-photo-preview">
+            <img src={item.photo} alt="Certificado" />
+            <button
+              type="button"
+              className="remove-photo-btn"
+              onClick={() => handleRemovePhoto(section.instanceId, item.id)}
+              title="Eliminar imagen"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        ) : (
+          <label className="photo-upload-label certificate-upload">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => handlePhotoUpload(section.instanceId, item.id, e.target.files?.[0])}
+              disabled={isUploading}
+              style={{ display: 'none' }}
+            />
+            <div className="certificate-upload-placeholder">
+              {isUploading ? (
+                <span>Subiendo...</span>
+              ) : (
+                <>
+                  <Image size={20} />
+                  <Upload size={14} className="upload-icon-small" />
+                  <span>Subir imagen</span>
+                </>
+              )}
+            </div>
+          </label>
+        )}
+        <p className="help-text">Sube una foto de tu certificado o diploma (opcional)</p>
+      </div>
+    );
   };
 
   const getSectionConfig = (sectionType) => {
@@ -420,6 +506,7 @@ const SummaryForm = () => {
                 />
               </div>
             </div>
+            {renderPhotoUpload(section, item)}
           </>
         );
 
@@ -455,6 +542,7 @@ const SummaryForm = () => {
                 />
               </div>
             </div>
+            {renderPhotoUpload(section, item)}
           </>
         );
 
@@ -545,6 +633,7 @@ const SummaryForm = () => {
                 />
               </div>
             </div>
+            {renderPhotoUpload(section, item)}
           </>
         );
 
