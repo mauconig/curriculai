@@ -7,6 +7,27 @@ import './ResumePreview.css';
  * @param {string} template - ID de la plantilla seleccionada
  */
 const ResumePreview = ({ data, template = 'modern' }) => {
+  // Renderizar descripción con bullet points en líneas separadas
+  const renderDescription = (text) => {
+    if (!text) return null;
+
+    // Split by bullet points (• ) and filter empty strings
+    const parts = text.split(/(?=•\s)/).filter(part => part.trim());
+
+    if (parts.length <= 1) {
+      // No bullet points, render as single paragraph
+      return <p className="preview-description">{text}</p>;
+    }
+
+    // Multiple bullet points, render as list
+    return (
+      <ul className="preview-description-list">
+        {parts.map((part, idx) => (
+          <li key={idx}>{part.replace(/^•\s*/, '')}</li>
+        ))}
+      </ul>
+    );
+  };
   const {
     personalInfo = {},
     experience = [],
@@ -84,9 +105,7 @@ const ResumePreview = ({ data, template = 'modern' }) => {
               </span>
             </div>
             <p className="preview-company">{exp.company}</p>
-            {exp.description && (
-              <p className="preview-description">{exp.description}</p>
-            )}
+            {exp.description && renderDescription(exp.description)}
           </div>
         ))}
       </div>
@@ -110,9 +129,7 @@ const ResumePreview = ({ data, template = 'modern' }) => {
             <p className="preview-company">{edu.institution}</p>
             {edu.field && <p className="preview-field">{edu.field}</p>}
             {edu.gpa && <p className="preview-gpa">GPA: {edu.gpa}</p>}
-            {edu.description && (
-              <p className="preview-description">{edu.description}</p>
-            )}
+            {edu.description && renderDescription(edu.description)}
           </div>
         ))}
       </div>
@@ -169,9 +186,7 @@ const ResumePreview = ({ data, template = 'modern' }) => {
                   {item.technologies && (
                     <p className="preview-technologies">{item.technologies}</p>
                   )}
-                  {item.description && (
-                    <p className="preview-description">{item.description}</p>
-                  )}
+                  {item.description && renderDescription(item.description)}
                 </>
               )}
               {section.type === 'certifications' && (
@@ -202,9 +217,7 @@ const ResumePreview = ({ data, template = 'modern' }) => {
                     {item.dates && <span className="preview-date">{item.dates}</span>}
                   </div>
                   {item.organization && <p className="preview-company">{item.organization}</p>}
-                  {item.description && (
-                    <p className="preview-description">{item.description}</p>
-                  )}
+                  {item.description && renderDescription(item.description)}
                 </>
               )}
               {section.type === 'academic' && (
@@ -214,9 +227,7 @@ const ResumePreview = ({ data, template = 'modern' }) => {
                     {item.date && <span className="preview-date">{item.date}</span>}
                   </div>
                   {item.issuer && <p className="preview-company">{item.issuer}</p>}
-                  {item.description && (
-                    <p className="preview-description">{item.description}</p>
-                  )}
+                  {item.description && renderDescription(item.description)}
                 </>
               )}
               {section.type === 'references' && (
