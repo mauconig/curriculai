@@ -10,6 +10,7 @@ import EducationForm from './pages/editor/EducationForm';
 import SkillsForm from './pages/editor/SkillsForm';
 import SummaryForm from './pages/editor/SummaryForm';
 import TemplateForm from './pages/editor/TemplateForm';
+import PreviewForm from './pages/editor/PreviewForm';
 import './App.css';
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route path="/editor/habilidades" element={<SkillsForm />} />
         <Route path="/editor/resumen" element={<SummaryForm />} />
         <Route path="/editor/plantilla" element={<TemplateForm />} />
+        <Route path="/editor/preview" element={<PreviewForm />} />
       </Routes>
       </Router>
     </ThemeProvider>
