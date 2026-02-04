@@ -157,6 +157,346 @@
   margin-top: 1rem;
 }
 
+/* Additional Section Card */
+.additional-section-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.section-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.section-card-header:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.section-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.section-icon {
+  color: #667eea;
+}
+
+.section-count {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.section-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remove-section-btn {
+  padding: 0.375rem;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.remove-section-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.toggle-section-btn {
+  padding: 0.375rem;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.toggle-section-btn:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.section-card-content {
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.section-item {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-item:last-of-type {
+  margin-bottom: 1rem;
+}
+
+.section-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.item-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.remove-item-btn {
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.remove-item-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.section-item-fields .form-group {
+  margin-bottom: 1rem;
+}
+
+.section-item-fields .form-group:last-child {
+  margin-bottom: 0;
+}
+
+.section-item-fields .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-item-fields .form-row:last-child {
+  margin-bottom: 0;
+}
+
+.section-item-fields label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.375rem;
+}
+
+.section-item-fields input,
+.section-item-fields textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.section-item-fields input:focus,
+.section-item-fields textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.section-item-fields textarea {
+  resize: none;
+}
+
+.add-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-item-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+/* Add Section Button */
+.add-section-container {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.add-section-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.5rem;
+  background: white;
+  border: 3px dashed #d1d5db;
+  border-radius: 1rem;
+  color: #6b7280;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.add-section-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  transform: scale(1.01);
+}
+
+.add-section-btn svg {
+  transition: transform 0.3s;
+}
+
+.add-section-btn:hover svg {
+  transform: rotate(90deg);
+}
+
+/* Add Section Menu */
+.add-section-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e5e7eb;
+  z-index: 100;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.add-section-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.add-section-menu-header span {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.close-menu-btn {
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.close-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #374151;
+}
+
+.add-section-menu-items {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.section-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.section-option:last-child {
+  border-bottom: none;
+}
+
+.section-option:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+}
+
+.section-option-icon {
+  color: #667eea;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.section-option-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.section-option-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.section-option-desc {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
 /* Navigation */
 .summary-form-page .form-navigation {
   display: flex;
@@ -368,4 +708,200 @@
 
 .dark .summary-form-page .saving-text {
   color: #9ca3af;
+}
+
+/* Dark Mode - Additional Sections */
+.dark .additional-section-card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark .section-card-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.dark .section-card-header:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+}
+
+.dark .section-card-title {
+  color: #e5e7eb;
+}
+
+.dark .section-icon {
+  color: #a5b4fc;
+}
+
+.dark .section-count {
+  color: #9ca3af;
+}
+
+.dark .remove-section-btn {
+  color: #6b7280;
+}
+
+.dark .remove-section-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.dark .toggle-section-btn {
+  color: #9ca3af;
+}
+
+.dark .toggle-section-btn:hover {
+  background: rgba(102, 126, 234, 0.2);
+  color: #a5b4fc;
+}
+
+.dark .section-card-content {
+  border-top-color: #374151;
+}
+
+.dark .section-item {
+  background: #374151;
+}
+
+.dark .section-item-header {
+  border-bottom-color: #4b5563;
+}
+
+.dark .item-number {
+  color: #a5b4fc;
+}
+
+.dark .remove-item-btn {
+  color: #6b7280;
+}
+
+.dark .remove-item-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+.dark .section-item-fields label {
+  color: #e5e7eb;
+}
+
+.dark .section-item-fields input,
+.dark .section-item-fields textarea {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.dark .section-item-fields input:focus,
+.dark .section-item-fields textarea:focus {
+  border-color: #667eea;
+  background: #1f2937;
+}
+
+.dark .section-item-fields input::placeholder,
+.dark .section-item-fields textarea::placeholder {
+  color: #6b7280;
+}
+
+.dark .add-item-btn {
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .add-item-btn:hover {
+  border-color: #667eea;
+  color: #a5b4fc;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.dark .add-section-btn {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .add-section-btn:hover {
+  border-color: #667eea;
+  color: #a5b4fc;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.dark .add-section-menu {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.dark .add-section-menu-header {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border-bottom-color: #374151;
+}
+
+.dark .add-section-menu-header span {
+  color: #e5e7eb;
+}
+
+.dark .close-menu-btn {
+  color: #9ca3af;
+}
+
+.dark .close-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+}
+
+.dark .section-option {
+  border-bottom-color: #374151;
+}
+
+.dark .section-option:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+}
+
+.dark .section-option-icon {
+  color: #a5b4fc;
+}
+
+.dark .section-option-name {
+  color: #e5e7eb;
+}
+
+.dark .section-option-desc {
+  color: #9ca3af;
+}
+
+/* Mobile Responsive - Additional Sections */
+@media (max-width: 768px) {
+  .section-card-header {
+    padding: 0.875rem 1rem;
+  }
+
+  .section-card-content {
+    padding: 1rem;
+  }
+
+  .section-item {
+    padding: 0.875rem;
+  }
+
+  .section-item-fields .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .add-section-btn {
+    padding: 1.25rem;
+  }
+
+  .add-section-menu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 1rem 1rem 0 0;
+    max-height: 70vh;
+  }
+
+  .add-section-menu-items {
+    max-height: 50vh;
+  }
 }

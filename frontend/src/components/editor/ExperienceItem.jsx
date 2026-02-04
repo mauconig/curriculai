@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import AIButton from './AIButton';
 import CustomDatePicker from '../common/CustomDatePicker';
+import aiService from '../../services/aiService';
 import { FORM_LABELS, FORM_PLACEHOLDERS, HELP_TEXTS } from '../../utils/constants';
+import toast from 'react-hot-toast';
 import './ExperienceItem.css';
 
 const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) => {
@@ -34,19 +36,35 @@ const ExperienceItem = ({ experience, index, onUpdate, onRemove, canRemove }) =>
 
   const handleImproveWithAI = async () => {
     if (!experience.description.trim()) {
+      toast.error('Escribe una descripción primero');
       return;
     }
 
     setImprovingWithAI(true);
+    toast.loading('Mejorando descripción con IA...', { id: 'ai-improve' });
 
-    // TODO: Implementar llamada real a la API de IA
-    // Por ahora simulamos un delay
-    setTimeout(() => {
-      // Simulación de mejora
-      const improved = experience.description.trim() + '\n\n[Versión mejorada por IA - Próximamente]';
+    try {
+      const context = {
+        position: experience.position,
+        company: experience.company,
+        startDate: experience.startDate,
+        endDate: experience.endDate,
+        current: experience.current
+      };
+
+      const improved = await aiService.improveExperienceDescription(
+        experience.description,
+        context
+      );
+
       handleChange('description', improved);
+      toast.success('¡Descripción mejorada!', { id: 'ai-improve' });
+    } catch (error) {
+      console.error('Error al mejorar con IA:', error);
+      toast.error('Error al mejorar la descripción', { id: 'ai-improve' });
+    } finally {
       setImprovingWithAI(false);
-    }, 2000);
+    }
   };
 
   return (

@@ -9,6 +9,7 @@ import { runMigrations } from './db/migrations.js';
 import authRoutes from './routes/auth.js';
 import resumesRoutes from './routes/resumes.js';
 import uploadRoutes from './routes/upload.js';
+import aiRoutes from './routes/ai.js';
 
 // Obtener __dirname en ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -77,6 +78,9 @@ app.use('/api/resumes', resumesRoutes);
 
 // Rutas de upload
 app.use('/api/upload', uploadRoutes);
+
+// Rutas de IA
+app.use('/api/ai', aiRoutes);
 
 // Manejo de errores
 app.use((err, req, res, next) => {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Upload, X, User, ArrowLeft } from 'lucide-react';
+import { Upload, X, User, ArrowLeft, Linkedin, Globe } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ImageCropModal from '../../components/editor/ImageCropModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -32,6 +32,8 @@ const ContactForm = () => {
     email: '',
     phone: '',
     location: '',
+    linkedin: '',
+    website: '',
     photo: null
   });
 
@@ -360,6 +362,51 @@ const ContactForm = () => {
             />
             <p className="help-text">{HELP_TEXTS.location}</p>
             {errors.location && <span className="error-message">{errors.location}</span>}
+          </div>
+
+          {/* LinkedIn y Website */}
+          <div className="form-section-divider">
+            <span>Enlaces Profesionales (Opcionales)</span>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="linkedin">
+                <Linkedin size={16} className="label-icon" />
+                {FORM_LABELS.linkedin}
+              </label>
+              <div className="input-with-prefix">
+                <span className="input-prefix">https://</span>
+                <input
+                  type="text"
+                  id="linkedin"
+                  name="linkedin"
+                  value={formData.linkedin}
+                  onChange={handleInputChange}
+                  placeholder={FORM_PLACEHOLDERS.linkedin}
+                />
+              </div>
+              <p className="help-text">{HELP_TEXTS.linkedin}</p>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="website">
+                <Globe size={16} className="label-icon" />
+                {FORM_LABELS.website}
+              </label>
+              <div className="input-with-prefix">
+                <span className="input-prefix">https://</span>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleInputChange}
+                  placeholder={FORM_PLACEHOLDERS.website}
+                />
+              </div>
+              <p className="help-text">{HELP_TEXTS.website}</p>
+            </div>
           </div>
 
         </form>

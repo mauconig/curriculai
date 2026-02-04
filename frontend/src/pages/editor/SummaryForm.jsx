@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, FileText } from 'lucide-react';
+import {
+  ArrowLeft, ArrowRight, FileText, Plus, FolderKanban, Award,
+  BookOpen, Users, GraduationCap, UserCheck, X, Trash2, ChevronDown, ChevronUp
+} from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import AIButton from '../../components/editor/AIButton';
+import aiService from '../../services/aiService';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import { BUTTON_LABELS, FORM_LABELS, FORM_PLACEHOLDERS, HELP_TEXTS } from '../../utils/constants';
 import toast from 'react-hot-toast';
@@ -14,6 +18,52 @@ const MIN_CHARACTERS = 50;
 const MAX_CHARACTERS = 500;
 const RECOMMENDED_MIN = 100;
 const RECOMMENDED_MAX = 300;
+
+// Additional sections configuration
+const ADDITIONAL_SECTIONS = [
+  {
+    id: 'projects',
+    name: 'Proyectos',
+    icon: FolderKanban,
+    description: 'Proyectos personales o profesionales destacados',
+    fields: ['name', 'description', 'technologies', 'link']
+  },
+  {
+    id: 'certifications',
+    name: 'Certificaciones',
+    icon: Award,
+    description: 'Certificaciones profesionales obtenidas',
+    fields: ['name', 'issuer', 'date', 'credentialId']
+  },
+  {
+    id: 'coursework',
+    name: 'Cursos',
+    icon: BookOpen,
+    description: 'Cursos relevantes completados',
+    fields: ['name', 'institution', 'date']
+  },
+  {
+    id: 'involvement',
+    name: 'Voluntariado / Actividades',
+    icon: Users,
+    description: 'Participación en organizaciones o causas sociales',
+    fields: ['organization', 'role', 'description', 'dates']
+  },
+  {
+    id: 'academic',
+    name: 'Premios y Honores',
+    icon: GraduationCap,
+    description: 'Reconocimientos académicos o profesionales',
+    fields: ['name', 'issuer', 'date', 'description']
+  },
+  {
+    id: 'references',
+    name: 'Referencias',
+    icon: UserCheck,
+    description: 'Contactos profesionales que pueden dar referencias',
+    fields: ['name', 'position', 'company', 'email', 'phone']
+  }
+];
 
 const SummaryForm = () => {
   const [searchParams] = useSearchParams();
@@ -32,12 +82,36 @@ const SummaryForm = () => {
   const [summary, setSummary] = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
+  const [showAddSectionMenu, setShowAddSectionMenu] = useState(false);
+  const [additionalSections, setAdditionalSections] = useState([]);
+  const [expandedSections, setExpandedSections] = useState({});
+  const addMenuRef = useRef(null);
 
-  // Load existing summary
+  // Load existing data
   useEffect(() => {
     if (resumeData.summary) {
       setSummary(resumeData.summary);
     }
+    if (resumeData.additionalSections) {
+      setAdditionalSections(resumeData.additionalSections);
+      // Expand all existing sections by default
+      const expanded = {};
+      resumeData.additionalSections.forEach(section => {
+        expanded[section.instanceId] = true;
+      });
+      setExpandedSections(expanded);
+    }
+  }, []);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(event.target)) {
+        setShowAddSectionMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Auto-save when summary changes
@@ -50,6 +124,15 @@ const SummaryForm = () => {
 
     return () => clearTimeout(timer);
   }, [summary]);
+
+  // Auto-save when additional sections change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateResumeData('additionalSections', additionalSections);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [additionalSections]);
 
   const handleSummaryChange = (e) => {
     const value = e.target.value;
@@ -73,24 +156,142 @@ const SummaryForm = () => {
     }
 
     setAiLoading(true);
+    toast.loading('Mejorando resumen con IA...', { id: 'ai-summary' });
 
-    // Simulate AI improvement (will be replaced with actual API call)
-    setTimeout(() => {
-      // This is a placeholder - in production, this would call the AI API
-      toast.success('Funcionalidad de IA próximamente');
+    try {
+      const improved = await aiService.improveSummary(summary, resumeData);
+      if (improved && improved !== summary) {
+        setSummary(improved);
+        toast.success('¡Resumen mejorado!', { id: 'ai-summary' });
+      } else {
+        toast.success('Tu resumen ya está muy bien escrito', { id: 'ai-summary' });
+      }
+    } catch (error) {
+      console.error('Error al mejorar resumen:', error);
+      toast.error('Error al mejorar el resumen', { id: 'ai-summary' });
+    } finally {
       setAiLoading(false);
-    }, 1500);
+    }
   };
 
   const handleAIGenerate = async () => {
     setAiLoading(true);
+    toast.loading('Generando resumen con IA...', { id: 'ai-summary' });
 
-    // Simulate AI generation (will be replaced with actual API call)
-    setTimeout(() => {
-      // This is a placeholder - in production, this would call the AI API
-      toast.success('Funcionalidad de IA próximamente');
+    try {
+      const generated = await aiService.generateProfessionalSummary(resumeData);
+      if (generated) {
+        setSummary(generated);
+        toast.success('¡Resumen generado!', { id: 'ai-summary' });
+      } else {
+        toast.error('No se pudo generar el resumen. Completa más información primero.', { id: 'ai-summary' });
+      }
+    } catch (error) {
+      console.error('Error al generar resumen:', error);
+      toast.error('Error al generar el resumen', { id: 'ai-summary' });
+    } finally {
       setAiLoading(false);
-    }, 1500);
+    }
+  };
+
+  // Section management functions
+  const handleAddSection = (sectionType) => {
+    const sectionConfig = ADDITIONAL_SECTIONS.find(s => s.id === sectionType);
+    if (!sectionConfig) return;
+
+    const newSection = {
+      instanceId: `${sectionType}-${Date.now()}`,
+      type: sectionType,
+      items: [createEmptyItem(sectionType)]
+    };
+
+    setAdditionalSections(prev => [...prev, newSection]);
+    setExpandedSections(prev => ({ ...prev, [newSection.instanceId]: true }));
+    setShowAddSectionMenu(false);
+    toast.success(`Sección "${sectionConfig.name}" añadida`);
+  };
+
+  const createEmptyItem = (sectionType) => {
+    const baseItem = { id: Date.now().toString() };
+
+    switch (sectionType) {
+      case 'projects':
+        return { ...baseItem, name: '', description: '', technologies: '', link: '' };
+      case 'certifications':
+        return { ...baseItem, name: '', issuer: '', date: '', credentialId: '' };
+      case 'coursework':
+        return { ...baseItem, name: '', institution: '', date: '' };
+      case 'involvement':
+        return { ...baseItem, organization: '', role: '', description: '', dates: '' };
+      case 'academic':
+        return { ...baseItem, name: '', issuer: '', date: '', description: '' };
+      case 'references':
+        return { ...baseItem, name: '', position: '', company: '', email: '', phone: '' };
+      default:
+        return baseItem;
+    }
+  };
+
+  const handleRemoveSection = (instanceId) => {
+    setAdditionalSections(prev => prev.filter(s => s.instanceId !== instanceId));
+    toast.success('Sección eliminada');
+  };
+
+  const handleAddItemToSection = (instanceId) => {
+    setAdditionalSections(prev => prev.map(section => {
+      if (section.instanceId === instanceId) {
+        return {
+          ...section,
+          items: [...section.items, createEmptyItem(section.type)]
+        };
+      }
+      return section;
+    }));
+  };
+
+  const handleRemoveItemFromSection = (instanceId, itemId) => {
+    setAdditionalSections(prev => prev.map(section => {
+      if (section.instanceId === instanceId) {
+        return {
+          ...section,
+          items: section.items.filter(item => item.id !== itemId)
+        };
+      }
+      return section;
+    }));
+  };
+
+  const handleUpdateItem = (instanceId, itemId, field, value) => {
+    setAdditionalSections(prev => prev.map(section => {
+      if (section.instanceId === instanceId) {
+        return {
+          ...section,
+          items: section.items.map(item => {
+            if (item.id === itemId) {
+              return { ...item, [field]: value };
+            }
+            return item;
+          })
+        };
+      }
+      return section;
+    }));
+  };
+
+  const toggleSectionExpanded = (instanceId) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [instanceId]: !prev[instanceId]
+    }));
+  };
+
+  const getSectionConfig = (sectionType) => {
+    return ADDITIONAL_SECTIONS.find(s => s.id === sectionType);
+  };
+
+  const getAvailableSections = () => {
+    const addedTypes = additionalSections.map(s => s.type);
+    return ADDITIONAL_SECTIONS.filter(s => !addedTypes.includes(s.id));
   };
 
   const validateSummary = () => {
@@ -125,6 +326,286 @@ const SummaryForm = () => {
 
   const handleCancelCancel = () => {
     setShowCancelModal(false);
+  };
+
+  const renderSectionFields = (section, item) => {
+    const config = getSectionConfig(section.type);
+    if (!config) return null;
+
+    switch (section.type) {
+      case 'projects':
+        return (
+          <>
+            <div className="form-group">
+              <label>Nombre del Proyecto *</label>
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'name', e.target.value)}
+                placeholder="Mi Proyecto Increíble"
+              />
+            </div>
+            <div className="form-group">
+              <label>Descripción</label>
+              <textarea
+                value={item.description}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'description', e.target.value)}
+                placeholder="Describe brevemente el proyecto y tu rol..."
+                rows={3}
+              />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Tecnologías</label>
+                <input
+                  type="text"
+                  value={item.technologies}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'technologies', e.target.value)}
+                  placeholder="React, Node.js, PostgreSQL"
+                />
+              </div>
+              <div className="form-group">
+                <label>Enlace</label>
+                <input
+                  type="text"
+                  value={item.link}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'link', e.target.value)}
+                  placeholder="https://github.com/..."
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'certifications':
+        return (
+          <>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre de la Certificación *</label>
+                <input
+                  type="text"
+                  value={item.name}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'name', e.target.value)}
+                  placeholder="AWS Solutions Architect"
+                />
+              </div>
+              <div className="form-group">
+                <label>Emisor</label>
+                <input
+                  type="text"
+                  value={item.issuer}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'issuer', e.target.value)}
+                  placeholder="Amazon Web Services"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Fecha de Obtención</label>
+                <input
+                  type="text"
+                  value={item.date}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'date', e.target.value)}
+                  placeholder="Enero 2024"
+                />
+              </div>
+              <div className="form-group">
+                <label>ID de Credencial</label>
+                <input
+                  type="text"
+                  value={item.credentialId}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'credentialId', e.target.value)}
+                  placeholder="ABC123XYZ"
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'coursework':
+        return (
+          <>
+            <div className="form-group">
+              <label>Nombre del Curso *</label>
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'name', e.target.value)}
+                placeholder="Machine Learning Avanzado"
+              />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Institución</label>
+                <input
+                  type="text"
+                  value={item.institution}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'institution', e.target.value)}
+                  placeholder="Coursera / Universidad"
+                />
+              </div>
+              <div className="form-group">
+                <label>Fecha de Finalización</label>
+                <input
+                  type="text"
+                  value={item.date}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'date', e.target.value)}
+                  placeholder="Marzo 2024"
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'involvement':
+        return (
+          <>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Organización *</label>
+                <input
+                  type="text"
+                  value={item.organization}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'organization', e.target.value)}
+                  placeholder="Cruz Roja"
+                />
+              </div>
+              <div className="form-group">
+                <label>Rol</label>
+                <input
+                  type="text"
+                  value={item.role}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'role', e.target.value)}
+                  placeholder="Voluntario"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Descripción</label>
+              <textarea
+                value={item.description}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'description', e.target.value)}
+                placeholder="Describe tu participación..."
+                rows={3}
+              />
+            </div>
+            <div className="form-group">
+              <label>Fechas</label>
+              <input
+                type="text"
+                value={item.dates}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'dates', e.target.value)}
+                placeholder="Enero 2023 - Presente"
+              />
+            </div>
+          </>
+        );
+
+      case 'academic':
+        return (
+          <>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre del Premio/Honor *</label>
+                <input
+                  type="text"
+                  value={item.name}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'name', e.target.value)}
+                  placeholder="Summa Cum Laude"
+                />
+              </div>
+              <div className="form-group">
+                <label>Otorgado por</label>
+                <input
+                  type="text"
+                  value={item.issuer}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'issuer', e.target.value)}
+                  placeholder="Universidad de Madrid"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Fecha</label>
+                <input
+                  type="text"
+                  value={item.date}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'date', e.target.value)}
+                  placeholder="2023"
+                />
+              </div>
+              <div className="form-group">
+                <label>Descripción</label>
+                <input
+                  type="text"
+                  value={item.description}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'description', e.target.value)}
+                  placeholder="Breve descripción..."
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      case 'references':
+        return (
+          <>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Nombre Completo *</label>
+                <input
+                  type="text"
+                  value={item.name}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'name', e.target.value)}
+                  placeholder="Juan García López"
+                />
+              </div>
+              <div className="form-group">
+                <label>Cargo</label>
+                <input
+                  type="text"
+                  value={item.position}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'position', e.target.value)}
+                  placeholder="Director de Tecnología"
+                />
+              </div>
+            </div>
+            <div className="form-group">
+              <label>Empresa</label>
+              <input
+                type="text"
+                value={item.company}
+                onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'company', e.target.value)}
+                placeholder="TechCorp S.A."
+              />
+            </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={item.email}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'email', e.target.value)}
+                  placeholder="juan.garcia@techcorp.com"
+                />
+              </div>
+              <div className="form-group">
+                <label>Teléfono</label>
+                <input
+                  type="tel"
+                  value={item.phone}
+                  onChange={(e) => handleUpdateItem(section.instanceId, item.id, 'phone', e.target.value)}
+                  placeholder="+34 600 123 456"
+                />
+              </div>
+            </div>
+          </>
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -205,6 +686,126 @@ const SummaryForm = () => {
             </AIButton>
           </div>
         </div>
+
+        {/* Additional Sections */}
+        {additionalSections.map((section) => {
+          const config = getSectionConfig(section.type);
+          if (!config) return null;
+          const IconComponent = config.icon;
+          const isExpanded = expandedSections[section.instanceId];
+
+          return (
+            <div key={section.instanceId} className="additional-section-card">
+              <div
+                className="section-card-header"
+                onClick={() => toggleSectionExpanded(section.instanceId)}
+              >
+                <div className="section-card-title">
+                  <IconComponent size={20} className="section-icon" />
+                  <span>{config.name}</span>
+                  <span className="section-count">({section.items.length})</span>
+                </div>
+                <div className="section-card-actions">
+                  <button
+                    type="button"
+                    className="remove-section-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveSection(section.instanceId);
+                    }}
+                    title="Eliminar sección"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                  <button type="button" className="toggle-section-btn">
+                    {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                  </button>
+                </div>
+              </div>
+
+              {isExpanded && (
+                <div className="section-card-content">
+                  {section.items.map((item, itemIndex) => (
+                    <div key={item.id} className="section-item">
+                      <div className="section-item-header">
+                        <span className="item-number">{config.name} #{itemIndex + 1}</span>
+                        {section.items.length > 1 && (
+                          <button
+                            type="button"
+                            className="remove-item-btn"
+                            onClick={() => handleRemoveItemFromSection(section.instanceId, item.id)}
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+                      <div className="section-item-fields">
+                        {renderSectionFields(section, item)}
+                      </div>
+                    </div>
+                  ))}
+
+                  <button
+                    type="button"
+                    className="add-item-btn"
+                    onClick={() => handleAddItemToSection(section.instanceId)}
+                  >
+                    <Plus size={16} />
+                    Añadir otro {config.name.toLowerCase().replace(/s$/, '')}
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {/* Add Section Button */}
+        {getAvailableSections().length > 0 && (
+          <div className="add-section-container" ref={addMenuRef}>
+            <button
+              type="button"
+              className="add-section-btn"
+              onClick={() => setShowAddSectionMenu(!showAddSectionMenu)}
+            >
+              <Plus size={24} />
+              <span>Añadir Sección</span>
+            </button>
+
+            {showAddSectionMenu && (
+              <div className="add-section-menu">
+                <div className="add-section-menu-header">
+                  <span>Selecciona una sección para añadir</span>
+                  <button
+                    type="button"
+                    className="close-menu-btn"
+                    onClick={() => setShowAddSectionMenu(false)}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <div className="add-section-menu-items">
+                  {getAvailableSections().map((sectionType) => {
+                    const IconComponent = sectionType.icon;
+                    return (
+                      <button
+                        key={sectionType.id}
+                        type="button"
+                        className="section-option"
+                        onClick={() => handleAddSection(sectionType.id)}
+                      >
+                        <IconComponent size={20} className="section-option-icon" />
+                        <div className="section-option-info">
+                          <span className="section-option-name">{sectionType.name}</span>
+                          <span className="section-option-desc">{sectionType.description}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="form-navigation">

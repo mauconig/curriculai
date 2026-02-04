@@ -19,6 +19,8 @@ export const FORM_LABELS = {
   email: 'Correo Electrónico',
   phone: 'Teléfono',
   location: 'Ubicación',
+  linkedin: 'LinkedIn (Opcional)',
+  website: 'Sitio Web / Portfolio (Opcional)',
   photo: 'Foto de Perfil (Opcional)',
 
   // Experiencia
@@ -48,6 +50,8 @@ export const FORM_PLACEHOLDERS = {
   email: 'juan.perez@ejemplo.com',
   phone: '+34 600 123 456',
   location: 'Madrid, España',
+  linkedin: 'linkedin.com/in/juanperez',
+  website: 'juanperez.dev',
   company: 'Empresa S.A.',
   position: 'Desarrollador Full Stack',
   description: 'Describe tus responsabilidades y logros principales...',
@@ -106,6 +110,8 @@ export const TOAST_MESSAGES = {
 export const HELP_TEXTS = {
   photo: 'Sube una foto profesional (opcional). Podrás recortarla a tu gusto. Formatos: JPG, PNG. Máximo 5MB.',
   location: 'Ciudad y país donde resides o buscas empleo',
+  linkedin: 'Añade tu perfil de LinkedIn para que los reclutadores te contacten',
+  website: 'Tu portfolio, blog personal o página profesional',
   summary: 'Un breve párrafo que resuma tu experiencia profesional y objetivos',
   experience: 'Describe tus responsabilidades principales y logros medibles',
   skills: 'Agrupa tus habilidades por categorías (Técnicas, Idiomas, etc.)'
