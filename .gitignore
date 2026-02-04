@@ -39,3 +39,6 @@ Thumbs.db
 *.temp
 screenshot*.png
 screenshot*.js
+
+# Playwright MCP
+.playwright-mcp/

@@ -6,7 +6,7 @@ import './ResumePreview.css';
  * @param {Object} data - Datos del CV (personalInfo, experience, education, skills, summary, additionalSections)
  * @param {string} template - ID de la plantilla seleccionada
  */
-const ResumePreview = ({ data, template = 'modern' }) => {
+const ResumePreview = ({ data, template = 'modern', pageSize = 'a4', showWatermark = false }) => {
   // Renderizar descripción con bullet points en líneas separadas
   const renderDescription = (text) => {
     if (!text) return null;
@@ -250,8 +250,9 @@ const ResumePreview = ({ data, template = 'modern' }) => {
   };
 
   return (
-    <div className={`resume-preview template-${template}`}>
+    <div className={`resume-preview template-${template} page-${pageSize}`}>
       <div className="preview-paper">
+        {showWatermark && <div className="preview-watermark" />}
         {/* Header */}
         <header className="preview-header">
           {hasPhoto && (

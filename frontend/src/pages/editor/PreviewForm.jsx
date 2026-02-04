@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, Edit3, X, User, Briefcase, GraduationCap,
-  Wrench, FileText, ChevronDown, ChevronUp, Save, Eye, EyeOff
+  Wrench, FileText, ChevronDown, ChevronUp, Save, Eye, EyeOff, FileType
 } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -40,6 +40,7 @@ const PreviewForm = () => {
   const [editingSection, setEditingSection] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
   const [localData, setLocalData] = useState({});
+  const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
 
   // Sync local data with resumeData
   useEffect(() => {
@@ -391,6 +392,21 @@ const PreviewForm = () => {
             <p>Revisa cómo quedará tu currículum y haz ajustes rápidos si es necesario</p>
           </div>
           <div className="header-actions">
+            <div className="page-size-selector">
+              <FileType size={16} />
+              <button
+                className={`size-btn ${pageSize === 'a4' ? 'active' : ''}`}
+                onClick={() => setPageSize('a4')}
+              >
+                A4
+              </button>
+              <button
+                className={`size-btn ${pageSize === 'letter' ? 'active' : ''}`}
+                onClick={() => setPageSize('letter')}
+              >
+                Carta
+              </button>
+            </div>
             <button
               className={`toggle-edit-btn ${showEditPanel ? 'active' : ''}`}
               onClick={() => setShowEditPanel(!showEditPanel)}
@@ -408,6 +424,8 @@ const PreviewForm = () => {
             <ResumePreview
               data={localData}
               template={localData.template || 'modern'}
+              pageSize={pageSize}
+              showWatermark={true}
             />
           </div>
 

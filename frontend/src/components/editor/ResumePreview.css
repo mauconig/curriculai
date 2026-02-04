@@ -526,6 +526,81 @@
 }
 
 /* ======================= */
+/* PAGE SIZE VARIATIONS    */
+/* ======================= */
+
+/* A4 (default): 210mm × 297mm */
+.page-a4 .preview-paper {
+  width: 210mm;
+  min-height: 297mm;
+}
+
+/* Letter/Carta: 8.5" × 11" (215.9mm × 279.4mm) */
+.page-letter .preview-paper {
+  width: 215.9mm;
+  min-height: 279.4mm;
+}
+
+/* ======================= */
+/* WATERMARK               */
+/* ======================= */
+.preview-paper {
+  position: relative;
+}
+
+.preview-watermark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 80px,
+      rgba(102, 126, 234, 0.03) 80px,
+      rgba(102, 126, 234, 0.03) 160px
+    );
+}
+
+.preview-watermark::before {
+  content: 'VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI • VISTA PREVIA • CURRICULAI';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(102, 126, 234, 0.08);
+  white-space: nowrap;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  width: 300%;
+  text-align: center;
+}
+
+.preview-watermark::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 100px,
+      rgba(102, 126, 234, 0.02) 100px,
+      rgba(102, 126, 234, 0.02) 200px
+    );
+}
+
+/* ======================= */
 /* RESPONSIVE - Zoom down  */
 /* ======================= */
 @media (max-width: 900px) {
