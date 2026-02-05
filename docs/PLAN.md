@@ -300,19 +300,20 @@ CREATE TABLE pdfs (
 
 ---
 
-### 🔄 Fase 3: Editor de Currículum Multi-Paso (DÍA 2-5)
+### ✅ Fase 3: Editor de Currículum Multi-Paso (DÍA 2-5) - COMPLETADA
 
 **Objetivo**: Crear un wizard paso a paso para crear currículums con asistencia de IA.
 
-**Flujo del Wizard (8 pasos):**
-1. **Contacto** - Información básica + foto opcional
-2. **Experiencia** - Experiencia laboral con IA
-3. **Educación** - Formación académica
-4. **Habilidades** - Skills técnicas y blandas
-5. **Resumen** - Resumen profesional con IA
-6. **Plantilla** - Selección de diseño del CV
-7. **Preview** - Vista previa final y edición
-8. **Pago** - Pagar $1 USD para exportar PDF
+**Flujo del Wizard (9 pasos):**
+1. **Contacto** - ✅ Información básica + foto opcional con crop
+2. **Experiencia** - ✅ Experiencia laboral con validación
+3. **Educación** - ✅ Formación académica
+4. **Habilidades** - ✅ Skills organizadas por categorías (Técnicas, Idiomas, Herramientas)
+5. **Resumen** - ✅ Resumen profesional con botones de IA
+6. **Plantilla** - ✅ Selección de diseño del CV (10 plantillas)
+7. **Preview** - ✅ Vista previa final con selector de tamaño de página
+8. **Pago** - ✅ Checkout para pagar $1 USD (UI mockup, pendiente Stripe)
+9. **Exportación** - ⏳ Pendiente implementar
 
 **Modelo de Negocio:**
 - Currículum se guarda como BORRADOR durante todo el proceso
@@ -424,19 +425,21 @@ CREATE TABLE pdfs (
     - `suggestSkills(profile)` - Sugerir habilidades
 
 **Verificación Fase 3:**
-- [ ] Wizard de 6 pasos funciona
-- [ ] Navegación entre pasos
-- [ ] Validación en cada paso
-- [ ] Auto-guardado funciona
-- [ ] Upload de foto funciona
-- [ ] Botón "Mejorar con IA" en cada paso
-- [ ] Vista previa muestra datos correctos
-- [ ] Puedo guardar CV completo
-- [ ] Puedo editar CV guardado
+- [x] Wizard de 9 pasos funciona
+- [x] Navegación entre pasos
+- [x] Validación en cada paso
+- [x] Auto-guardado funciona
+- [x] Upload de foto funciona con crop modal
+- [x] Botón "Mejorar con IA" en resumen
+- [x] Vista previa muestra datos correctos
+- [x] Puedo guardar CV completo
+- [x] Puedo editar CV guardado
+- [x] Selector de tamaño de página (A4/Carta)
+- [x] Marca de agua en preview
 
 ---
 
-### 🔄 Fase 4: UI del Editor (DÍA 5-6)
+### ✅ Fase 4: UI del Editor (DÍA 5-6) - COMPLETADA
 
 **Objetivo**: Crear la interfaz de usuario para editar currículums.
 
@@ -482,59 +485,56 @@ CREATE TABLE pdfs (
    - Sincronización con backend
 
 **Verificación:**
-- [ ] Puedo hacer login con Google
-- [ ] Dashboard muestra mis currículums
-- [ ] Puedo crear nuevo currículum
-- [ ] Formularios se llenan correctamente
-- [ ] Auto-guardado funciona (cada 500ms)
-- [ ] Validación funciona
-- [ ] Puedo añadir/eliminar experiencias
-- [ ] Puedo añadir/eliminar formación
-- [ ] Puedo añadir/eliminar habilidades
+- [x] Puedo hacer login con Google
+- [x] Dashboard muestra mis currículums
+- [x] Puedo crear nuevo currículum
+- [x] Formularios se llenan correctamente
+- [x] Auto-guardado funciona
+- [x] Validación funciona
+- [x] Puedo añadir/eliminar experiencias
+- [x] Puedo añadir/eliminar formación
+- [x] Puedo añadir/eliminar habilidades por categoría
+- [x] Dark mode toggle funciona
+- [x] Custom date picker implementado
 
 ---
 
-### 🔄 Fase 5: Vista Previa y Plantillas (DÍA 7)
+### ✅ Fase 5: Vista Previa y Plantillas (DÍA 7) - COMPLETADA
 
 **Objetivo**: Crear plantillas visuales para el currículum.
 
-**Archivos a crear:**
+**10 Plantillas Implementadas:**
 
-1. **`frontend/src/components/resume/ResumePreview.jsx`**
-   - Contenedor de vista previa
-   - Selector de plantilla
-   - Renderiza template seleccionado
+**Con foto de perfil:**
+1. **Moderno** - Diseño limpio con acentos de color
+2. **Clásico** - Estilo tradicional y profesional
+3. **Creativo** - Ideal para industrias creativas
+4. **Ejecutivo** - Perfecto para puestos directivos
 
-2. **`frontend/src/components/templates/ModernTemplate.jsx`**
-   - Diseño moderno con colores
-   - Layout de dos columnas
-   - CSS modular
+**Sin foto de perfil:**
+5. **Minimalista** - Simple y elegante, sin distracciones
+6. **Moderno Texto** - Enfocado en el contenido
+7. **Clásico Texto** - Tradicional sin foto
 
-3. **`frontend/src/components/templates/ClassicTemplate.jsx`**
-   - Diseño tradicional
-   - Una columna
-   - Fuentes serif
+**Optimizados para ATS (Applicant Tracking Systems):**
+8. **ATS Estándar** - Máxima compatibilidad con sistemas ATS
+9. **ATS Profesional** - Formato limpio optimizado para parsing
+10. **ATS Simple** - Sin formato complejo, 100% legible
 
-4. **`frontend/src/components/templates/MinimalTemplate.jsx`**
-   - Diseño minimalista
-   - Mucho espacio en blanco
-   - Fuentes sans-serif
-
-5. **`frontend/src/components/templates/index.js`**
-   - Registro de plantillas
-   - Metadata de cada template
-
-**Estilos CSS:**
-- Cada plantilla tiene su propio archivo CSS
-- Optimizado para impresión (A4)
-- Responsive para vista previa
+**Archivos creados:**
+- `frontend/src/pages/editor/TemplateSelector.jsx`
+- `frontend/src/pages/editor/TemplateSelector.css`
+- `frontend/src/components/resume/ResumePreview.jsx`
+- `frontend/src/components/resume/ResumePreview.css`
 
 **Verificación:**
-- [ ] Vista previa muestra currículum en tiempo real
-- [ ] Puedo cambiar entre 3 plantillas
-- [ ] Cambios en formulario se reflejan inmediatamente
-- [ ] Caracteres españoles se ven correctamente
-- [ ] Layout responsive funciona
+- [x] Vista previa muestra currículum en tiempo real
+- [x] Puedo cambiar entre 10 plantillas
+- [x] Plantillas categorizadas (con foto, sin foto, ATS)
+- [x] Selector de tamaño de página (A4/Carta)
+- [x] Marca de agua "VISTA PREVIA" en preview
+- [x] Caracteres españoles se ven correctamente
+- [x] Layout responsive funciona
 
 ---
 
@@ -998,6 +998,7 @@ CREATE TABLE pdfs (
 
 ---
 
-**Última actualización**: Fase 2 completada (Día 1)
-**Próxima fase**: Fase 3 - CRUD de Currículums
+**Última actualización**: 4 de Febrero 2026
+**Estado actual**: Fases 1-5 completadas, Fase 6-8 parcialmente completadas
+**Próxima tarea**: Completar Fase 9 (Exportación) e integrar Stripe para pagos
 **Repositorio**: https://github.com/mauconig/curriculai

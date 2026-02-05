@@ -12,6 +12,7 @@ import SummaryForm from './pages/editor/SummaryForm';
 import TemplateForm from './pages/editor/TemplateForm';
 import PreviewForm from './pages/editor/PreviewForm';
 import PaymentForm from './pages/editor/PaymentForm';
+import ExportForm from './pages/editor/ExportForm';
 import './App.css';
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
         <Route path="/editor/plantilla" element={<TemplateForm />} />
         <Route path="/editor/preview" element={<PreviewForm />} />
         <Route path="/editor/pago" element={<PaymentForm />} />
+        <Route path="/editor/exportacion" element={<ExportForm />} />
       </Routes>
       </Router>
     </ThemeProvider>

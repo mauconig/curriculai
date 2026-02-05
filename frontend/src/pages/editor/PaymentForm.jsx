@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft, CreditCard, Shield, Lock, Check, Clock, FileText
+  ArrowLeft, ArrowRight, CreditCard, Shield, Lock, Check, Clock, FileText
 } from 'lucide-react';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -22,7 +22,8 @@ const PaymentForm = () => {
   const {
     currentStep,
     resumeData,
-    previousStep
+    previousStep,
+    nextStep
   } = useResumeWizard(8, resumeId);
 
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -319,6 +320,14 @@ const PaymentForm = () => {
             >
               <ArrowLeft size={18} />
               <span>Anterior</span>
+            </button>
+            <button
+              type="button"
+              className="btn-next"
+              onClick={nextStep}
+            >
+              <span>Siguiente</span>
+              <ArrowRight size={18} />
             </button>
           </div>
         </div>

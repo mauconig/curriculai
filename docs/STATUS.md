@@ -1,29 +1,30 @@
 # Estado del Proyecto - CurriculAI
 
-**Última actualización**: 3 de Febrero 2026
+**Última actualización**: 4 de Febrero 2026
 
 ---
 
 ## 📊 Progreso General
 
 ```
-██████████████░░░░░░░░░░░░ 35% Completado
+██████████████████░░░░░░░░ 70% Completado
 
-Fase 1: ████████████████████ 100% ✅
-Fase 2: ████████████████████ 100% ✅
-Fase 3: ██████████░░░░░░░░░░  50% ⏳
-Fase 4: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 5: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 6: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 7: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 8: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 9: ░░░░░░░░░░░░░░░░░░░░   0%
-Fase 10: ░░░░░░░░░░░░░░░░░░░░  0%
+Fase 1: ████████████████████ 100% ✅ Setup del Proyecto
+Fase 2: ████████████████████ 100% ✅ Base de Datos y Auth
+Fase 3: ████████████████████ 100% ✅ Editor Multi-Paso (9 pasos)
+Fase 4: ████████████████████ 100% ✅ UI del Editor
+Fase 5: ████████████████████ 100% ✅ Vista Previa y Plantillas (10 plantillas)
+Fase 6: ██████████░░░░░░░░░░  50% ⏳ Exportación PDF (UI lista, falta backend)
+Fase 7: ░░░░░░░░░░░░░░░░░░░░   0% Backend Groq API
+Fase 8: ░░░░░░░░░░░░░░░░░░░░   0% UI Sugerencias IA
+Fase 9: ██████░░░░░░░░░░░░░░  30% ⏳ Pagos (UI lista, falta Stripe)
+Fase 10: ░░░░░░░░░░░░░░░░░░░░  0% Pulido y Testing
+Fase 11: ░░░░░░░░░░░░░░░░░░░░  0% Dockerización
 ```
 
-**Días transcurridos**: 4 de 14-16
-**Tiempo estimado restante**: 10-12 días
-**Nota**: Fases 1 y 2 completadas en el mismo día. Fase 3 al 50%.
+**Días transcurridos**: 5 de 14-16
+**Tiempo estimado restante**: 9-11 días
+**Nota**: Wizard completo con 9 pasos, 10 plantillas, checkout page mockup.
 
 ---
 
@@ -173,94 +174,99 @@ Fase 10: ░░░░░░░░░░░░░░░░░░░░  0%
 
 ---
 
-## 📋 Fases Restantes
+## 📋 Estado de las Fases
 
-### Fase 3: Editor de Currículum Multi-Paso (Día 2-4)
-**Estado**: 🔄 En Progreso (50%)
+### ✅ Fase 3: Editor de Currículum Multi-Paso - COMPLETADA
+**Estado**: ✅ 100% Completada
 
-**Progreso por partes:**
-- **Parte 1: Contacto** - ✅ Completada
-- **Parte 2: Experiencia** - ✅ Completada
-- **Parte 3: Educación** - ✅ Completada
-- **Parte 4: Habilidades** - ⬜ Pendiente
-- **Parte 5: Resumen** - ⬜ Pendiente
-- **Parte 6: Preview** - ⬜ Pendiente
+**Wizard de 9 pasos implementado:**
+1. ✅ **Contacto** - Información básica + foto con crop
+2. ✅ **Experiencia** - Experiencia laboral con validación
+3. ✅ **Educación** - Formación académica
+4. ✅ **Habilidades** - Categorías: Técnicas, Idiomas, Herramientas
+5. ✅ **Resumen** - Resumen profesional con botones IA
+6. ✅ **Plantilla** - Selector con 10 plantillas
+7. ✅ **Preview** - Vista previa con selector A4/Carta y watermark
+8. ✅ **Pago** - Checkout page (UI mockup, pendiente Stripe)
+9. ⏳ **Exportación** - Pendiente implementar ruta
 
-**Archivos creados en Fase 3:**
+**Archivos creados:**
 ```
-✅ frontend/src/pages/editor/ContactForm.jsx
-✅ frontend/src/pages/editor/ContactForm.css
-✅ frontend/src/pages/editor/ExperienceForm.jsx
-✅ frontend/src/pages/editor/ExperienceForm.css
-✅ frontend/src/pages/editor/EducationForm.jsx
-✅ frontend/src/pages/editor/EducationForm.css
-✅ frontend/src/components/editor/WizardProgress.jsx
-✅ frontend/src/components/editor/WizardProgress.css
-✅ frontend/src/components/editor/ExperienceItem.jsx
-✅ frontend/src/components/editor/ExperienceItem.css
-✅ frontend/src/components/editor/EducationItem.jsx
-✅ frontend/src/components/editor/EducationItem.css
-✅ frontend/src/components/editor/AIButton.jsx
-✅ frontend/src/components/editor/AIButton.css
-✅ frontend/src/components/editor/ImageCropModal.jsx
-✅ frontend/src/components/editor/ImageCropModal.css
-✅ frontend/src/components/common/ConfirmModal.jsx
-✅ frontend/src/components/common/ConfirmModal.css
-✅ frontend/src/components/common/CustomDatePicker.jsx
-✅ frontend/src/components/common/CustomDatePicker.css
-✅ frontend/src/components/common/ThemeToggle.jsx
-✅ frontend/src/components/common/ThemeToggle.css
+✅ frontend/src/pages/editor/ContactForm.jsx + CSS
+✅ frontend/src/pages/editor/ExperienceForm.jsx + CSS
+✅ frontend/src/pages/editor/EducationForm.jsx + CSS
+✅ frontend/src/pages/editor/SkillsForm.jsx + CSS
+✅ frontend/src/pages/editor/SummaryForm.jsx + CSS
+✅ frontend/src/pages/editor/TemplateSelector.jsx + CSS
+✅ frontend/src/pages/editor/PreviewForm.jsx + CSS
+✅ frontend/src/pages/editor/PaymentForm.jsx + CSS
+✅ frontend/src/components/editor/WizardProgress.jsx + CSS
+✅ frontend/src/components/editor/ExperienceItem.jsx + CSS
+✅ frontend/src/components/editor/EducationItem.jsx + CSS
+✅ frontend/src/components/editor/AIButton.jsx + CSS
+✅ frontend/src/components/editor/ImageCropModal.jsx + CSS
+✅ frontend/src/components/common/ConfirmModal.jsx + CSS
+✅ frontend/src/components/common/CustomDatePicker.jsx + CSS
+✅ frontend/src/components/common/ThemeToggle.jsx + CSS
+✅ frontend/src/components/resume/ResumePreview.jsx + CSS
 ✅ frontend/src/hooks/useResumeWizard.js
 ✅ frontend/src/contexts/ThemeContext.jsx
 ✅ frontend/src/services/resumeService.js
 ✅ frontend/src/utils/constants.js
 ```
 
-### Fase 4: UI del Editor (Día 5-6)
+### ✅ Fase 4: UI del Editor - COMPLETADA
+**Estado**: ✅ 100% Completada
+
+### ✅ Fase 5: Vista Previa y Plantillas - COMPLETADA
+**Estado**: ✅ 100% Completada
+
+**10 Plantillas disponibles:**
+- **Con foto**: Moderno, Clásico, Creativo, Ejecutivo
+- **Sin foto**: Minimalista, Moderno Texto, Clásico Texto
+- **ATS**: ATS Estándar, ATS Profesional, ATS Simple
+
+### 🔄 Fase 6: Exportación y Guardado de PDFs
+**Estado**: 🔄 En Progreso (50%)
+- ✅ UI de preview completa
+- ✅ Selector de tamaño de página (A4/Carta)
+- ✅ Watermark en preview
+- ⏳ Generación de PDF sin watermark
+- ⏳ Guardado de PDF en base de datos
+
+### ⬜ Fase 7: Backend Groq API
+**Estado**: ⬜ Pendiente
+- Botones de IA visibles en UI
+- Falta integración con Groq API
+
+### ⬜ Fase 8: UI de Sugerencias de IA
 **Estado**: ⬜ Pendiente
 
-### Fase 5: Vista Previa y Plantillas (Día 7)
-**Estado**: ⬜ Pendiente
-
-### Fase 6: Exportación y Guardado de PDFs (Día 8)
-**Estado**: ⬜ Pendiente
-
-### Fase 7: Backend Groq API (Día 9)
-**Estado**: ⬜ Pendiente
-
-### Fase 8: UI de Sugerencias de IA (Día 10)
-**Estado**: ⬜ Pendiente
-
-### **Fase 9 (NUEVA): Integración de Pagos con Stripe (Día 11-12)**
-**Estado**: ⬜ Pendiente
+### 🔄 Fase 9: Integración de Pagos con Stripe
+**Estado**: 🔄 En Progreso (30%)
 
 **Modelo de negocio**: $1 USD por currículum exportado
 
-**Tareas:**
-- [ ] Configurar cuenta de Stripe
-- [ ] Implementar Stripe Checkout Session
-- [ ] Crear webhook para confirmación de pago
-- [ ] Actualizar modelo Resume con campo "paid"
-- [ ] Crear tabla payments en DB
-- [ ] Implementar frontend payment flow
-- [ ] Testing con tarjetas de prueba
-- [ ] Manejar casos de error y cancelación
+**Progreso:**
+- ✅ UI de checkout completa (PaymentForm.jsx)
+- ✅ Selección de método de pago (Tarjeta/PayPal)
+- ✅ Formulario de tarjeta (mockup)
+- ✅ Resumen del pedido
+- ⏳ Integración con Stripe API
+- ⏳ Webhook para confirmación de pago
+- ⏳ Campo "paid" en modelo Resume
 
-### Fase 10: Pulido y Testing (Día 13)
+### ⬜ Fase 10: Pulido y Testing
 **Estado**: ⬜ Pendiente
 
-### Fase 11: Dockerización (Día 14-15)
+### ⬜ Fase 11: Dockerización
 **Estado**: ⬜ Pendiente
 
-### **Fase 12 (OPCIONAL): PWA Conversion**
+### ⬜ Fase 12 (OPCIONAL): PWA Conversion
 **Estado**: ⬜ Opcional - Después del MVP
 
-Convertir a Progressive Web App para instalación en móvil
-
-### **Fase 13 (OPCIONAL): React Native App**
+### ⬜ Fase 13 (OPCIONAL): React Native App
 **Estado**: ⬜ Opcional - Después de validar mercado
-
-App nativa para iOS y Android
 
 ---
 
@@ -325,25 +331,28 @@ App nativa para iOS y Android
 
 ### Inmediatos
 
-1. **Probar el flujo de autenticación**
-   - Abrir http://localhost:5173
-   - Hacer clic en "Iniciar Sesión"
-   - Probar login con Google
-   - Verificar redirección a Dashboard
+1. **Completar Fase 9: Exportación**
+   - Implementar ruta `/editor/exportar`
+   - Generar PDF sin watermark después del pago
+   - Guardar PDF en base de datos
 
-2. **Comenzar Fase 3: Estructura de Datos y Servicios**
-   - Crear esquema de datos completo en shared/types.js
-   - Implementar resumeService.js en frontend
-   - Crear hooks personalizados (useResume, useAuth)
-   - Implementar storageService para caché local
+2. **Integrar Stripe para Pagos**
+   - Configurar cuenta de Stripe
+   - Implementar Stripe Checkout Session
+   - Crear webhook para confirmación de pago
+   - Marcar CV como "paid" después del pago exitoso
 
-### Para mañana
+### Siguientes
 
-3. **Fase 4: Editor de Currículum**
-   - Crear componentes de formulario
-   - Implementar react-hook-form
-   - Auto-guardado en base de datos
-   - Vista previa en tiempo real
+3. **Integrar Groq API para sugerencias de IA**
+   - Conectar botones "Mejorar con IA" y "Generar con IA"
+   - Implementar prompts en español
+   - Testing de respuestas
+
+4. **Testing y Pulido**
+   - Probar flujo completo end-to-end
+   - Responsive testing
+   - Manejo de errores
 
 ---
 
@@ -369,11 +378,17 @@ App nativa para iOS y Android
 - ✅ Dashboard protegido con autenticación
 - ✅ **Repositorio GitHub**: https://github.com/mauconig/curriculai
 - ✅ Git configurado con usuario: Mauricio Conigliaro
-- ✅ Primer commit incluye 45 archivos y 12,447 líneas de código
 - ✅ Playwright MCP configurado para testing visual
-- ⚠️ Se necesitará cuenta Stripe en Fase 9 (pagos)
+- ✅ Wizard completo de 9 pasos funcionando
+- ✅ 10 plantillas de CV disponibles (con foto, sin foto, ATS)
+- ✅ Dark mode implementado en toda la aplicación
+- ✅ Custom date picker con calendario en español
+- ✅ Vista previa con watermark y selector de tamaño
+- ✅ Checkout page con UI de pago completa
+- ⚠️ **Pendiente**: Integrar Stripe para procesar pagos reales
+- ⚠️ **Pendiente**: Crear ruta `/editor/exportar` para descarga de PDF
+- ⚠️ **Pendiente**: Conectar botones de IA con Groq API
 - ℹ️ PWA y app móvil son fases opcionales post-MVP
-- ℹ️ El flujo de autenticación está listo para probar en navegador
 
 ---
 
@@ -408,11 +423,19 @@ App nativa para iOS y Android
 - ✅ **3 Febrero 2026**: CustomDatePicker con calendario personalizado
 - ✅ **3 Febrero 2026**: Toggle slider para "Trabajo actual" / "Cursando actualmente"
 - ✅ **3 Febrero 2026**: WizardProgress con navegación visual de 9 pasos
+- ✅ **4 Febrero 2026**: Fase 3 Parte 4 - Formulario de Habilidades completado
+- ✅ **4 Febrero 2026**: Fase 3 Parte 5 - Formulario de Resumen con botones IA
+- ✅ **4 Febrero 2026**: Fase 5 - Selector de plantillas con 10 diseños
+- ✅ **4 Febrero 2026**: 3 categorías de plantillas: Con foto, Sin foto, ATS
+- ✅ **4 Febrero 2026**: Vista previa con selector de tamaño (A4/Carta)
+- ✅ **4 Febrero 2026**: Watermark "VISTA PREVIA" en preview
+- ✅ **4 Febrero 2026**: Checkout page con formulario de pago (mockup)
+- ✅ **4 Febrero 2026**: Resumen del pedido con precio $1 USD
 
 ---
 
-**Estado general**: 🟢 Saludable - ¡35% del proyecto completado!
-**Próxima milestone**: Fase 3 Parte 4 - Formulario de Habilidades
+**Estado general**: 🟢 Saludable - ¡70% del proyecto completado!
+**Próxima milestone**: Integración Stripe + Ruta de Exportación
 **Bloqueadores**: Ninguno - ¡Todo listo para continuar!
 
 ---
