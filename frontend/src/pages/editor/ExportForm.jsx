@@ -70,31 +70,77 @@ const ExportForm = () => {
         throw new Error('No se encontró el elemento del CV');
       }
 
-      // Page dimensions in mm
+      // Page dimensions in mm (the template CSS already includes padding: 20mm 18mm)
       const pageDimensions = {
         a4: { width: 210, height: 297 },
         letter: { width: 215.9, height: 279.4 }
       };
       const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
 
-      // Margins in mm (matching CSS: padding: 20mm 18mm)
-      const MARGIN_TOP = 20;
-      const MARGIN_BOTTOM = 20;
-      const MARGIN_LEFT = 18;
-      const MARGIN_RIGHT = 18;
-
-      // Printable area dimensions
-      const printableWidth = pageWidth - MARGIN_LEFT - MARGIN_RIGHT;
-      const printableHeight = pageHeight - MARGIN_TOP - MARGIN_BOTTOM;
-
       // Use high scale factor for crisp text (4x = ~300 DPI print quality)
       const scale = 4;
 
-      // Temporarily remove padding for capture (we'll add margins in PDF)
-      const originalPadding = paperElement.style.padding;
-      paperElement.style.padding = '0';
+      // Query ONLY individual items (not entire sections) - each item is an atomic block
+      const items = paperElement.querySelectorAll('.preview-item, .preview-skill-group');
+      const pageHeightPx = pageHeight * 3.7795275591; // mm to px at 96 DPI
+      const paperRect = paperElement.getBoundingClientRect();
+
+      // Calculate which items would be cut and add spacing to push them to next page
+      let accumulatedSpacing = 0;
+      const spacers = [];
+      let currentPageBottom = pageHeightPx;
+
+      items.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        const elementTop = rect.top - paperRect.top + accumulatedSpacing;
+        const elementBottom = elementTop + rect.height;
+
+        // If this item would be cut across a page boundary
+        if (elementTop < currentPageBottom && elementBottom > currentPageBottom) {
+          const overflow = elementBottom - currentPageBottom;
+
+          // If ANY overflow occurs, push entire item to next page
+          if (overflow > 0) {
+            // Check if this is the first item in a section (title should stay with it)
+            const section = element.closest('.preview-section');
+            const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
+                                          section?.querySelector('.preview-skill-group') === element;
+
+            let targetElement = element;
+            let spacerHeight = currentPageBottom - elementTop;
+
+            // If first item in section, push the section title with it
+            if (isFirstItemInSection && section) {
+              const sectionTop = section.getBoundingClientRect().top - paperRect.top + accumulatedSpacing;
+              spacerHeight = currentPageBottom - sectionTop;
+              targetElement = section;
+            }
+
+            // Add top margin for visual breathing room on new page
+            spacerHeight += 80;
+
+            spacers.push({ element: targetElement, spacerHeight });
+            accumulatedSpacing += spacerHeight;
+            currentPageBottom += pageHeightPx;
+          }
+        }
+
+        // Move to next page if we've passed the boundary
+        while (elementBottom + accumulatedSpacing > currentPageBottom) {
+          currentPageBottom += pageHeightPx;
+        }
+      });
+
+      // Apply spacers to push content to next page
+      spacers.forEach(({ element, spacerHeight }) => {
+        element.style.marginTop = `${parseFloat(element.style.marginTop || 0) + spacerHeight}px`;
+      });
+
+      // Wait for layout to update
+      await new Promise(resolve => setTimeout(resolve, 50));
 
       // Use html2canvas to capture the CV at high resolution
+      // Don't remove padding - the template's built-in padding IS the margin
       const canvas = await html2canvas(paperElement, {
         scale: scale,
         useCORS: true,
@@ -105,8 +151,14 @@ const ExportForm = () => {
         imageTimeout: 0
       });
 
-      // Restore padding
-      paperElement.style.padding = originalPadding;
+      // Remove the spacers we added
+      spacers.forEach(({ element, spacerHeight }) => {
+        const currentMargin = parseFloat(element.style.marginTop || 0);
+        element.style.marginTop = `${currentMargin - spacerHeight}px`;
+        if (element.style.marginTop === '0px') {
+          element.style.marginTop = '';
+        }
+      });
 
       // Create PDF with the selected page size
       const pdf = new jsPDF({
@@ -119,13 +171,13 @@ const ExportForm = () => {
       // Convert canvas to image
       const imgData = canvas.toDataURL('image/png');
 
-      // Calculate scaling: content should fit within printable width
+      // Calculate scaling: image should match page width exactly (no extra margins)
       const imgAspectRatio = canvas.width / canvas.height;
-      const imgWidthInMm = printableWidth;
+      const imgWidthInMm = pageWidth;
       const imgHeightInMm = imgWidthInMm / imgAspectRatio;
 
       // Calculate how many pages we need
-      const totalPages = Math.ceil(imgHeightInMm / printableHeight);
+      const totalPages = Math.ceil(imgHeightInMm / pageHeight);
 
       // For each page, extract the relevant portion
       for (let pageNum = 0; pageNum < totalPages; pageNum++) {
@@ -134,14 +186,12 @@ const ExportForm = () => {
         }
 
         // Calculate the vertical position offset for this page
-        // We draw the full image but position it so only the relevant portion shows
-        const yOffset = MARGIN_TOP - (pageNum * printableHeight);
+        // No extra margins - template already has padding built in
+        const yOffset = -(pageNum * pageHeight);
 
-        // Add clip region to ensure content stays within margins
+        // Add clip region for this page
         pdf.saveGraphicsState();
-
-        // Set clip path for printable area
-        pdf.rect(MARGIN_LEFT, MARGIN_TOP, printableWidth, printableHeight);
+        pdf.rect(0, 0, pageWidth, pageHeight);
         pdf.clip();
         pdf.discardPath();
 
@@ -149,7 +199,7 @@ const ExportForm = () => {
         pdf.addImage(
           imgData,
           'PNG',
-          MARGIN_LEFT,
+          0,
           yOffset,
           imgWidthInMm,
           imgHeightInMm
@@ -193,28 +243,66 @@ const ExportForm = () => {
       // Generate PDF and save to backend
       const paperElement = pdfContainerRef.current?.querySelector('.preview-paper');
       if (paperElement) {
-        // Page dimensions in mm
+        // Page dimensions in mm (template CSS already includes padding)
         const pageDimensions = {
           a4: { width: 210, height: 297 },
           letter: { width: 215.9, height: 279.4 }
         };
         const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
 
-        // Margins in mm
-        const MARGIN_TOP = 20;
-        const MARGIN_BOTTOM = 20;
-        const MARGIN_LEFT = 18;
-        const MARGIN_RIGHT = 18;
-
-        // Printable area dimensions
-        const printableWidth = pageWidth - MARGIN_LEFT - MARGIN_RIGHT;
-        const printableHeight = pageHeight - MARGIN_TOP - MARGIN_BOTTOM;
-
         const scale = 4;
+        const pageHeightPx = pageHeight * 3.7795275591;
+        const paperRect = paperElement.getBoundingClientRect();
 
-        // Temporarily remove padding for capture
-        const originalPadding = paperElement.style.padding;
-        paperElement.style.padding = '0';
+        // Query ONLY individual items - each item is an atomic block
+        const items = paperElement.querySelectorAll('.preview-item, .preview-skill-group');
+        let accumulatedSpacing = 0;
+        const spacers = [];
+        let currentPageBottom = pageHeightPx;
+
+        items.forEach((element) => {
+          const rect = element.getBoundingClientRect();
+          const elementTop = rect.top - paperRect.top + accumulatedSpacing;
+          const elementBottom = elementTop + rect.height;
+
+          if (elementTop < currentPageBottom && elementBottom > currentPageBottom) {
+            const overflow = elementBottom - currentPageBottom;
+
+            // If ANY overflow occurs, push entire item to next page
+            if (overflow > 0) {
+              const section = element.closest('.preview-section');
+              const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
+                                            section?.querySelector('.preview-skill-group') === element;
+
+              let targetElement = element;
+              let spacerHeight = currentPageBottom - elementTop;
+
+              if (isFirstItemInSection && section) {
+                const sectionTop = section.getBoundingClientRect().top - paperRect.top + accumulatedSpacing;
+                spacerHeight = currentPageBottom - sectionTop;
+                targetElement = section;
+              }
+
+              // Add top margin for visual breathing room on new page
+              spacerHeight += 50;
+
+              spacers.push({ element: targetElement, spacerHeight });
+              accumulatedSpacing += spacerHeight;
+              currentPageBottom += pageHeightPx;
+            }
+          }
+
+          while (elementBottom + accumulatedSpacing > currentPageBottom) {
+            currentPageBottom += pageHeightPx;
+          }
+        });
+
+        // Apply spacers
+        spacers.forEach(({ element, spacerHeight }) => {
+          element.style.marginTop = `${parseFloat(element.style.marginTop || 0) + spacerHeight}px`;
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 50));
 
         const canvas = await html2canvas(paperElement, {
           scale: scale,
@@ -226,7 +314,14 @@ const ExportForm = () => {
           imageTimeout: 0
         });
 
-        paperElement.style.padding = originalPadding;
+        // Remove spacers
+        spacers.forEach(({ element, spacerHeight }) => {
+          const currentMargin = parseFloat(element.style.marginTop || 0);
+          element.style.marginTop = `${currentMargin - spacerHeight}px`;
+          if (element.style.marginTop === '0px') {
+            element.style.marginTop = '';
+          }
+        });
 
         // Create PDF
         const pdf = new jsPDF({
@@ -238,26 +333,26 @@ const ExportForm = () => {
 
         const imgData = canvas.toDataURL('image/png');
         const imgAspectRatio = canvas.width / canvas.height;
-        const imgWidthInMm = printableWidth;
+        const imgWidthInMm = pageWidth;
         const imgHeightInMm = imgWidthInMm / imgAspectRatio;
-        const totalPages = Math.ceil(imgHeightInMm / printableHeight);
+        const totalPages = Math.ceil(imgHeightInMm / pageHeight);
 
         for (let pageNum = 0; pageNum < totalPages; pageNum++) {
           if (pageNum > 0) {
             pdf.addPage();
           }
 
-          const yOffset = MARGIN_TOP - (pageNum * printableHeight);
+          const yOffset = -(pageNum * pageHeight);
 
           pdf.saveGraphicsState();
-          pdf.rect(MARGIN_LEFT, MARGIN_TOP, printableWidth, printableHeight);
+          pdf.rect(0, 0, pageWidth, pageHeight);
           pdf.clip();
           pdf.discardPath();
 
           pdf.addImage(
             imgData,
             'PNG',
-            MARGIN_LEFT,
+            0,
             yOffset,
             imgWidthInMm,
             imgHeightInMm
