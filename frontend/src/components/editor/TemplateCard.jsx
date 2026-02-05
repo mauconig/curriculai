@@ -1,4 +1,5 @@
-import { Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { TickIcon } from '@hugeicons/core-free-icons';
 import './TemplateCard.css';
 
 const SAMPLE_DATA = {
@@ -88,7 +89,7 @@ const TemplateCard = ({ template, isSelected, onSelect }) => {
 
         {isSelected && (
           <div className="template-selected-badge">
-            <Check size={16} />
+            <HugeiconsIcon icon={TickIcon} size={16} />
           </div>
         )}
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Plus, LogOut, User, FileDown, Edit, Trash2, Clock } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { FileIcon, AddIcon, LogoutIcon, UserIcon, DownloadIcon, EditIcon, DeleteIcon, ClockIcon } from '@hugeicons/core-free-icons';
 import ThemeToggle from '../components/common/ThemeToggle';
 import ConfirmModal from '../components/common/ConfirmModal';
 import authService from '../services/authService';
@@ -144,7 +145,7 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <div className="header-content">
           <div className="header-logo">
-            <FileText size={32} />
+            <HugeiconsIcon icon={FileIcon} size={32} />
             <h1>CurriculAI</h1>
           </div>
 
@@ -154,14 +155,14 @@ const Dashboard = () => {
                 <img src={user.picture} alt={user.name} className="user-avatar" />
               ) : (
                 <div className="user-avatar-placeholder">
-                  <User size={20} />
+                  <HugeiconsIcon icon={UserIcon} size={20} />
                 </div>
               )}
               <span className="user-name">{user?.name}</span>
             </div>
             <ThemeToggle />
             <button className="logout-btn" onClick={handleLogout}>
-              <LogOut size={18} />
+              <HugeiconsIcon icon={LogoutIcon} size={18} />
               <span>Cerrar Sesión</span>
             </button>
           </div>
@@ -180,7 +181,7 @@ const Dashboard = () => {
           {/* Action Button */}
           <div className="action-section">
             <button className="create-resume-btn" onClick={handleCreateResume}>
-              <Plus size={28} strokeWidth={2} />
+              <HugeiconsIcon icon={AddIcon} size={28} strokeWidth={2} />
               <span>Crear Nuevo Currículum</span>
             </button>
           </div>
@@ -191,11 +192,11 @@ const Dashboard = () => {
 
             {resumes.length === 0 ? (
               <div className="empty-state">
-                <FileText size={64} strokeWidth={1.5} />
+                <HugeiconsIcon icon={FileIcon} size={64} strokeWidth={1.5} />
                 <h4>Aún no tienes currículums</h4>
                 <p>Crea tu primer currículum profesional con ayuda de IA</p>
                 <button className="create-resume-btn" onClick={handleCreateResume}>
-                  <Plus size={28} strokeWidth={2} />
+                  <HugeiconsIcon icon={AddIcon} size={28} strokeWidth={2} />
                   <span>Crear Mi Primer Currículum</span>
                 </button>
               </div>
@@ -206,14 +207,14 @@ const Dashboard = () => {
                   return (
                     <div key={resume.id} className="resume-card">
                       <div className="resume-card-header">
-                        <FileText size={24} />
+                        <HugeiconsIcon icon={FileIcon} size={24} />
                         <h4>{resume.title}</h4>
                         <button
                           className="btn-delete"
                           onClick={() => handleDeleteResume(resume)}
                           title="Eliminar"
                         >
-                          <Trash2 size={16} />
+                          <HugeiconsIcon icon={DeleteIcon} size={16} />
                         </button>
                       </div>
                       <div className="resume-card-info">
@@ -226,7 +227,7 @@ const Dashboard = () => {
                       {/* PDF Info */}
                       {latestPdf && (
                         <div className="resume-pdf-info">
-                          <FileDown size={14} />
+                          <HugeiconsIcon icon={DownloadIcon} size={14} />
                           <span>PDF guardado ({formatFileSize(latestPdf.file_size)})</span>
                         </div>
                       )}
@@ -236,7 +237,7 @@ const Dashboard = () => {
                           className="btn-edit"
                           onClick={() => handleEditResume(resume.id)}
                         >
-                          <Edit size={16} />
+                          <HugeiconsIcon icon={EditIcon} size={16} />
                           Editar
                         </button>
 
@@ -248,12 +249,12 @@ const Dashboard = () => {
                           >
                             {downloadingPdf === latestPdf.id ? (
                               <>
-                                <Clock size={16} className="spinning" />
+                                <HugeiconsIcon icon={ClockIcon} size={16} className="spinning" />
                                 Descargando...
                               </>
                             ) : (
                               <>
-                                <FileDown size={16} />
+                                <HugeiconsIcon icon={DownloadIcon} size={16} />
                                 Descargar PDF
                               </>
                             )}
@@ -263,7 +264,7 @@ const Dashboard = () => {
                             className="btn-export"
                             onClick={() => handleExportResume(resume.id)}
                           >
-                            <FileDown size={16} />
+                            <HugeiconsIcon icon={DownloadIcon} size={16} />
                             Exportar PDF
                           </button>
                         )}

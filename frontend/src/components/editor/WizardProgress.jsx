@@ -1,4 +1,5 @@
-import { Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { TickIcon } from '@hugeicons/core-free-icons';
 import { WIZARD_STEPS } from '../../utils/constants';
 import './WizardProgress.css';
 
@@ -20,7 +21,7 @@ const WizardProgress = ({ currentStep }) => {
               <div className={`wizard-step ${isCurrent ? 'current' : ''} ${isCompleted ? 'completed' : ''} ${isUpcoming ? 'upcoming' : ''}`}>
                 <div className="wizard-step-circle">
                   {isCompleted ? (
-                    <Check size={16} />
+                    <HugeiconsIcon icon={TickIcon} size={16} />
                   ) : (
                     <span>{step.id}</span>
                   )}

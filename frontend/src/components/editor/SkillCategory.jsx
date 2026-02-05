@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { X, Plus } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { CancelIcon, AddIcon } from '@hugeicons/core-free-icons';
 import './SkillCategory.css';
 
 const SkillCategory = ({ category, skills, onAddSkill, onRemoveSkill, onRemoveCategory, canRemove }) => {
@@ -31,7 +32,7 @@ const SkillCategory = ({ category, skills, onAddSkill, onRemoveSkill, onRemoveCa
             onClick={() => onRemoveCategory(category)}
             title="Eliminar categoría"
           >
-            <X size={16} />
+            <HugeiconsIcon icon={CancelIcon} size={16} />
           </button>
         )}
       </div>
@@ -45,7 +46,7 @@ const SkillCategory = ({ category, skills, onAddSkill, onRemoveSkill, onRemoveCa
               className="remove-skill-btn"
               onClick={() => onRemoveSkill(category, index)}
             >
-              <X size={14} />
+              <HugeiconsIcon icon={CancelIcon} size={14} />
             </button>
           </div>
         ))}
@@ -65,7 +66,7 @@ const SkillCategory = ({ category, skills, onAddSkill, onRemoveSkill, onRemoveCa
             onClick={handleAddClick}
             disabled={!inputValue.trim()}
           >
-            <Plus size={16} />
+            <HugeiconsIcon icon={AddIcon} size={16} />
           </button>
         </div>
       </div>

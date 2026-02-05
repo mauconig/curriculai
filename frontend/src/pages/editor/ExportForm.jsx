@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft, Download, Check, FileText, Share2, Mail, Copy,
-  Clock, CheckCircle, AlertCircle, FileType
-} from 'lucide-react';
+  ArrowLeftIcon, DownloadIcon, TickIcon, FileIcon, ShareIcon, MailIcon, CopyIcon,
+  ClockIcon, CheckmarkCircleIcon, AlertCircleIcon
+} from '@hugeicons/core-free-icons';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import WizardProgress from '../../components/editor/WizardProgress';
@@ -321,9 +322,9 @@ const ExportForm = () => {
           <div className="export-card status-card">
             <div className="status-icon-wrapper">
               {isPaid ? (
-                <CheckCircle size={48} className="status-icon success" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={48} className="status-icon success" />
               ) : (
-                <AlertCircle size={48} className="status-icon warning" />
+                <HugeiconsIcon icon={AlertCircleIcon} size={48} className="status-icon warning" />
               )}
             </div>
 
@@ -342,7 +343,7 @@ const ExportForm = () => {
                 className="btn-go-payment"
                 onClick={previousStep}
               >
-                <ArrowLeft size={18} />
+                <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
                 Volver al Pago
               </button>
             )}
@@ -352,7 +353,7 @@ const ExportForm = () => {
           <div className="export-options">
             <div className="export-card">
               <div className="card-header">
-                <FileText size={24} />
+                <HugeiconsIcon icon={FileIcon} size={24} />
                 <h3>Descargar PDF</h3>
               </div>
               <p>Descarga tu curriculum en formato PDF de alta calidad, listo para enviar a empleadores.</p>
@@ -360,7 +361,7 @@ const ExportForm = () => {
               {/* Page Size Selector */}
               <div className="page-size-selector-export">
                 <label>
-                  <FileType size={16} />
+                  <HugeiconsIcon icon={FileIcon} size={16} />
                   Tamaño de página:
                 </label>
                 <div className="page-size-buttons">
@@ -383,15 +384,15 @@ const ExportForm = () => {
 
               <div className="export-details">
                 <div className="detail-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>Formato {pageSize === 'a4' ? 'A4' : 'Carta'} profesional</span>
                 </div>
                 <div className="detail-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>{isPaid ? 'Sin marca de agua' : 'Con marca de agua (demo)'}</span>
                 </div>
                 <div className="detail-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>Optimizado para ATS</span>
                 </div>
               </div>
@@ -403,17 +404,17 @@ const ExportForm = () => {
               >
                 {isExporting ? (
                   <>
-                    <Clock size={18} className="spinning" />
+                    <HugeiconsIcon icon={ClockIcon} size={18} className="spinning" />
                     Generando PDF...
                   </>
                 ) : exportComplete ? (
                   <>
-                    <CheckCircle size={18} />
+                    <HugeiconsIcon icon={CheckmarkCircleIcon} size={18} />
                     ¡Descargado!
                   </>
                 ) : (
                   <>
-                    <Download size={18} />
+                    <HugeiconsIcon icon={DownloadIcon} size={18} />
                     {isPaid ? 'Descargar PDF' : 'Pago requerido'}
                   </>
                 )}
@@ -424,18 +425,18 @@ const ExportForm = () => {
             <div className="export-card coming-soon-card">
               <div className="coming-soon-badge">Proximamente</div>
               <div className="card-header">
-                <Share2 size={24} />
+                <HugeiconsIcon icon={ShareIcon} size={24} />
                 <h3>Compartir</h3>
               </div>
               <p>Comparte tu curriculum con un enlace unico o envialo por email directamente.</p>
 
               <div className="share-buttons">
                 <button className="btn-share" onClick={handleCopyLink} disabled>
-                  <Copy size={16} />
+                  <HugeiconsIcon icon={CopyIcon} size={16} />
                   Copiar Enlace
                 </button>
                 <button className="btn-share" onClick={handleEmailCV} disabled>
-                  <Mail size={16} />
+                  <HugeiconsIcon icon={MailIcon} size={16} />
                   Enviar por Email
                 </button>
               </div>
@@ -479,7 +480,7 @@ const ExportForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             <span>Volver al Dashboard</span>
           </button>
 
@@ -489,7 +490,7 @@ const ExportForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               <span>Anterior</span>
             </button>
             <button
@@ -500,12 +501,12 @@ const ExportForm = () => {
             >
               {isFinalizing ? (
                 <>
-                  <Clock size={18} className="spinning" />
+                  <HugeiconsIcon icon={ClockIcon} size={18} className="spinning" />
                   <span>Guardando...</span>
                 </>
               ) : (
                 <>
-                  <Check size={18} />
+                  <HugeiconsIcon icon={TickIcon} size={18} />
                   <span>Finalizar</span>
                 </>
               )}

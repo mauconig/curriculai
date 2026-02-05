@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Image, ImageOff, ScanSearch } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowLeftIcon, ArrowRightIcon, ImageIcon, ImageNotFoundIcon, SearchAreaIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -101,6 +102,7 @@ const TemplateForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -108,20 +110,24 @@ const TemplateForm = () => {
 
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
-  // Load existing template selection
+  // Load existing template selection (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.template) {
       setSelectedTemplate(resumeData.template);
     }
-  }, []);
+    setInitialized(true);
+  }, [dataLoaded]);
 
-  // Auto-save when template changes
+  // Auto-save when template changes (solo después de inicializar)
   useEffect(() => {
-    if (selectedTemplate) {
+    if (selectedTemplate && initialized) {
       updateResumeData('template', selectedTemplate);
     }
-  }, [selectedTemplate]);
+  }, [selectedTemplate, initialized]);
 
   const handleSelectTemplate = (templateId) => {
     setSelectedTemplate(templateId);
@@ -176,7 +182,7 @@ const TemplateForm = () => {
         {/* Templates with Photo */}
         <div className="template-category">
           <div className="category-header">
-            <Image size={20} className="category-icon" />
+            <HugeiconsIcon icon={ImageIcon} size={20} className="category-icon" />
             <h2>Con foto de perfil</h2>
           </div>
           <div className="templates-grid">
@@ -194,7 +200,7 @@ const TemplateForm = () => {
         {/* Templates without Photo */}
         <div className="template-category">
           <div className="category-header">
-            <ImageOff size={20} className="category-icon" />
+            <HugeiconsIcon icon={ImageNotFoundIcon} size={20} className="category-icon" />
             <h2>Sin foto de perfil</h2>
           </div>
           <div className="templates-grid">
@@ -212,7 +218,7 @@ const TemplateForm = () => {
         {/* ATS Optimized Templates */}
         <div className="template-category">
           <div className="category-header">
-            <ScanSearch size={20} className="category-icon" />
+            <HugeiconsIcon icon={SearchAreaIcon} size={20} className="category-icon" />
             <h2>Optimizados para ATS</h2>
             <span className="category-badge">Recomendado</span>
           </div>
@@ -238,7 +244,7 @@ const TemplateForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -252,7 +258,7 @@ const TemplateForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -262,7 +268,7 @@ const TemplateForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

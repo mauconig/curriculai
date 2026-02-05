@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Plus, ArrowLeft, ArrowRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AddIcon, ArrowLeftIcon, ArrowRightIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -20,6 +21,7 @@ const EducationForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -27,23 +29,37 @@ const EducationForm = () => {
 
   const [educations, setEducations] = useState([]);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
-  // Cargar educaciones existentes
+  // Cargar educaciones existentes (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.education && resumeData.education.length > 0) {
       setEducations(resumeData.education);
     } else {
-      // Crear una educación vacía por defecto
-      addEducation();
+      // Solo crear educación vacía si es la primera vez y no hay datos
+      const newEducation = {
+        id: nanoid(),
+        institution: '',
+        degree: '',
+        field: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        description: ''
+      };
+      setEducations([newEducation]);
     }
-  }, []);
+    setInitialized(true);
+  }, [dataLoaded]);
 
-  // Auto-guardar cuando cambian las educaciones
+  // Auto-guardar cuando cambian las educaciones (solo después de inicializar)
   useEffect(() => {
-    if (educations.length > 0) {
+    if (educations.length > 0 && initialized) {
       updateResumeData('education', educations);
     }
-  }, [educations]);
+  }, [educations, initialized]);
 
   const addEducation = () => {
     const newEducation = {
@@ -173,7 +189,7 @@ const EducationForm = () => {
         </div>
 
         <button className="add-education-btn" onClick={addEducation}>
-          <Plus size={20} />
+          <HugeiconsIcon icon={AddIcon} size={20} />
           Añadir otra educación
         </button>
 
@@ -184,7 +200,7 @@ const EducationForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -198,7 +214,7 @@ const EducationForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -208,7 +224,7 @@ const EducationForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

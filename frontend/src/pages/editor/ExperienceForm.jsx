@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Plus, ArrowLeft, ArrowRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AddIcon, ArrowLeftIcon, ArrowRightIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -20,6 +21,7 @@ const ExperienceForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -27,20 +29,34 @@ const ExperienceForm = () => {
 
   const [experiences, setExperiences] = useState([]);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [initialized, setInitialized] = useState(false);
 
-  // Cargar experiencias existentes
+  // Cargar experiencias existentes (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.experience && resumeData.experience.length > 0) {
       setExperiences(resumeData.experience);
     } else {
-      // Crear una experiencia vacía por defecto
-      addExperience();
+      // Crear experiencia vacía si no hay datos
+      const newExperience = {
+        id: nanoid(),
+        company: '',
+        position: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        description: ''
+      };
+      setExperiences([newExperience]);
     }
-  }, []);
+    setInitialized(true);
+  }, [dataLoaded]);
 
-  // Auto-guardar cuando cambian las experiencias
+  // Auto-guardar cuando cambian las experiencias (solo después de inicializar)
   useEffect(() => {
-    if (experiences.length > 0) {
+    if (experiences.length > 0 && initialized) {
       updateResumeData('experience', experiences);
     }
   }, [experiences]);
@@ -173,7 +189,7 @@ const ExperienceForm = () => {
         </div>
 
         <button className="add-experience-btn" onClick={addExperience}>
-          <Plus size={20} />
+          <HugeiconsIcon icon={AddIcon} size={20} />
           Añadir otra experiencia
         </button>
 
@@ -184,7 +200,7 @@ const ExperienceForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -198,7 +214,7 @@ const ExperienceForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -208,7 +224,7 @@ const ExperienceForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

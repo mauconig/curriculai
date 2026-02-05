@@ -1,7 +1,8 @@
 import { forwardRef } from 'react';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { es } from 'date-fns/locale';
-import { Calendar } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { CalendarIcon } from '@hugeicons/core-free-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import 'react-datepicker/dist/react-datepicker.css';
 import './CustomDatePicker.css';
@@ -17,7 +18,7 @@ const CustomInput = forwardRef(({ value, onClick, placeholder, disabled }, ref) 
       readOnly
       disabled={disabled}
     />
-    <Calendar size={18} className="calendar-icon" />
+    <HugeiconsIcon icon={CalendarIcon} size={18} className="calendar-icon" />
   </div>
 ));
 

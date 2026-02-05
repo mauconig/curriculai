@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft, ArrowRight, FileText, Plus, FolderKanban, Award,
-  BookOpen, Users, GraduationCap, UserCheck, X, Trash2, ChevronDown, ChevronUp,
-  Upload, Image
-} from 'lucide-react';
+  ArrowLeftIcon, ArrowRightIcon, FileIcon, AddIcon, FolderIcon, AwardIcon,
+  BookIcon, UserGroupIcon, MortarboardIcon, UserCheckIcon, CancelIcon, DeleteIcon, ArrowDownIcon, ArrowUpIcon,
+  UploadIcon, ImageIcon
+} from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -26,42 +27,42 @@ const ADDITIONAL_SECTIONS = [
   {
     id: 'projects',
     name: 'Proyectos',
-    icon: FolderKanban,
+    icon: FolderIcon,
     description: 'Proyectos personales o profesionales destacados',
     fields: ['name', 'description', 'technologies', 'link']
   },
   {
     id: 'certifications',
     name: 'Certificaciones',
-    icon: Award,
+    icon: AwardIcon,
     description: 'Certificaciones profesionales obtenidas',
     fields: ['name', 'issuer', 'date', 'credentialId']
   },
   {
     id: 'coursework',
     name: 'Cursos',
-    icon: BookOpen,
+    icon: BookIcon,
     description: 'Cursos relevantes completados',
     fields: ['name', 'institution', 'date']
   },
   {
     id: 'involvement',
     name: 'Voluntariado / Actividades',
-    icon: Users,
+    icon: UserGroupIcon,
     description: 'Participación en organizaciones o causas sociales',
     fields: ['organization', 'role', 'description', 'dates']
   },
   {
     id: 'academic',
     name: 'Premios y Honores',
-    icon: GraduationCap,
+    icon: MortarboardIcon,
     description: 'Reconocimientos académicos o profesionales',
     fields: ['name', 'issuer', 'date', 'description']
   },
   {
     id: 'references',
     name: 'Referencias',
-    icon: UserCheck,
+    icon: UserCheckIcon,
     description: 'Contactos profesionales que pueden dar referencias',
     fields: ['name', 'position', 'company', 'email', 'phone']
   }
@@ -76,6 +77,7 @@ const SummaryForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -88,10 +90,13 @@ const SummaryForm = () => {
   const [additionalSections, setAdditionalSections] = useState([]);
   const [expandedSections, setExpandedSections] = useState({});
   const [uploadingPhoto, setUploadingPhoto] = useState({});
+  const [initialized, setInitialized] = useState(false);
   const addMenuRef = useRef(null);
 
-  // Load existing data
+  // Load existing data (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.summary) {
       setSummary(resumeData.summary);
     }
@@ -104,7 +109,8 @@ const SummaryForm = () => {
       });
       setExpandedSections(expanded);
     }
-  }, []);
+    setInitialized(true);
+  }, [dataLoaded]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -117,8 +123,10 @@ const SummaryForm = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Auto-save when summary changes
+  // Auto-save when summary changes (solo después de inicializar)
   useEffect(() => {
+    if (!initialized) return;
+
     const timer = setTimeout(() => {
       if (summary) {
         updateResumeData('summary', summary);
@@ -126,16 +134,18 @@ const SummaryForm = () => {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [summary]);
+  }, [summary, initialized]);
 
-  // Auto-save when additional sections change
+  // Auto-save when additional sections change (solo después de inicializar)
   useEffect(() => {
+    if (!initialized) return;
+
     const timer = setTimeout(() => {
       updateResumeData('additionalSections', additionalSections);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [additionalSections]);
+  }, [additionalSections, initialized]);
 
   const handleSummaryChange = (e) => {
     const value = e.target.value;
@@ -341,7 +351,7 @@ const SummaryForm = () => {
               onClick={() => handleRemovePhoto(section.instanceId, item.id)}
               title="Eliminar imagen"
             >
-              <X size={14} />
+              <HugeiconsIcon icon={CancelIcon} size={14} />
             </button>
           </div>
         ) : (
@@ -358,8 +368,8 @@ const SummaryForm = () => {
                 <span>Subiendo...</span>
               ) : (
                 <>
-                  <Image size={20} />
-                  <Upload size={14} className="upload-icon-small" />
+                  <HugeiconsIcon icon={ImageIcon} size={20} />
+                  <HugeiconsIcon icon={UploadIcon} size={14} className="upload-icon-small" />
                   <span>Subir imagen</span>
                 </>
               )}
@@ -723,7 +733,7 @@ const SummaryForm = () => {
 
         <div className="summary-card">
           <div className="summary-card-header">
-            <FileText size={20} className="summary-icon" />
+            <HugeiconsIcon icon={FileIcon} size={20} className="summary-icon" />
             <span>Tu resumen profesional</span>
           </div>
 
@@ -790,7 +800,7 @@ const SummaryForm = () => {
                 onClick={() => toggleSectionExpanded(section.instanceId)}
               >
                 <div className="section-card-title">
-                  <IconComponent size={20} className="section-icon" />
+                  <HugeiconsIcon icon={IconComponent} size={20} className="section-icon" />
                   <span>{config.name}</span>
                   <span className="section-count">({section.items.length})</span>
                 </div>
@@ -804,10 +814,10 @@ const SummaryForm = () => {
                     }}
                     title="Eliminar sección"
                   >
-                    <Trash2 size={16} />
+                    <HugeiconsIcon icon={DeleteIcon} size={16} />
                   </button>
                   <button type="button" className="toggle-section-btn">
-                    {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                    {isExpanded ? <HugeiconsIcon icon={ArrowUpIcon} size={20} /> : <HugeiconsIcon icon={ArrowDownIcon} size={20} />}
                   </button>
                 </div>
               </div>
@@ -824,7 +834,7 @@ const SummaryForm = () => {
                             className="remove-item-btn"
                             onClick={() => handleRemoveItemFromSection(section.instanceId, item.id)}
                           >
-                            <X size={14} />
+                            <HugeiconsIcon icon={CancelIcon} size={14} />
                           </button>
                         )}
                       </div>
@@ -839,7 +849,7 @@ const SummaryForm = () => {
                     className="add-item-btn"
                     onClick={() => handleAddItemToSection(section.instanceId)}
                   >
-                    <Plus size={16} />
+                    <HugeiconsIcon icon={AddIcon} size={16} />
                     Añadir otro {config.name.toLowerCase().replace(/s$/, '')}
                   </button>
                 </div>
@@ -856,7 +866,7 @@ const SummaryForm = () => {
               className="add-section-btn"
               onClick={() => setShowAddSectionMenu(!showAddSectionMenu)}
             >
-              <Plus size={24} />
+              <HugeiconsIcon icon={AddIcon} size={24} />
               <span>Añadir Sección</span>
             </button>
 
@@ -869,7 +879,7 @@ const SummaryForm = () => {
                     className="close-menu-btn"
                     onClick={() => setShowAddSectionMenu(false)}
                   >
-                    <X size={16} />
+                    <HugeiconsIcon icon={CancelIcon} size={16} />
                   </button>
                 </div>
                 <div className="add-section-menu-items">
@@ -882,7 +892,7 @@ const SummaryForm = () => {
                         className="section-option"
                         onClick={() => handleAddSection(sectionType.id)}
                       >
-                        <IconComponent size={20} className="section-option-icon" />
+                        <HugeiconsIcon icon={IconComponent} size={20} className="section-option-icon" />
                         <div className="section-option-info">
                           <span className="section-option-name">{sectionType.name}</span>
                           <span className="section-option-desc">{sectionType.description}</span>
@@ -903,7 +913,7 @@ const SummaryForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -917,7 +927,7 @@ const SummaryForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -927,7 +937,7 @@ const SummaryForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

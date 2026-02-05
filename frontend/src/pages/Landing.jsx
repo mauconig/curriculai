@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Sparkles, Download, Layout, CheckCircle, ArrowRight, Moon, Sun } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { FileIcon, StarsIcon, DownloadIcon, LayoutIcon, CheckmarkCircleIcon, ArrowRightIcon, MoonIcon, SunIcon } from '@hugeicons/core-free-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import './Landing.css';
 
@@ -11,22 +12,22 @@ const Landing = () => {
 
   const features = [
     {
-      icon: <FileText size={32} />,
+      icon: <HugeiconsIcon icon={FileIcon} size={32} />,
       title: 'Editor Intuitivo',
       description: 'Crea tu currículum con formularios fáciles de usar. Auto-guardado en tiempo real.'
     },
     {
-      icon: <Sparkles size={32} />,
+      icon: <HugeiconsIcon icon={StarsIcon} size={32} />,
       title: 'Mejoras con IA',
       description: 'Obtén sugerencias inteligentes para mejorar cada sección de tu currículum.'
     },
     {
-      icon: <Layout size={32} />,
+      icon: <HugeiconsIcon icon={LayoutIcon} size={32} />,
       title: 'Múltiples Plantillas',
       description: 'Elige entre diseños modernos, clásicos o minimalistas según tu sector.'
     },
     {
-      icon: <Download size={32} />,
+      icon: <HugeiconsIcon icon={DownloadIcon} size={32} />,
       title: 'Exporta a PDF',
       description: 'Descarga tu currículum en formato PDF profesional con un solo click.'
     }
@@ -67,7 +68,7 @@ const Landing = () => {
       <header className="landing-header">
         <div className="container">
           <div className="logo">
-            <FileText size={28} />
+            <HugeiconsIcon icon={FileIcon} size={28} />
             <span>CurriculAI</span>
           </div>
           <div className="header-actions">
@@ -76,7 +77,7 @@ const Landing = () => {
               onClick={toggleTheme}
               aria-label="Toggle theme"
             >
-              {isDark ? <Sun size={20} /> : <Moon size={20} />}
+              {isDark ? <HugeiconsIcon icon={SunIcon} size={20} /> : <HugeiconsIcon icon={MoonIcon} size={20} />}
             </button>
             <button className="btn-primary" onClick={() => navigate('/login')}>
               Empezar Gratis
@@ -102,7 +103,7 @@ const Landing = () => {
                 className="btn-primary btn-large"
                 onClick={() => navigate('/login')}
               >
-                <Sparkles size={20} />
+                <HugeiconsIcon icon={StarsIcon} size={20} />
                 Empezar Ahora
               </button>
               <p className="cta-note">
@@ -201,23 +202,23 @@ const Landing = () => {
             </div>
             <div className="pricing-features">
               <div className="pricing-feature">
-                <CheckCircle size={20} className="check-icon-small" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Acceso completo al editor</span>
               </div>
               <div className="pricing-feature">
-                <CheckCircle size={20} className="check-icon-small" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Sugerencias ilimitadas con IA</span>
               </div>
               <div className="pricing-feature">
-                <CheckCircle size={20} className="check-icon-small" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Todas las plantillas disponibles</span>
               </div>
               <div className="pricing-feature">
-                <CheckCircle size={20} className="check-icon-small" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Exportación a PDF de alta calidad</span>
               </div>
               <div className="pricing-feature">
-                <CheckCircle size={20} className="check-icon-small" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Guardado en la nube</span>
               </div>
             </div>
@@ -241,7 +242,7 @@ const Landing = () => {
           <div className="benefits-list">
             {benefits.map((benefit, index) => (
               <div key={index} className="benefit-item">
-                <CheckCircle size={24} className="check-icon" />
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={24} className="check-icon" />
                 <span>{benefit}</span>
               </div>
             ))}
@@ -260,7 +261,7 @@ const Landing = () => {
               onClick={() => navigate('/login')}
             >
               Empezar Gratis
-              <ArrowRight size={20} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={20} />
             </button>
           </div>
         </div>
@@ -271,7 +272,7 @@ const Landing = () => {
         <div className="container">
           <div className="footer-content">
             <div className="footer-brand">
-              <FileText size={24} />
+              <HugeiconsIcon icon={FileIcon} size={24} />
               <span>CurriculAI</span>
             </div>
             <p className="footer-text">

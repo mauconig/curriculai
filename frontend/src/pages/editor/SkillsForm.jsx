@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Plus, ArrowLeft, ArrowRight } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AddIcon, ArrowLeftIcon, ArrowRightIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -19,6 +20,7 @@ const SkillsForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -29,27 +31,31 @@ const SkillsForm = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [initialized, setInitialized] = useState(false);
 
-  // Cargar habilidades existentes
+  // Cargar habilidades existentes (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.skills && resumeData.skills.length > 0) {
       setSkillGroups(resumeData.skills);
     } else {
-      // Crear categorías por defecto
+      // Solo crear categorías por defecto si es la primera vez y no hay datos
       const defaultGroups = SKILL_CATEGORIES.slice(0, 3).map(cat => ({
         category: cat,
         skills: []
       }));
       setSkillGroups(defaultGroups);
     }
-  }, []);
+    setInitialized(true);
+  }, [dataLoaded]);
 
-  // Auto-guardar cuando cambian las habilidades
+  // Auto-guardar cuando cambian las habilidades (solo después de inicializar)
   useEffect(() => {
-    if (skillGroups.length > 0) {
+    if (skillGroups.length > 0 && initialized) {
       updateResumeData('skills', skillGroups);
     }
-  }, [skillGroups]);
+  }, [skillGroups, initialized]);
 
   const addSkillToCategory = (category, skill) => {
     setSkillGroups(prev => prev.map(group => {
@@ -231,7 +237,7 @@ const SkillsForm = () => {
           </div>
         ) : (
           <button className="add-category-btn" onClick={() => setShowAddCategory(true)}>
-            <Plus size={20} />
+            <HugeiconsIcon icon={AddIcon} size={20} />
             Añadir otra categoría
           </button>
         )}
@@ -243,7 +249,7 @@ const SkillsForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -257,7 +263,7 @@ const SkillsForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -267,7 +273,7 @@ const SkillsForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

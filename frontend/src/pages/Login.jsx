@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { FileText, ArrowLeft } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { FileIcon, ArrowLeftIcon } from '@hugeicons/core-free-icons';
 import authService from '../services/authService';
 import './Login.css';
 
@@ -14,13 +15,13 @@ const Login = () => {
   return (
     <div className="login-page">
       <button className="back-button" onClick={() => navigate('/')}>
-        <ArrowLeft size={20} />
+        <HugeiconsIcon icon={ArrowLeftIcon} size={20} />
         <span>Volver</span>
       </button>
       <div className="login-container">
         <div className="login-header">
           <div className="login-logo">
-            <FileText size={48} />
+            <HugeiconsIcon icon={FileIcon} size={48} />
           </div>
           <h1>CurriculAI</h1>
           <p>Inicia sesión para crear tu currículum profesional</p>

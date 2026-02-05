@@ -23,9 +23,12 @@ export const useResumeWizard = (initialStep = 1, resumeId = null) => {
     skills: [],
     summary: ''
   });
-  const [loading, setLoading] = useState(false);
+  // Si hay resumeId, empezamos en loading=true hasta que se carguen los datos
+  const [loading, setLoading] = useState(!!resumeId);
   const [saving, setSaving] = useState(false);
   const [currentResumeId, setCurrentResumeId] = useState(resumeId);
+  // Flag para saber si los datos ya fueron cargados (evita auto-guardar antes de cargar)
+  const [dataLoaded, setDataLoaded] = useState(!resumeId);
 
   // Cargar CV existente si hay resumeId
   useEffect(() => {
@@ -37,6 +40,7 @@ export const useResumeWizard = (initialStep = 1, resumeId = null) => {
   const loadResume = async (id) => {
     try {
       setLoading(true);
+      setDataLoaded(false);
       const resume = await resumeService.getResume(id);
       if (resume && resume.data) {
         // resume.data ya viene parseado desde el backend
@@ -48,19 +52,20 @@ export const useResumeWizard = (initialStep = 1, resumeId = null) => {
       console.error('Error al cargar currículum:', error);
     } finally {
       setLoading(false);
+      setDataLoaded(true);
     }
   };
 
-  // Auto-guardar con debounce
+  // Auto-guardar con debounce (solo después de que los datos se hayan cargado)
   useEffect(() => {
-    if (!currentResumeId) return;
+    if (!currentResumeId || !dataLoaded) return;
 
     const timer = setTimeout(() => {
       saveProgress();
     }, 1000); // Auto-guardar cada 1 segundo
 
     return () => clearTimeout(timer);
-  }, [resumeData, currentResumeId]);
+  }, [resumeData, currentResumeId, dataLoaded]);
 
   const saveProgress = async () => {
     if (!currentResumeId) return;
@@ -142,6 +147,7 @@ export const useResumeWizard = (initialStep = 1, resumeId = null) => {
     resumeData,
     loading,
     saving,
+    dataLoaded,
     currentResumeId,
     updateResumeData,
     nextStep,

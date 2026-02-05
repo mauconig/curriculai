@@ -1,4 +1,5 @@
-import { AlertTriangle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { AlertIcon } from '@hugeicons/core-free-icons';
 import './ConfirmModal.css';
 
 const ConfirmModal = ({
@@ -17,7 +18,7 @@ const ConfirmModal = ({
     <div className="confirm-modal-overlay" onClick={onCancel}>
       <div className="confirm-modal" onClick={(e) => e.stopPropagation()}>
         <div className={`confirm-modal-icon ${variant}`}>
-          <AlertTriangle size={32} />
+          <HugeiconsIcon icon={AlertIcon} size={32} />
         </div>
 
         <div className="confirm-modal-content">

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { DeleteIcon, ArrowDownIcon, ArrowUpIcon } from '@hugeicons/core-free-icons';
 import CustomDatePicker from '../common/CustomDatePicker';
 import { FORM_LABELS, FORM_PLACEHOLDERS } from '../../utils/constants';
 import './EducationItem.css';
@@ -52,11 +53,11 @@ const EducationItem = ({ education, index, onUpdate, onRemove, canRemove }) => {
               }}
               title="Eliminar educación"
             >
-              <Trash2 size={16} />
+              <HugeiconsIcon icon={DeleteIcon} size={16} />
             </button>
           )}
           <button type="button" className="toggle-btn">
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            {isExpanded ? <HugeiconsIcon icon={ArrowUpIcon} size={20} /> : <HugeiconsIcon icon={ArrowDownIcon} size={20} />}
           </button>
         </div>
       </div>

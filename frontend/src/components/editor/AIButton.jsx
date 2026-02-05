@@ -1,4 +1,5 @@
-import { Sparkles, Loader2 } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { StarsIcon, LoadingIcon } from '@hugeicons/core-free-icons';
 import './AIButton.css';
 
 const AIButton = ({ onClick, loading = false, children = 'Mejorar con IA', disabled = false, variant = 'primary' }) => {
@@ -10,12 +11,12 @@ const AIButton = ({ onClick, loading = false, children = 'Mejorar con IA', disab
     >
       {loading ? (
         <>
-          <Loader2 size={16} className="ai-button-icon spinning" />
+          <HugeiconsIcon icon={LoadingIcon} size={16} className="ai-button-icon spinning" />
           <span>Generando...</span>
         </>
       ) : (
         <>
-          <Sparkles size={16} className="ai-button-icon" />
+          <HugeiconsIcon icon={StarsIcon} size={16} className="ai-button-icon" />
           <span>{children}</span>
         </>
       )}

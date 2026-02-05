@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Upload, X, User, ArrowLeft, Linkedin, Globe } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { UploadIcon, CancelIcon, UserIcon, ArrowLeftIcon, LinkedinIcon, GlobeIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ImageCropModal from '../../components/editor/ImageCropModal';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -20,6 +21,7 @@ const ContactForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     currentResumeId,
@@ -44,15 +46,20 @@ const ContactForm = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Cargar datos existentes
+  const [initialized, setInitialized] = useState(false);
+
+  // Cargar datos existentes (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+
     if (resumeData.personalInfo) {
       setFormData(resumeData.personalInfo);
       if (resumeData.personalInfo.photo) {
         setPhotoPreview(resumeData.personalInfo.photo);
       }
     }
-  }, [resumeData]);
+    setInitialized(true);
+  }, [dataLoaded]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -259,7 +266,7 @@ const ContactForm = () => {
                     onClick={handleRemovePhoto}
                     title={BUTTON_LABELS.removePhoto}
                   >
-                    <X size={16} />
+                    <HugeiconsIcon icon={CancelIcon} size={16} />
                   </button>
                 </div>
               ) : (
@@ -276,8 +283,8 @@ const ContactForm = () => {
                       <span>Subiendo...</span>
                     ) : (
                       <>
-                        <User size={32} />
-                        <Upload size={16} className="upload-icon" />
+                        <HugeiconsIcon icon={UserIcon} size={32} />
+                        <HugeiconsIcon icon={UploadIcon} size={16} className="upload-icon" />
                         <span>{BUTTON_LABELS.uploadPhoto}</span>
                       </>
                     )}
@@ -372,7 +379,7 @@ const ContactForm = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="linkedin">
-                <Linkedin size={16} className="label-icon" />
+                <HugeiconsIcon icon={LinkedinIcon} size={16} className="label-icon" />
                 {FORM_LABELS.linkedin}
               </label>
               <div className="input-with-prefix">
@@ -391,7 +398,7 @@ const ContactForm = () => {
 
             <div className="form-group">
               <label htmlFor="website">
-                <Globe size={16} className="label-icon" />
+                <HugeiconsIcon icon={GlobeIcon} size={16} className="label-icon" />
                 {FORM_LABELS.website}
               </label>
               <div className="input-with-prefix">
@@ -418,7 +425,7 @@ const ContactForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 

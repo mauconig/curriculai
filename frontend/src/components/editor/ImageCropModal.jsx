@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import Cropper from 'react-easy-crop';
-import { X, Check } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { CancelIcon, TickIcon } from '@hugeicons/core-free-icons';
 import './ImageCropModal.css';
 
 const ImageCropModal = ({ image, onCropComplete, onCancel }) => {
@@ -35,7 +36,7 @@ const ImageCropModal = ({ image, onCropComplete, onCancel }) => {
         <div className="crop-modal-header">
           <h3>Recortar Foto</h3>
           <button className="crop-modal-close" onClick={onCancel}>
-            <X size={20} />
+            <HugeiconsIcon icon={CancelIcon} size={20} />
           </button>
         </div>
 
@@ -73,7 +74,7 @@ const ImageCropModal = ({ image, onCropComplete, onCancel }) => {
             Cancelar
           </button>
           <button className="btn-confirm" onClick={handleConfirm}>
-            <Check size={16} />
+            <HugeiconsIcon icon={TickIcon} size={16} />
             Confirmar
           </button>
         </div>

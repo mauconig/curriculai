@@ -1,4 +1,5 @@
-import { Moon, Sun } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { MoonIcon, SunIcon } from '@hugeicons/core-free-icons';
 import { useTheme } from '../../contexts/ThemeContext';
 import './ThemeToggle.css';
 
@@ -11,7 +12,7 @@ const ThemeToggle = () => {
       className="theme-toggle-btn"
       aria-label="Cambiar tema"
     >
-      {isDark ? <Sun size={20} /> : <Moon size={20} />}
+      {isDark ? <HugeiconsIcon icon={SunIcon} size={20} /> : <HugeiconsIcon icon={MoonIcon} size={20} />}
     </button>
   );
 };

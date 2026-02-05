@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft, ArrowRight, Edit3, X, User, Briefcase, GraduationCap,
-  Wrench, FileText, ChevronDown, ChevronUp, Save, Eye, EyeOff, FileType
-} from 'lucide-react';
+  ArrowLeftIcon, ArrowRightIcon, EditIcon, CancelIcon, UserIcon, BriefcaseIcon, MortarboardIcon,
+  ToolsIcon, FileIcon, ArrowDownIcon, ArrowUpIcon, ViewOffIcon
+} from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -14,11 +15,11 @@ import toast from 'react-hot-toast';
 import './PreviewForm.css';
 
 const EDIT_SECTIONS = [
-  { id: 'personalInfo', name: 'Información Personal', icon: User },
-  { id: 'summary', name: 'Resumen Profesional', icon: FileText },
-  { id: 'experience', name: 'Experiencia', icon: Briefcase },
-  { id: 'education', name: 'Educación', icon: GraduationCap },
-  { id: 'skills', name: 'Habilidades', icon: Wrench }
+  { id: 'personalInfo', name: 'Información Personal', icon: UserIcon },
+  { id: 'summary', name: 'Resumen Profesional', icon: FileIcon },
+  { id: 'experience', name: 'Experiencia', icon: BriefcaseIcon },
+  { id: 'education', name: 'Educación', icon: MortarboardIcon },
+  { id: 'skills', name: 'Habilidades', icon: ToolsIcon }
 ];
 
 const PreviewForm = () => {
@@ -30,6 +31,7 @@ const PreviewForm = () => {
     currentStep,
     resumeData,
     saving,
+    dataLoaded,
     updateResumeData,
     nextStep,
     previousStep
@@ -41,11 +43,14 @@ const PreviewForm = () => {
   const [expandedSections, setExpandedSections] = useState({});
   const [localData, setLocalData] = useState({});
   const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
+  const [initialized, setInitialized] = useState(false);
 
-  // Sync local data with resumeData
+  // Sync local data with resumeData (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
+    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
     setLocalData(resumeData);
-  }, [resumeData]);
+    setInitialized(true);
+  }, [dataLoaded]);
 
   const handleOpenEdit = (sectionId) => {
     setEditingSection(sectionId);
@@ -393,7 +398,7 @@ const PreviewForm = () => {
           </div>
           <div className="header-actions">
             <div className="page-size-selector">
-              <FileType size={16} />
+              <HugeiconsIcon icon={FileIcon} size={16} />
               <button
                 className={`size-btn ${pageSize === 'a4' ? 'active' : ''}`}
                 onClick={() => setPageSize('a4')}
@@ -411,7 +416,7 @@ const PreviewForm = () => {
               className={`toggle-edit-btn ${showEditPanel ? 'active' : ''}`}
               onClick={() => setShowEditPanel(!showEditPanel)}
             >
-              {showEditPanel ? <EyeOff size={18} /> : <Edit3 size={18} />}
+              {showEditPanel ? <HugeiconsIcon icon={ViewOffIcon} size={18} /> : <HugeiconsIcon icon={EditIcon} size={18} />}
               {showEditPanel ? 'Ocultar Editor' : 'Edición Rápida'}
             </button>
             <ThemeToggle />
@@ -435,7 +440,7 @@ const PreviewForm = () => {
               <div className="quick-edit-header">
                 <h3>Edición Rápida</h3>
                 <button className="close-panel-btn" onClick={handleCloseEdit}>
-                  <X size={18} />
+                  <HugeiconsIcon icon={CancelIcon} size={18} />
                 </button>
               </div>
 
@@ -458,10 +463,10 @@ const PreviewForm = () => {
                         }}
                       >
                         <div className="section-title">
-                          <Icon size={16} />
+                          <HugeiconsIcon icon={Icon} size={16} />
                           <span>{section.name}</span>
                         </div>
-                        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        {isExpanded ? <HugeiconsIcon icon={ArrowUpIcon} size={16} /> : <HugeiconsIcon icon={ArrowDownIcon} size={16} />}
                       </button>
 
                       {isExpanded && (
@@ -494,7 +499,7 @@ const PreviewForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             Volver al Dashboard
           </button>
 
@@ -508,7 +513,7 @@ const PreviewForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               Anterior
             </button>
 
@@ -518,7 +523,7 @@ const PreviewForm = () => {
               onClick={handleNext}
             >
               {BUTTON_LABELS.next}
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>

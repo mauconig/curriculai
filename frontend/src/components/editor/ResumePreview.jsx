@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
-import { Mail, Phone, MapPin, Globe, Linkedin } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { MailIcon, SmartPhoneIcon, LocationIcon, GlobeIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
 import './ResumePreview.css';
 
 /**
@@ -150,31 +151,31 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     <div className="preview-contact-info">
       {personalInfo.email && (
         <span className="contact-item">
-          <Mail size={10} />
+          <HugeiconsIcon icon={MailIcon} size={10} />
           {personalInfo.email}
         </span>
       )}
       {personalInfo.phone && (
         <span className="contact-item">
-          <Phone size={10} />
+          <HugeiconsIcon icon={SmartPhoneIcon} size={10} />
           {personalInfo.phone}
         </span>
       )}
       {personalInfo.location && (
         <span className="contact-item">
-          <MapPin size={10} />
+          <HugeiconsIcon icon={LocationIcon} size={10} />
           {personalInfo.location}
         </span>
       )}
       {personalInfo.linkedin && (
         <span className="contact-item">
-          <Linkedin size={10} />
+          <HugeiconsIcon icon={LinkedinIcon} size={10} />
           {personalInfo.linkedin}
         </span>
       )}
       {personalInfo.website && (
         <span className="contact-item">
-          <Globe size={10} />
+          <HugeiconsIcon icon={GlobeIcon} size={10} />
           {personalInfo.website}
         </span>
       )}

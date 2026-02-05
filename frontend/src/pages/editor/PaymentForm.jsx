@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  ArrowLeft, ArrowRight, CreditCard, Shield, Lock, Check, Clock, FileText
-} from 'lucide-react';
+  ArrowLeftIcon, ArrowRightIcon, CreditCardIcon, ShieldIcon, LockIcon, TickIcon, ClockIcon, FileIcon
+} from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -10,8 +11,8 @@ import { useResumeWizard } from '../../hooks/useResumeWizard';
 import './PaymentForm.css';
 
 const PAYMENT_METHODS = [
-  { id: 'card', name: 'Tarjeta de Credito/Debito', icon: CreditCard },
-  { id: 'paypal', name: 'PayPal', icon: Shield }
+  { id: 'card', name: 'Tarjeta de Credito/Debito', hugeicon: CreditCardIcon },
+  { id: 'paypal', name: 'PayPal', hugeicon: ShieldIcon }
 ];
 
 const PaymentForm = () => {
@@ -138,7 +139,6 @@ const PaymentForm = () => {
 
               <div className="payment-methods">
                 {PAYMENT_METHODS.map((method) => {
-                  const Icon = method.icon;
                   return (
                     <label
                       key={method.id}
@@ -151,7 +151,7 @@ const PaymentForm = () => {
                         checked={selectedPayment === method.id}
                         onChange={() => setSelectedPayment(method.id)}
                       />
-                      <Icon size={20} />
+                      <HugeiconsIcon icon={method.hugeicon} size={20} />
                       <span>{method.name}</span>
                     </label>
                   );
@@ -162,7 +162,7 @@ const PaymentForm = () => {
               <div className="card-form-wrapper">
                 <div className="coming-soon-overlay">
                   <div className="coming-soon-content">
-                    <Clock size={32} />
+                    <HugeiconsIcon icon={ClockIcon} size={32} />
                     <h3>Proximamente</h3>
                     <p>El sistema de pagos estara disponible pronto.</p>
                   </div>
@@ -172,7 +172,7 @@ const PaymentForm = () => {
                   <div className="card-form">
                     <div className="form-group">
                       <label>
-                        <CreditCard size={16} />
+                        <HugeiconsIcon icon={CreditCardIcon} size={16} />
                         Numero de Tarjeta
                       </label>
                       <input
@@ -199,7 +199,7 @@ const PaymentForm = () => {
                       </div>
                       <div className="form-group">
                         <label>
-                          <Lock size={16} />
+                          <HugeiconsIcon icon={LockIcon} size={16} />
                           CVV
                         </label>
                         <input
@@ -225,7 +225,7 @@ const PaymentForm = () => {
                     </div>
 
                     <button className="pay-button" disabled>
-                      <Lock size={18} />
+                      <HugeiconsIcon icon={LockIcon} size={18} />
                       Pagar $1.00 USD
                     </button>
                   </div>
@@ -235,7 +235,7 @@ const PaymentForm = () => {
                   <div className="paypal-form">
                     <p>Seras redirigido a PayPal para completar tu pago de forma segura.</p>
                     <button className="paypal-button" disabled>
-                      <Shield size={20} />
+                      <HugeiconsIcon icon={ShieldIcon} size={20} />
                       Continuar con PayPal
                     </button>
                   </div>
@@ -243,7 +243,7 @@ const PaymentForm = () => {
               </div>
 
               <div className="security-note">
-                <Shield size={16} />
+                <HugeiconsIcon icon={ShieldIcon} size={16} />
                 <span>Tus datos estan protegidos con encriptacion SSL de 256 bits</span>
               </div>
             </div>
@@ -256,7 +256,7 @@ const PaymentForm = () => {
 
               <div className="cv-preview-mini">
                 <div className="cv-thumbnail-mockup">
-                  <FileText size={32} />
+                  <HugeiconsIcon icon={FileIcon} size={32} />
                 </div>
                 <div className="cv-info">
                   <h3>{getCVTitle()}</h3>
@@ -281,19 +281,19 @@ const PaymentForm = () => {
 
               <div className="benefits-list">
                 <div className="benefit-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>PDF sin marca de agua</span>
                 </div>
                 <div className="benefit-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>Descarga inmediata</span>
                 </div>
                 <div className="benefit-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>Formato profesional</span>
                 </div>
                 <div className="benefit-item">
-                  <Check size={16} />
+                  <HugeiconsIcon icon={TickIcon} size={16} />
                   <span>Listo para enviar</span>
                 </div>
               </div>
@@ -308,7 +308,7 @@ const PaymentForm = () => {
             className="btn-back"
             onClick={handleBack}
           >
-            <ArrowLeft size={18} />
+            <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
             <span>Volver al Dashboard</span>
           </button>
 
@@ -318,7 +318,7 @@ const PaymentForm = () => {
               className="btn-prev"
               onClick={previousStep}
             >
-              <ArrowLeft size={18} />
+              <HugeiconsIcon icon={ArrowLeftIcon} size={18} />
               <span>Anterior</span>
             </button>
             <button
@@ -327,7 +327,7 @@ const PaymentForm = () => {
               onClick={nextStep}
             >
               <span>Siguiente</span>
-              <ArrowRight size={18} />
+              <HugeiconsIcon icon={ArrowRightIcon} size={18} />
             </button>
           </div>
         </div>
