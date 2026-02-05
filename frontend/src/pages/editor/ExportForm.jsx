@@ -92,41 +92,46 @@ const ExportForm = () => {
 
       items.forEach((element) => {
         const rect = element.getBoundingClientRect();
-        const elementTop = rect.top - paperRect.top + accumulatedSpacing;
-        const elementBottom = elementTop + rect.height;
+        const originalTop = rect.top - paperRect.top;
+        const originalBottom = originalTop + rect.height;
 
-        // If this item would be cut across a page boundary
-        if (elementTop < currentPageBottom && elementBottom > currentPageBottom) {
-          const overflow = elementBottom - currentPageBottom;
+        // Calculate adjusted positions with current accumulated spacing
+        let adjustedTop = originalTop + accumulatedSpacing;
+        let adjustedBottom = originalBottom + accumulatedSpacing;
 
-          // If ANY overflow occurs, push entire item to next page
-          if (overflow > 0) {
-            // Check if this is the first item in a section (title should stay with it)
-            const section = element.closest('.preview-section');
-            const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
-                                          section?.querySelector('.preview-skill-group') === element;
+        // Check ALL page boundaries this item might cross
+        while (adjustedTop < currentPageBottom && adjustedBottom > currentPageBottom) {
+          // Item would be cut across this page boundary
+          // Check if this is the first item in a section (title should stay with it)
+          const section = element.closest('.preview-section');
+          const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
+                                        section?.querySelector('.preview-skill-group') === element;
 
-            let targetElement = element;
-            let spacerHeight = currentPageBottom - elementTop;
+          let targetElement = element;
+          let spacerHeight = currentPageBottom - adjustedTop;
 
-            // If first item in section, push the section title with it
-            if (isFirstItemInSection && section) {
-              const sectionTop = section.getBoundingClientRect().top - paperRect.top + accumulatedSpacing;
-              spacerHeight = currentPageBottom - sectionTop;
-              targetElement = section;
-            }
-
-            // Add top margin for visual breathing room on new page
-            spacerHeight += 80;
-
-            spacers.push({ element: targetElement, spacerHeight });
-            accumulatedSpacing += spacerHeight;
-            currentPageBottom += pageHeightPx;
+          // If first item in section, push the section title with it
+          if (isFirstItemInSection && section) {
+            const sectionOriginalTop = section.getBoundingClientRect().top - paperRect.top;
+            const sectionAdjustedTop = sectionOriginalTop + accumulatedSpacing;
+            spacerHeight = currentPageBottom - sectionAdjustedTop;
+            targetElement = section;
           }
+
+          // Add top margin for visual breathing room on new page
+          spacerHeight += 80;
+
+          spacers.push({ element: targetElement, spacerHeight });
+          accumulatedSpacing += spacerHeight;
+          currentPageBottom += pageHeightPx;
+
+          // Recalculate adjusted positions with new spacing
+          adjustedTop = originalTop + accumulatedSpacing;
+          adjustedBottom = originalBottom + accumulatedSpacing;
         }
 
-        // Move to next page if we've passed the boundary
-        while (elementBottom + accumulatedSpacing > currentPageBottom) {
+        // Move currentPageBottom forward if element is past current boundary
+        while (adjustedBottom > currentPageBottom) {
           currentPageBottom += pageHeightPx;
         }
       });
@@ -262,37 +267,44 @@ const ExportForm = () => {
 
         items.forEach((element) => {
           const rect = element.getBoundingClientRect();
-          const elementTop = rect.top - paperRect.top + accumulatedSpacing;
-          const elementBottom = elementTop + rect.height;
+          const originalTop = rect.top - paperRect.top;
+          const originalBottom = originalTop + rect.height;
 
-          if (elementTop < currentPageBottom && elementBottom > currentPageBottom) {
-            const overflow = elementBottom - currentPageBottom;
+          // Calculate adjusted positions with current accumulated spacing
+          let adjustedTop = originalTop + accumulatedSpacing;
+          let adjustedBottom = originalBottom + accumulatedSpacing;
 
-            // If ANY overflow occurs, push entire item to next page
-            if (overflow > 0) {
-              const section = element.closest('.preview-section');
-              const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
-                                            section?.querySelector('.preview-skill-group') === element;
+          // Check ALL page boundaries this item might cross
+          while (adjustedTop < currentPageBottom && adjustedBottom > currentPageBottom) {
+            // Item would be cut across this page boundary
+            const section = element.closest('.preview-section');
+            const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
+                                          section?.querySelector('.preview-skill-group') === element;
 
-              let targetElement = element;
-              let spacerHeight = currentPageBottom - elementTop;
+            let targetElement = element;
+            let spacerHeight = currentPageBottom - adjustedTop;
 
-              if (isFirstItemInSection && section) {
-                const sectionTop = section.getBoundingClientRect().top - paperRect.top + accumulatedSpacing;
-                spacerHeight = currentPageBottom - sectionTop;
-                targetElement = section;
-              }
-
-              // Add top margin for visual breathing room on new page
-              spacerHeight += 50;
-
-              spacers.push({ element: targetElement, spacerHeight });
-              accumulatedSpacing += spacerHeight;
-              currentPageBottom += pageHeightPx;
+            if (isFirstItemInSection && section) {
+              const sectionOriginalTop = section.getBoundingClientRect().top - paperRect.top;
+              const sectionAdjustedTop = sectionOriginalTop + accumulatedSpacing;
+              spacerHeight = currentPageBottom - sectionAdjustedTop;
+              targetElement = section;
             }
+
+            // Add top margin for visual breathing room on new page
+            spacerHeight += 50;
+
+            spacers.push({ element: targetElement, spacerHeight });
+            accumulatedSpacing += spacerHeight;
+            currentPageBottom += pageHeightPx;
+
+            // Recalculate adjusted positions with new spacing
+            adjustedTop = originalTop + accumulatedSpacing;
+            adjustedBottom = originalBottom + accumulatedSpacing;
           }
 
-          while (elementBottom + accumulatedSpacing > currentPageBottom) {
+          // Move currentPageBottom forward if element is past current boundary
+          while (adjustedBottom > currentPageBottom) {
             currentPageBottom += pageHeightPx;
           }
         });
