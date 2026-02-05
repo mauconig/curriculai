@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Download, Check, FileText, Share2, Mail, Copy,
-  Clock, CheckCircle, AlertCircle
+  Clock, CheckCircle, AlertCircle, FileType
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
+import ResumePreview from '../../components/editor/ResumePreview';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
 import toast from 'react-hot-toast';
 import './ExportForm.css';
@@ -25,6 +28,8 @@ const ExportForm = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportComplete, setExportComplete] = useState(false);
+  const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
+  const pdfContainerRef = useRef(null);
 
   // TODO: Check real payment status when Stripe is integrated
   // For now, assume payment is complete since it's a mockup
@@ -49,14 +54,89 @@ const ExportForm = () => {
       return;
     }
 
+    if (!pdfContainerRef.current) {
+      toast.error('Error: No se pudo encontrar el contenedor del CV');
+      return;
+    }
+
     setIsExporting(true);
     try {
-      // TODO: Implement actual PDF export
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Get the paper element inside the container
+      const paperElement = pdfContainerRef.current.querySelector('.preview-paper');
+      if (!paperElement) {
+        throw new Error('No se encontró el elemento del CV');
+      }
+
+      // Page dimensions in mm
+      const pageDimensions = {
+        a4: { width: 210, height: 297 },
+        letter: { width: 215.9, height: 279.4 }
+      };
+      const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
+
+      // Get the actual rendered dimensions
+      const originalWidth = paperElement.offsetWidth;
+      const originalHeight = paperElement.offsetHeight;
+
+      // Use high scale factor for crisp text (4x = ~300 DPI print quality)
+      const scale = 4;
+
+      // Use html2canvas to capture the CV at high resolution
+      const canvas = await html2canvas(paperElement, {
+        scale: scale,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: originalWidth,
+        windowHeight: originalHeight,
+        // Improve text rendering
+        letterRendering: true,
+        imageTimeout: 0
+      });
+
+      // Create PDF with the selected page size
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: pageSize === 'a4' ? 'a4' : 'letter',
+        compress: true
+      });
+
+      // Calculate dimensions to fit the content properly
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      // Use PNG format for crisp text (lossless compression)
+      const imgData = canvas.toDataURL('image/png');
+
+      // If content is taller than one page, handle pagination
+      let heightLeft = imgHeight;
+      let position = 0;
+      let pageNumber = 1;
+
+      // Add first page with PNG for crisp text
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+
+      // Add additional pages if needed
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        pageNumber++;
+      }
+
+      // Generate filename
+      const fileName = getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum';
+      pdf.save(`${fileName}_CV.pdf`);
+
       setExportComplete(true);
-      toast.success('CV exportado exitosamente');
+      toast.success('¡CV exportado exitosamente!');
     } catch (error) {
-      toast.error('Error al exportar el CV');
+      console.error('Error exporting PDF:', error);
+      toast.error('Error al exportar el CV. Por favor intenta de nuevo.');
     } finally {
       setIsExporting(false);
     }
@@ -150,10 +230,34 @@ const ExportForm = () => {
               </div>
               <p>Descarga tu curriculum en formato PDF de alta calidad, listo para enviar a empleadores.</p>
 
+              {/* Page Size Selector */}
+              <div className="page-size-selector-export">
+                <label>
+                  <FileType size={16} />
+                  Tamaño de página:
+                </label>
+                <div className="page-size-buttons">
+                  <button
+                    className={`size-btn ${pageSize === 'a4' ? 'active' : ''}`}
+                    onClick={() => setPageSize('a4')}
+                    type="button"
+                  >
+                    A4
+                  </button>
+                  <button
+                    className={`size-btn ${pageSize === 'letter' ? 'active' : ''}`}
+                    onClick={() => setPageSize('letter')}
+                    type="button"
+                  >
+                    Carta
+                  </button>
+                </div>
+              </div>
+
               <div className="export-details">
                 <div className="detail-item">
                   <Check size={16} />
-                  <span>Formato A4 profesional</span>
+                  <span>Formato {pageSize === 'a4' ? 'A4' : 'Carta'} profesional</span>
                 </div>
                 <div className="detail-item">
                   <Check size={16} />
@@ -173,12 +277,12 @@ const ExportForm = () => {
                 {isExporting ? (
                   <>
                     <Clock size={18} className="spinning" />
-                    Exportando...
+                    Generando PDF...
                   </>
                 ) : exportComplete ? (
                   <>
                     <CheckCircle size={18} />
-                    Exportado
+                    ¡Descargado!
                   </>
                 ) : (
                   <>
@@ -271,6 +375,16 @@ const ExportForm = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Hidden PDF Container - Used for generating the PDF without watermark */}
+      <div className="pdf-export-container" ref={pdfContainerRef}>
+        <ResumePreview
+          data={resumeData}
+          template={resumeData.template || 'modern'}
+          pageSize={pageSize}
+          showWatermark={false}
+        />
       </div>
     </div>
   );
