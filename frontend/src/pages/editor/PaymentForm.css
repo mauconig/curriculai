@@ -291,7 +291,7 @@
 }
 
 /* Order Summary */
-.summary-card {
+.payment-form-page .summary-card {
   position: sticky;
   top: 1rem;
 }

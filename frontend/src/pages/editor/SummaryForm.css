@@ -31,6 +31,7 @@
 
 /* Summary Card */
 .summary-card {
+  position: relative;
   background: white;
   border-radius: 1rem;
   padding: 1.5rem;
