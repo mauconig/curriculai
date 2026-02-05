@@ -204,70 +204,148 @@ const Dashboard = () => {
               <div className="resumes-grid">
                 {resumes.map((resume) => {
                   const latestPdf = getLatestPdf(resume.id);
+                  const data = resume.data || {};
+                  const personalInfo = data.personalInfo || {};
+                  const template = resume.template || 'modern';
+                  const hasPhoto = ['modern', 'classic', 'creative', 'executive'].includes(template);
+
+                  // Get initials
+                  const getInitials = () => {
+                    const first = personalInfo.firstName?.[0] || '';
+                    const last = personalInfo.lastName?.[0] || '';
+                    return (first + last).toUpperCase() || 'CV';
+                  };
+
                   return (
-                    <div key={resume.id} className="resume-card">
-                      <div className="resume-card-header">
-                        <HugeiconsIcon icon={FileIcon} size={24} />
-                        <h4>{resume.title}</h4>
+                    <div key={resume.id} className="resume-card" onClick={() => handleEditResume(resume.id)}>
+                      {/* Mini CV Preview */}
+                      <div className={`mini-cv-preview template-${template}`}>
                         <button
-                          className="btn-delete"
-                          onClick={() => handleDeleteResume(resume)}
+                          className="btn-delete-floating"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteResume(resume);
+                          }}
                           title="Eliminar"
                         >
-                          <HugeiconsIcon icon={DeleteIcon} size={16} />
-                        </button>
-                      </div>
-                      <div className="resume-card-info">
-                        <span className="resume-date">
-                          Actualizado: {new Date(resume.updated_at).toLocaleDateString('es-ES')}
-                        </span>
-                        <span className="resume-template">{resume.template || 'modern'}</span>
-                      </div>
-
-                      {/* PDF Info */}
-                      {latestPdf && (
-                        <div className="resume-pdf-info">
-                          <HugeiconsIcon icon={DownloadIcon} size={14} />
-                          <span>PDF guardado ({formatFileSize(latestPdf.file_size)})</span>
-                        </div>
-                      )}
-
-                      <div className="resume-card-actions">
-                        <button
-                          className="btn-edit"
-                          onClick={() => handleEditResume(resume.id)}
-                        >
-                          <HugeiconsIcon icon={EditIcon} size={16} />
-                          Editar
+                          <HugeiconsIcon icon={DeleteIcon} size={14} />
                         </button>
 
-                        {latestPdf ? (
-                          <button
-                            className={`btn-download ${downloadingPdf === latestPdf.id ? 'loading' : ''}`}
-                            onClick={() => handleDownloadPdf(latestPdf)}
-                            disabled={downloadingPdf === latestPdf.id}
-                          >
-                            {downloadingPdf === latestPdf.id ? (
-                              <>
-                                <HugeiconsIcon icon={ClockIcon} size={16} className="spinning" />
-                                Descargando...
-                              </>
-                            ) : (
-                              <>
-                                <HugeiconsIcon icon={DownloadIcon} size={16} />
-                                Descargar PDF
-                              </>
+                        <div className="mini-cv-paper">
+                          {/* Mini Header */}
+                          <div className="mini-cv-header">
+                            {hasPhoto && (
+                              <div className="mini-cv-photo">
+                                {personalInfo.photo ? (
+                                  <img src={personalInfo.photo} alt="" />
+                                ) : (
+                                  <span>{getInitials()}</span>
+                                )}
+                              </div>
                             )}
-                          </button>
-                        ) : (
-                          <button
-                            className="btn-export"
-                            onClick={() => handleExportResume(resume.id)}
-                          >
-                            <HugeiconsIcon icon={DownloadIcon} size={16} />
-                            Exportar PDF
-                          </button>
+                            <div className="mini-cv-info">
+                              <div className="mini-cv-name">
+                                {personalInfo.firstName || personalInfo.lastName
+                                  ? `${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`.trim()
+                                  : 'Tu Nombre'}
+                              </div>
+                              <div className="mini-cv-contact">
+                                {personalInfo.email || 'email@ejemplo.com'}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Mini Sections */}
+                          <div className="mini-cv-sections">
+                            {data.summary && (
+                              <div className="mini-cv-section">
+                                <div className="mini-section-title"></div>
+                                <div className="mini-section-line"></div>
+                                <div className="mini-section-line short"></div>
+                              </div>
+                            )}
+                            {data.experience?.length > 0 && (
+                              <div className="mini-cv-section">
+                                <div className="mini-section-title"></div>
+                                <div className="mini-section-line"></div>
+                                <div className="mini-section-line"></div>
+                                <div className="mini-section-line short"></div>
+                              </div>
+                            )}
+                            {data.education?.length > 0 && (
+                              <div className="mini-cv-section">
+                                <div className="mini-section-title"></div>
+                                <div className="mini-section-line"></div>
+                                <div className="mini-section-line short"></div>
+                              </div>
+                            )}
+                            {data.skills?.length > 0 && (
+                              <div className="mini-cv-section">
+                                <div className="mini-section-title"></div>
+                                <div className="mini-cv-skills">
+                                  <span></span><span></span><span></span><span></span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Footer */}
+                      <div className="resume-card-footer">
+                        <div className="resume-card-meta">
+                          <span className="resume-date">
+                            {new Date(resume.updated_at).toLocaleDateString('es-ES')}
+                          </span>
+                          <span className="resume-template-badge">{template}</span>
+                        </div>
+
+                        {latestPdf && (
+                          <div className="resume-pdf-info">
+                            <HugeiconsIcon icon={DownloadIcon} size={12} />
+                            <span>PDF ({formatFileSize(latestPdf.file_size)})</span>
+                          </div>
                         )}
+
+                        <div className="resume-card-actions">
+                          <button
+                            className="btn-edit"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditResume(resume.id);
+                            }}
+                          >
+                            <HugeiconsIcon icon={EditIcon} size={14} />
+                            Editar
+                          </button>
+
+                          {latestPdf ? (
+                            <button
+                              className={`btn-download ${downloadingPdf === latestPdf.id ? 'loading' : ''}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDownloadPdf(latestPdf);
+                              }}
+                              disabled={downloadingPdf === latestPdf.id}
+                            >
+                              {downloadingPdf === latestPdf.id ? (
+                                <HugeiconsIcon icon={ClockIcon} size={14} className="spinning" />
+                              ) : (
+                                <HugeiconsIcon icon={DownloadIcon} size={14} />
+                              )}
+                            </button>
+                          ) : (
+                            <button
+                              className="btn-export"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleExportResume(resume.id);
+                              }}
+                            >
+                              <HugeiconsIcon icon={DownloadIcon} size={14} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );

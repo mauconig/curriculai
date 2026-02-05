@@ -574,3 +574,360 @@
 .dark .btn-export:hover {
   background: rgba(102, 126, 234, 0.2);
 }
+
+/* Mini CV Preview Styles */
+.mini-cv-preview {
+  position: relative;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mini-cv-paper {
+  background: white;
+  width: 100%;
+  max-width: 220px;
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.625rem;
+  line-height: 1.3;
+}
+
+.mini-cv-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mini-cv-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.625rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mini-cv-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-cv-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mini-cv-name {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-cv-contact {
+  color: #6b7280;
+  font-size: 0.5625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-cv-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.mini-cv-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.mini-section-title {
+  width: 40%;
+  height: 4px;
+  background: #667eea;
+  border-radius: 2px;
+  margin-bottom: 0.125rem;
+}
+
+.mini-section-line {
+  width: 100%;
+  height: 3px;
+  background: #e5e7eb;
+  border-radius: 1.5px;
+}
+
+.mini-section-line.short {
+  width: 65%;
+}
+
+.mini-cv-skills {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.mini-cv-skills span {
+  width: 28px;
+  height: 6px;
+  background: #dbeafe;
+  border-radius: 3px;
+}
+
+/* Delete button floating on preview */
+.btn-delete-floating {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  opacity: 0;
+  z-index: 10;
+}
+
+.resume-card:hover .btn-delete-floating {
+  opacity: 1;
+}
+
+.btn-delete-floating:hover {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #ef4444;
+}
+
+/* Card Footer */
+.resume-card-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.resume-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.resume-template-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: capitalize;
+}
+
+/* Template-specific preview styles */
+
+/* Modern Template - Purple gradient, clean design */
+.mini-cv-preview.template-modern .mini-section-title {
+  background: #667eea;
+}
+
+.mini-cv-preview.template-modern .mini-cv-header {
+  border-bottom-color: #667eea;
+}
+
+.mini-cv-preview.template-modern .mini-cv-photo {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Classic Template - Traditional, formal dark styling */
+.mini-cv-preview.template-classic .mini-section-title {
+  background: #1f2937;
+}
+
+.mini-cv-preview.template-classic .mini-cv-header {
+  border-bottom-color: #1f2937;
+  flex-direction: row-reverse;
+}
+
+.mini-cv-preview.template-classic .mini-cv-photo {
+  background: #1f2937;
+}
+
+.mini-cv-preview.template-classic .mini-cv-info {
+  text-align: right;
+}
+
+/* Creative Template - Colorful header background */
+.mini-cv-preview.template-creative .mini-section-title {
+  background: #f97316;
+}
+
+.mini-cv-preview.template-creative .mini-cv-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.25rem 0.25rem 0 0;
+  border-bottom: none;
+}
+
+.mini-cv-preview.template-creative .mini-cv-name {
+  color: white;
+}
+
+.mini-cv-preview.template-creative .mini-cv-contact {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mini-cv-preview.template-creative .mini-cv-photo {
+  background: white;
+  border: 2px solid white;
+}
+
+.mini-cv-preview.template-creative .mini-cv-photo span {
+  color: #667eea;
+}
+
+/* Executive Template - Professional teal, structured */
+.mini-cv-preview.template-executive .mini-section-title {
+  background: #0f766e;
+}
+
+.mini-cv-preview.template-executive .mini-cv-header {
+  border-bottom-color: #0f766e;
+  border-bottom-width: 2px;
+}
+
+.mini-cv-preview.template-executive .mini-cv-photo {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+}
+
+.mini-cv-preview.template-executive .mini-cv-name {
+  color: #0f766e;
+}
+
+/* Minimal Template - Simple, no photo, grayscale */
+.mini-cv-preview.template-minimal .mini-section-title {
+  background: #6b7280;
+}
+
+.mini-cv-preview.template-minimal .mini-cv-header {
+  border-bottom-color: #e5e7eb;
+}
+
+.mini-cv-preview.template-minimal .mini-cv-photo {
+  display: none;
+}
+
+.mini-cv-preview.template-minimal .mini-section-line {
+  background: #d1d5db;
+}
+
+.mini-cv-preview.template-minimal .mini-cv-skills span {
+  background: #e5e7eb;
+}
+
+/* Dark mode for mini CV preview */
+.dark .mini-cv-preview {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+}
+
+.dark .mini-cv-paper {
+  background: #111827;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark .mini-cv-header {
+  border-bottom-color: #374151;
+}
+
+.dark .mini-cv-name {
+  color: #f3f4f6;
+}
+
+.dark .mini-cv-contact {
+  color: #9ca3af;
+}
+
+.dark .mini-section-line {
+  background: #374151;
+}
+
+.dark .mini-cv-skills span {
+  background: #1e3a5f;
+}
+
+.dark .btn-delete-floating {
+  background: #374151;
+  border-color: #4b5563;
+  color: #9ca3af;
+}
+
+.dark .btn-delete-floating:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+.dark .resume-template-badge {
+  background: #374151;
+  color: #9ca3af;
+}
+
+/* Dark mode template-specific styles */
+.dark .mini-cv-preview.template-classic .mini-cv-header {
+  border-bottom-color: #9ca3af;
+}
+
+.dark .mini-cv-preview.template-classic .mini-cv-photo {
+  background: #4b5563;
+}
+
+.dark .mini-cv-preview.template-creative .mini-cv-header {
+  background: linear-gradient(135deg, #4f46e5 0%, #6b21a8 100%);
+}
+
+.dark .mini-cv-preview.template-executive .mini-cv-header {
+  border-bottom-color: #14b8a6;
+}
+
+.dark .mini-cv-preview.template-executive .mini-cv-name {
+  color: #14b8a6;
+}
+
+.dark .mini-cv-preview.template-minimal .mini-cv-header {
+  border-bottom-color: #4b5563;
+}
+
+.dark .mini-cv-preview.template-minimal .mini-section-line {
+  background: #4b5563;
+}
+
+.dark .mini-cv-preview.template-minimal .mini-cv-skills span {
+  background: #374151;
+}
