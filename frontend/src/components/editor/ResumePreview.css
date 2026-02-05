@@ -25,15 +25,16 @@
 /* Header */
 .preview-header {
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.25rem;
   margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  padding-bottom: 2.5rem;
   border-bottom: 2px solid #667eea;
 }
 
 .preview-photo {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -51,7 +52,7 @@
 
 .preview-initials {
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
 }
 
@@ -244,8 +245,8 @@
 }
 
 .template-classic .preview-photo {
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
   background: #1f2937;
   flex-shrink: 0;
   order: 1;
@@ -299,14 +300,14 @@
 .template-creative .preview-photo {
   background: white;
   border: 3px solid white;
-  width: 70px;
-  height: 70px;
+  width: 90px;
+  height: 90px;
   flex-shrink: 0;
 }
 
 .template-creative .preview-initials {
   color: #667eea;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .template-creative .preview-name {

@@ -329,7 +329,7 @@ Fase 11: ░░░░░░░░░░░░░░░░░░░░  0% Docker
 
 ## 🎯 Próximos Pasos
 
-### Inmediatos
+### Inmediatos 
 
 1. **Completar Fase 9: Exportación**
    - Implementar ruta `/editor/exportar`
@@ -358,7 +358,7 @@ Fase 11: ░░░░░░░░░░░░░░░░░░░░  0% Docker
 
 ## 🐛 Problemas Conocidos
 
-**Ninguno** - El proyecto está en fase inicial, setup limpio.
+   - Mejorar el preview de 'Mis currículums' en Dashboard, incluir como una versión mini del CV
 
 ---
 
