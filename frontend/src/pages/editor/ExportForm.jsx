@@ -11,6 +11,7 @@ import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import ResumePreview from '../../components/editor/ResumePreview';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
+import pdfService from '../../services/pdfService';
 import toast from 'react-hot-toast';
 import './ExportForm.css';
 
@@ -28,6 +29,7 @@ const ExportForm = () => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportComplete, setExportComplete] = useState(false);
+  const [isFinalizing, setIsFinalizing] = useState(false);
   const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
   const pdfContainerRef = useRef(null);
 
@@ -74,12 +76,22 @@ const ExportForm = () => {
       };
       const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
 
-      // Get the actual rendered dimensions
-      const originalWidth = paperElement.offsetWidth;
-      const originalHeight = paperElement.offsetHeight;
+      // Margins in mm (matching CSS: padding: 20mm 18mm)
+      const MARGIN_TOP = 20;
+      const MARGIN_BOTTOM = 20;
+      const MARGIN_LEFT = 18;
+      const MARGIN_RIGHT = 18;
+
+      // Printable area dimensions
+      const printableWidth = pageWidth - MARGIN_LEFT - MARGIN_RIGHT;
+      const printableHeight = pageHeight - MARGIN_TOP - MARGIN_BOTTOM;
 
       // Use high scale factor for crisp text (4x = ~300 DPI print quality)
       const scale = 4;
+
+      // Temporarily remove padding for capture (we'll add margins in PDF)
+      const originalPadding = paperElement.style.padding;
+      paperElement.style.padding = '0';
 
       // Use html2canvas to capture the CV at high resolution
       const canvas = await html2canvas(paperElement, {
@@ -88,12 +100,12 @@ const ExportForm = () => {
         allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
-        windowWidth: originalWidth,
-        windowHeight: originalHeight,
-        // Improve text rendering
         letterRendering: true,
         imageTimeout: 0
       });
+
+      // Restore padding
+      paperElement.style.padding = originalPadding;
 
       // Create PDF with the selected page size
       const pdf = new jsPDF({
@@ -103,29 +115,46 @@ const ExportForm = () => {
         compress: true
       });
 
-      // Calculate dimensions to fit the content properly
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      // Use PNG format for crisp text (lossless compression)
+      // Convert canvas to image
       const imgData = canvas.toDataURL('image/png');
 
-      // If content is taller than one page, handle pagination
-      let heightLeft = imgHeight;
-      let position = 0;
-      let pageNumber = 1;
+      // Calculate scaling: content should fit within printable width
+      const imgAspectRatio = canvas.width / canvas.height;
+      const imgWidthInMm = printableWidth;
+      const imgHeightInMm = imgWidthInMm / imgAspectRatio;
 
-      // Add first page with PNG for crisp text
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Calculate how many pages we need
+      const totalPages = Math.ceil(imgHeightInMm / printableHeight);
 
-      // Add additional pages if needed
-      while (heightLeft > 0) {
-        position -= pageHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        pageNumber++;
+      // For each page, extract the relevant portion
+      for (let pageNum = 0; pageNum < totalPages; pageNum++) {
+        if (pageNum > 0) {
+          pdf.addPage();
+        }
+
+        // Calculate the vertical position offset for this page
+        // We draw the full image but position it so only the relevant portion shows
+        const yOffset = MARGIN_TOP - (pageNum * printableHeight);
+
+        // Add clip region to ensure content stays within margins
+        pdf.saveGraphicsState();
+
+        // Set clip path for printable area
+        pdf.rect(MARGIN_LEFT, MARGIN_TOP, printableWidth, printableHeight);
+        pdf.clip();
+        pdf.discardPath();
+
+        // Add the full image at the calculated offset
+        pdf.addImage(
+          imgData,
+          'PNG',
+          MARGIN_LEFT,
+          yOffset,
+          imgWidthInMm,
+          imgHeightInMm
+        );
+
+        pdf.restoreGraphicsState();
       }
 
       // Generate filename
@@ -133,7 +162,7 @@ const ExportForm = () => {
       pdf.save(`${fileName}_CV.pdf`);
 
       setExportComplete(true);
-      toast.success('¡CV exportado exitosamente!');
+      toast.success(`¡CV exportado exitosamente! (${totalPages} página${totalPages > 1 ? 's' : ''})`);
     } catch (error) {
       console.error('Error exporting PDF:', error);
       toast.error('Error al exportar el CV. Por favor intenta de nuevo.');
@@ -152,8 +181,106 @@ const ExportForm = () => {
     toast('Funcion disponible proximamente', { icon: '🔜' });
   };
 
-  const handleGoToDashboard = () => {
-    navigate('/dashboard');
+  const handleGoToDashboard = async () => {
+    if (!resumeId) {
+      navigate('/dashboard');
+      return;
+    }
+
+    setIsFinalizing(true);
+    try {
+      // Generate PDF and save to backend
+      const paperElement = pdfContainerRef.current?.querySelector('.preview-paper');
+      if (paperElement) {
+        // Page dimensions in mm
+        const pageDimensions = {
+          a4: { width: 210, height: 297 },
+          letter: { width: 215.9, height: 279.4 }
+        };
+        const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
+
+        // Margins in mm
+        const MARGIN_TOP = 20;
+        const MARGIN_BOTTOM = 20;
+        const MARGIN_LEFT = 18;
+        const MARGIN_RIGHT = 18;
+
+        // Printable area dimensions
+        const printableWidth = pageWidth - MARGIN_LEFT - MARGIN_RIGHT;
+        const printableHeight = pageHeight - MARGIN_TOP - MARGIN_BOTTOM;
+
+        const scale = 4;
+
+        // Temporarily remove padding for capture
+        const originalPadding = paperElement.style.padding;
+        paperElement.style.padding = '0';
+
+        const canvas = await html2canvas(paperElement, {
+          scale: scale,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          letterRendering: true,
+          imageTimeout: 0
+        });
+
+        paperElement.style.padding = originalPadding;
+
+        // Create PDF
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: pageSize === 'a4' ? 'a4' : 'letter',
+          compress: true
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const imgAspectRatio = canvas.width / canvas.height;
+        const imgWidthInMm = printableWidth;
+        const imgHeightInMm = imgWidthInMm / imgAspectRatio;
+        const totalPages = Math.ceil(imgHeightInMm / printableHeight);
+
+        for (let pageNum = 0; pageNum < totalPages; pageNum++) {
+          if (pageNum > 0) {
+            pdf.addPage();
+          }
+
+          const yOffset = MARGIN_TOP - (pageNum * printableHeight);
+
+          pdf.saveGraphicsState();
+          pdf.rect(MARGIN_LEFT, MARGIN_TOP, printableWidth, printableHeight);
+          pdf.clip();
+          pdf.discardPath();
+
+          pdf.addImage(
+            imgData,
+            'PNG',
+            MARGIN_LEFT,
+            yOffset,
+            imgWidthInMm,
+            imgHeightInMm
+          );
+
+          pdf.restoreGraphicsState();
+        }
+
+        // Get PDF as base64
+        const pdfBase64 = pdf.output('datauristring').split(',')[1];
+        const fileName = `${getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum'}_CV.pdf`;
+
+        // Save to backend
+        await pdfService.savePDF(resumeId, fileName, pdfBase64);
+        toast.success('CV guardado exitosamente');
+      }
+    } catch (error) {
+      console.error('Error saving PDF:', error);
+      // Don't block navigation if save fails
+      toast.error('No se pudo guardar el PDF, pero puedes descargarlo manualmente');
+    } finally {
+      setIsFinalizing(false);
+      navigate('/dashboard');
+    }
   };
 
   // Get CV title from data
@@ -367,11 +494,21 @@ const ExportForm = () => {
             </button>
             <button
               type="button"
-              className="btn-finish"
+              className={`btn-finish ${isFinalizing ? 'loading' : ''}`}
               onClick={handleGoToDashboard}
+              disabled={isFinalizing}
             >
-              <Check size={18} />
-              <span>Finalizar</span>
+              {isFinalizing ? (
+                <>
+                  <Clock size={18} className="spinning" />
+                  <span>Guardando...</span>
+                </>
+              ) : (
+                <>
+                  <Check size={18} />
+                  <span>Finalizar</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -384,6 +521,7 @@ const ExportForm = () => {
           template={resumeData.template || 'modern'}
           pageSize={pageSize}
           showWatermark={false}
+          showPageBreaks={false}
         />
       </div>
     </div>

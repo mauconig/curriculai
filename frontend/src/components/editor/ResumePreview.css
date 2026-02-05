@@ -620,6 +620,104 @@
   }
 }
 
+/* ======================= */
+/* PAGE BREAK INDICATORS   */
+/* ======================= */
+.show-page-breaks .preview-paper {
+  position: relative;
+}
+
+.page-break-indicator {
+  position: absolute;
+  left: -30px;
+  right: -30px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.page-break-line {
+  width: 100%;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #667eea 0px,
+    #667eea 8px,
+    transparent 8px,
+    transparent 16px
+  );
+  position: relative;
+}
+
+.page-break-line::before,
+.page-break-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    to bottom,
+    rgba(102, 126, 234, 0.1),
+    transparent
+  );
+}
+
+.page-break-line::before {
+  bottom: 2px;
+  transform: rotate(180deg);
+}
+
+.page-break-line::after {
+  top: 2px;
+}
+
+.page-break-label,
+.page-break-label-next {
+  font-size: 0.65rem;
+  color: #667eea;
+  background: white;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.page-break-label {
+  margin-bottom: 0.25rem;
+}
+
+.page-break-label-next {
+  margin-top: 0.25rem;
+}
+
+/* Page count indicator */
+.page-count-indicator {
+  position: absolute;
+  bottom: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Ensure preview container can show overflow for indicators */
+.show-page-breaks {
+  position: relative;
+  padding-bottom: 3rem;
+  overflow: visible;
+}
+
 /* Print styles */
 @media print {
   .resume-preview {
@@ -632,5 +730,10 @@
     width: 100%;
     min-height: auto;
     padding: 0;
+  }
+
+  .page-break-indicator,
+  .page-count-indicator {
+    display: none;
   }
 }

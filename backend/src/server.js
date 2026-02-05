@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js';
 import resumesRoutes from './routes/resumes.js';
 import uploadRoutes from './routes/upload.js';
 import aiRoutes from './routes/ai.js';
+import pdfsRoutes from './routes/pdfs.js';
 
 // Obtener __dirname en ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -81,6 +82,9 @@ app.use('/api/upload', uploadRoutes);
 
 // Rutas de IA
 app.use('/api/ai', aiRoutes);
+
+// Rutas de PDFs
+app.use('/api/pdfs', pdfsRoutes);
 
 // Manejo de errores
 app.use((err, req, res, next) => {

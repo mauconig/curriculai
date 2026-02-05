@@ -1,12 +1,103 @@
+import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { Mail, Phone, MapPin, Globe, Linkedin } from 'lucide-react';
 import './ResumePreview.css';
 
 /**
  * Componente que renderiza el CV con la plantilla seleccionada
+ * Soporta paginación visual y exportación a PDF
  * @param {Object} data - Datos del CV (personalInfo, experience, education, skills, summary, additionalSections)
  * @param {string} template - ID de la plantilla seleccionada
+ * @param {string} pageSize - 'a4' or 'letter'
+ * @param {boolean} showWatermark - Mostrar marca de agua
+ * @param {boolean} showPageBreaks - Mostrar indicadores de salto de página
  */
-const ResumePreview = ({ data, template = 'modern', pageSize = 'a4', showWatermark = false }) => {
+const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', showWatermark = false, showPageBreaks = true }, ref) => {
+  const contentRef = useRef(null);
+  const [pageBreakPositions, setPageBreakPositions] = useState([]);
+
+  // Page dimensions in pixels (at 96 DPI for screen)
+  // A4: 210mm × 297mm, Letter: 215.9mm × 279.4mm
+  // 1mm = 3.7795275591 pixels at 96 DPI
+  const MM_TO_PX = 3.7795275591;
+  const MARGIN_TOP_MM = 20;
+  const MARGIN_BOTTOM_MM = 20;
+
+  const pageDimensions = {
+    a4: { widthMm: 210, heightMm: 297 },
+    letter: { widthMm: 215.9, heightMm: 279.4 }
+  };
+
+  const { heightMm } = pageDimensions[pageSize] || pageDimensions.a4;
+  const pageHeightPx = heightMm * MM_TO_PX;
+  const printableHeightPx = (heightMm - MARGIN_TOP_MM - MARGIN_BOTTOM_MM) * MM_TO_PX;
+
+  // Calculate page break positions based on content
+  const calculatePageBreaks = useCallback(() => {
+    if (!contentRef.current || !showPageBreaks) return;
+
+    const sections = contentRef.current.querySelectorAll('.preview-section, .preview-header, .preview-summary');
+    const breaks = [];
+    let currentPageBottom = printableHeightPx;
+
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop;
+      const sectionBottom = sectionTop + section.offsetHeight;
+
+      // If section crosses page boundary, add a page break before it
+      if (sectionTop < currentPageBottom && sectionBottom > currentPageBottom) {
+        // Check if we can fit the section header on this page
+        const headerHeight = section.querySelector('.preview-section-title')?.offsetHeight || 40;
+        if (sectionTop + headerHeight > currentPageBottom) {
+          // Move entire section to next page
+          breaks.push(sectionTop);
+          currentPageBottom = sectionTop + printableHeightPx;
+        } else {
+          // Section starts on this page but overflows
+          // Find a good break point within the section (between items)
+          const items = section.querySelectorAll('.preview-item');
+          items.forEach((item) => {
+            const itemTop = item.offsetTop;
+            const itemBottom = itemTop + item.offsetHeight;
+            if (itemTop < currentPageBottom && itemBottom > currentPageBottom) {
+              // Add break before this item
+              breaks.push(itemTop);
+              currentPageBottom = itemTop + printableHeightPx;
+            }
+          });
+        }
+      }
+
+      // Check if we've passed a page boundary
+      while (sectionBottom > currentPageBottom) {
+        currentPageBottom += printableHeightPx;
+      }
+    });
+
+    setPageBreakPositions(breaks);
+  }, [printableHeightPx, showPageBreaks]);
+
+  // Expose methods for PDF generation
+  useImperativeHandle(ref, () => ({
+    getPageInfo: () => ({
+      pageHeightPx,
+      printableHeightPx,
+      marginTopMm: MARGIN_TOP_MM,
+      marginBottomMm: MARGIN_BOTTOM_MM,
+      pageBreakPositions,
+      contentHeight: contentRef.current?.scrollHeight || 0
+    }),
+    getContentElement: () => contentRef.current
+  }), [pageHeightPx, printableHeightPx, pageBreakPositions]);
+
+  useEffect(() => {
+    // Calculate page breaks after render
+    const timer = setTimeout(calculatePageBreaks, 100);
+    return () => clearTimeout(timer);
+  }, [data, template, pageSize, calculatePageBreaks]);
+
+  // Calculate total pages needed
+  const totalContentHeight = contentRef.current?.scrollHeight || pageHeightPx;
+  const totalPages = Math.ceil(totalContentHeight / printableHeightPx);
   // Renderizar descripción con bullet points en líneas separadas
   const renderDescription = (text) => {
     if (!text) return null;
@@ -250,9 +341,23 @@ const ResumePreview = ({ data, template = 'modern', pageSize = 'a4', showWaterma
   };
 
   return (
-    <div className={`resume-preview template-${template} page-${pageSize}`}>
-      <div className="preview-paper">
+    <div className={`resume-preview template-${template} page-${pageSize} ${showPageBreaks ? 'show-page-breaks' : ''}`}>
+      <div className="preview-paper" ref={contentRef}>
         {showWatermark && <div className="preview-watermark" />}
+
+        {/* Page break indicators */}
+        {showPageBreaks && Array.from({ length: totalPages - 1 }, (_, i) => (
+          <div
+            key={i}
+            className="page-break-indicator"
+            style={{ top: `${(i + 1) * printableHeightPx}px` }}
+          >
+            <span className="page-break-label">Página {i + 1} / {totalPages}</span>
+            <div className="page-break-line" />
+            <span className="page-break-label-next">Página {i + 2}</span>
+          </div>
+        ))}
+
         {/* Header */}
         <header className="preview-header">
           {hasPhoto && (
@@ -286,8 +391,17 @@ const ResumePreview = ({ data, template = 'modern', pageSize = 'a4', showWaterma
         {renderSkills()}
         {renderAdditionalSections()}
       </div>
+
+      {/* Page count indicator */}
+      {showPageBreaks && totalPages > 1 && (
+        <div className="page-count-indicator">
+          Total: {totalPages} páginas
+        </div>
+      )}
     </div>
   );
-};
+});
+
+ResumePreview.displayName = 'ResumePreview';
 
 export default ResumePreview;
