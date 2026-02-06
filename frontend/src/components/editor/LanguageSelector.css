@@ -1,0 +1,242 @@
+.language-selector {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.language-selector-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.5rem;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.language-selector-trigger:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.language-selector-trigger.open {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.language-selector-trigger.translating {
+  border-color: #667eea;
+  color: #667eea;
+  cursor: wait;
+}
+
+.lang-name {
+  font-size: 0.8125rem;
+}
+
+.lang-arrow {
+  transition: transform 0.2s;
+  color: #9ca3af;
+}
+
+.lang-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.lang-spinner {
+  animation: langSpin 1s linear infinite;
+}
+
+@keyframes langSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Action buttons (edit, re-translate) */
+.language-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.lang-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lang-action-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+/* Translated timestamp */
+.translated-at {
+  font-size: 0.6875rem;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* Dropdown */
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 0.375rem);
+  left: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  min-width: 180px;
+  padding: 0.25rem;
+  animation: langDropIn 0.15s ease-out;
+}
+
+@keyframes langDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.language-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: #374151;
+  transition: all 0.15s;
+}
+
+.language-option:hover {
+  background: #f3f4f6;
+}
+
+.language-option.selected {
+  background: rgba(102, 126, 234, 0.08);
+  color: #667eea;
+  font-weight: 600;
+}
+
+.lang-original-badge {
+  font-size: 0.6875rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.lang-check {
+  color: #667eea;
+  font-weight: 700;
+}
+
+/* Dark mode */
+.dark .language-selector-trigger {
+  background: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .language-selector-trigger:hover,
+.dark .language-selector-trigger.open {
+  border-color: #667eea;
+  color: #a5b4fc;
+}
+
+.dark .language-selector-trigger.translating {
+  color: #a5b4fc;
+}
+
+.dark .lang-arrow {
+  color: #6b7280;
+}
+
+.dark .lang-action-btn {
+  background: #1f2937;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+.dark .lang-action-btn:hover {
+  border-color: #667eea;
+  color: #a5b4fc;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+.dark .translated-at {
+  color: #6b7280;
+}
+
+.dark .language-dropdown {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.dark .language-option {
+  color: #e5e7eb;
+}
+
+.dark .language-option:hover {
+  background: #374151;
+}
+
+.dark .language-option.selected {
+  background: rgba(102, 126, 234, 0.15);
+  color: #a5b4fc;
+}
+
+.dark .lang-original-badge {
+  color: #34d399;
+}
+
+.dark .lang-check {
+  color: #a5b4fc;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .language-selector-trigger {
+    padding: 0.5rem 0.625rem;
+  }
+
+  .lang-name {
+    display: none;
+  }
+
+  .lang-arrow {
+    display: none;
+  }
+
+  .language-actions {
+    display: none;
+  }
+
+  .translated-at {
+    display: none;
+  }
+}

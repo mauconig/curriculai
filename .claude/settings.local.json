@@ -22,7 +22,10 @@
       "mcp__playwright__browser_fill_form",
       "mcp__playwright__browser_select_option",
       "Bash(npm run build:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(node --input-type=module -e:*)",
+      "Bash(npx -y acorn:*)",
+      "Bash(xxd:*)"
     ]
   },
   "mcpServers": {

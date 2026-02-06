@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHand
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MailIcon, SmartPhoneIcon, LocationIcon, GlobeIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
 import { getPaletteStyle } from '../../utils/colorPalettes';
+import { SECTION_TITLES_BY_LANGUAGE, DATE_STRINGS_BY_LANGUAGE } from '../../utils/constants';
 import './ResumePreview.css';
 
 /**
@@ -13,7 +14,7 @@ import './ResumePreview.css';
  * @param {boolean} showWatermark - Mostrar marca de agua
  * @param {boolean} showPageBreaks - Mostrar indicadores de salto de página
  */
-const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', showWatermark = false, showPageBreaks = true, colorPalette }, ref) => {
+const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', showWatermark = false, showPageBreaks = true, colorPalette, language = 'es' }, ref) => {
   const contentRef = useRef(null);
   const [pageBreakPositions, setPageBreakPositions] = useState([]);
 
@@ -122,25 +123,66 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     );
   };
   const {
-    personalInfo = {},
-    experience = [],
-    education = [],
-    skills = [],
-    summary = '',
-    additionalSections = []
+    personalInfo: origPersonalInfo = {},
+    experience: origExperience = [],
+    education: origEducation = [],
+    skills: origSkills = [],
+    summary: origSummary = '',
+    additionalSections: origAdditionalSections = []
   } = data || {};
+
+  // Get translation data if language is not Spanish
+  const translation = (language !== 'es' && data?.translations?.[language]) || null;
+
+  // Merge translated fields over originals
+  const personalInfo = translation?.personalInfo
+    ? { ...origPersonalInfo, ...translation.personalInfo }
+    : origPersonalInfo;
+
+  const experience = origExperience.map((exp, i) => {
+    const t = translation?.experience?.[i];
+    return t ? { ...exp, ...t } : exp;
+  });
+
+  const education = origEducation.map((edu, i) => {
+    const t = translation?.education?.[i];
+    return t ? { ...edu, ...t } : edu;
+  });
+
+  const skills = origSkills.map((group, i) => {
+    const t = translation?.skills?.[i];
+    return t ? { ...group, ...t } : group;
+  });
+
+  const summary = translation?.summary || origSummary;
+
+  const additionalSections = origAdditionalSections.map((section, i) => {
+    const t = translation?.additionalSections?.[i];
+    if (!t) return section;
+    return {
+      ...section,
+      items: section.items?.map((item, j) => {
+        const ti = t.items?.[j];
+        return ti ? { ...item, ...ti } : item;
+      })
+    };
+  });
+
+  // Section titles based on language
+  const sectionTitles = SECTION_TITLES_BY_LANGUAGE[language] || SECTION_TITLES_BY_LANGUAGE.es;
+  const dateStrings = DATE_STRINGS_BY_LANGUAGE[language] || DATE_STRINGS_BY_LANGUAGE.es;
 
   // Obtener iniciales para el avatar placeholder
   const getInitials = () => {
-    const first = personalInfo.firstName?.[0] || '';
-    const last = personalInfo.lastName?.[0] || '';
+    const first = origPersonalInfo.firstName?.[0] || '';
+    const last = origPersonalInfo.lastName?.[0] || '';
     return (first + last).toUpperCase() || 'CV';
   };
 
-  // Formatear fecha
-  const formatDate = (dateStr) => {
+  // Formatear fecha with language-aware "Presente"/"Actual"
+  const formatDate = (dateStr, isCurrent) => {
     if (!dateStr) return '';
-    if (dateStr === 'Presente' || dateStr === 'Actual') return dateStr;
+    if (isCurrent || dateStr === 'Presente' || dateStr === 'Actual') return dateStrings.present;
     return dateStr;
   };
 
@@ -188,13 +230,13 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     if (experience.length === 0) return null;
     return (
       <div className="preview-section">
-        <h3 className="preview-section-title">EXPERIENCIA PROFESIONAL</h3>
+        <h3 className="preview-section-title">{sectionTitles.experience}</h3>
         {experience.map((exp, idx) => (
           <div key={exp.id || idx} className="preview-item">
             <div className="preview-item-header">
               <strong>{exp.position}</strong>
               <span className="preview-date">
-                {formatDate(exp.startDate)} — {exp.current ? 'Presente' : formatDate(exp.endDate)}
+                {formatDate(exp.startDate)} — {formatDate(exp.endDate, exp.current)}
               </span>
             </div>
             <p className="preview-company">{exp.company}</p>
@@ -210,13 +252,13 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     if (education.length === 0) return null;
     return (
       <div className="preview-section">
-        <h3 className="preview-section-title">EDUCACIÓN</h3>
+        <h3 className="preview-section-title">{sectionTitles.education}</h3>
         {education.map((edu, idx) => (
           <div key={edu.id || idx} className="preview-item">
             <div className="preview-item-header">
               <strong>{edu.degree}</strong>
               <span className="preview-date">
-                {formatDate(edu.startDate)} — {edu.current ? 'Presente' : formatDate(edu.endDate)}
+                {formatDate(edu.startDate)} — {formatDate(edu.endDate, edu.current)}
               </span>
             </div>
             <p className="preview-company">{edu.institution}</p>
@@ -234,7 +276,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     if (skills.length === 0) return null;
     return (
       <div className="preview-section">
-        <h3 className="preview-section-title">HABILIDADES</h3>
+        <h3 className="preview-section-title">{sectionTitles.skills}</h3>
         {skills.map((skillGroup, idx) => (
           <div key={skillGroup.id || idx} className="preview-skill-group">
             {skillGroup.category && (
@@ -256,14 +298,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
     if (!additionalSections || additionalSections.length === 0) return null;
 
     return additionalSections.map((section) => {
-      const sectionTitle = {
-        projects: 'PROYECTOS',
-        certifications: 'CERTIFICACIONES',
-        coursework: 'CURSOS',
-        involvement: 'PARTICIPACIÓN',
-        academic: 'LOGROS ACADÉMICOS',
-        references: 'REFERENCIAS'
-      }[section.type] || section.type?.toUpperCase();
+      const sectionTitle = sectionTitles[section.type] || section.type?.toUpperCase();
 
       return (
         <div key={section.instanceId} className="preview-section">
@@ -327,7 +362,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
                 <>
                   <strong>{item.name}</strong>
                   {item.position && item.company && (
-                    <p className="preview-company">{item.position} en {item.company}</p>
+                    <p className="preview-company">{item.position} — {item.company}</p>
                   )}
                   <div className="preview-reference-contact">
                     {item.email && <span>{item.email}</span>}
@@ -382,7 +417,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
         {/* Summary */}
         {summary && (
           <div className="preview-section preview-summary">
-            <h3 className="preview-section-title">RESUMEN PROFESIONAL</h3>
+            <h3 className="preview-section-title">{sectionTitles.summary}</h3>
             <p className="preview-summary-text">{summary}</p>
           </div>
         )}

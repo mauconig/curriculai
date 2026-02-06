@@ -9,7 +9,10 @@ import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import ResumePreview from '../../components/editor/ResumePreview';
+import LanguageSelector from '../../components/editor/LanguageSelector';
+import TranslationEditor from '../../components/editor/TranslationEditor';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
+import aiService from '../../services/aiService';
 import { BUTTON_LABELS } from '../../utils/constants';
 import toast from 'react-hot-toast';
 import './PreviewForm.css';
@@ -42,15 +45,79 @@ const PreviewForm = () => {
   const [editingSection, setEditingSection] = useState(null);
   const [expandedSections, setExpandedSections] = useState({});
   const [localData, setLocalData] = useState({});
-  const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
+  const [pageSize, setPageSize] = useState('a4');
   const [initialized, setInitialized] = useState(false);
+
+  // Translation state
+  const [selectedLanguage, setSelectedLanguage] = useState('es');
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showTranslationEditor, setShowTranslationEditor] = useState(false);
 
   // Sync local data with resumeData (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
-    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+    if (!dataLoaded || initialized) return;
     setLocalData(resumeData);
     setInitialized(true);
   }, [dataLoaded]);
+
+  // Translation handler
+  const handleLanguageChange = async (langCode) => {
+    setSelectedLanguage(langCode);
+
+    if (langCode === 'es') return;
+
+    // Check if cached translation exists
+    if (localData.translations?.[langCode]) return;
+
+    // Translate via AI
+    setIsTranslating(true);
+    const translatingToast = toast.loading('Traduciendo currículum...');
+    try {
+      const translation = await aiService.translateResume(localData, langCode);
+      translation.translatedAt = new Date().toISOString();
+
+      const updatedTranslations = { ...(localData.translations || {}), [langCode]: translation };
+      setLocalData(prev => ({ ...prev, translations: updatedTranslations }));
+      updateResumeData('translations', updatedTranslations);
+      toast.success('Traducción completada', { id: translatingToast });
+    } catch (error) {
+      toast.error('Error al traducir: ' + error.message, { id: translatingToast });
+      setSelectedLanguage('es');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleRetranslate = async () => {
+    if (selectedLanguage === 'es') return;
+
+    setIsTranslating(true);
+    const translatingToast = toast.loading('Re-traduciendo currículum...');
+    try {
+      const translation = await aiService.translateResume(localData, selectedLanguage);
+      translation.translatedAt = new Date().toISOString();
+
+      const updatedTranslations = { ...(localData.translations || {}), [selectedLanguage]: translation };
+      setLocalData(prev => ({ ...prev, translations: updatedTranslations }));
+      updateResumeData('translations', updatedTranslations);
+      toast.success('Re-traducción completada', { id: translatingToast });
+    } catch (error) {
+      toast.error('Error al re-traducir: ' + error.message, { id: translatingToast });
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleSaveTranslation = (updatedTranslation) => {
+    const updatedTranslations = {
+      ...(localData.translations || {}),
+      [selectedLanguage]: { ...updatedTranslation, translatedAt: localData.translations?.[selectedLanguage]?.translatedAt }
+    };
+    setLocalData(prev => ({ ...prev, translations: updatedTranslations }));
+    updateResumeData('translations', updatedTranslations);
+    setShowTranslationEditor(false);
+    toast.success('Traducción actualizada');
+  };
 
   const handleOpenEdit = (sectionId) => {
     setEditingSection(sectionId);
@@ -388,6 +455,16 @@ const PreviewForm = () => {
         variant="warning"
       />
 
+      {showTranslationEditor && (
+        <TranslationEditor
+          isOpen={showTranslationEditor}
+          onClose={() => setShowTranslationEditor(false)}
+          resumeData={localData}
+          language={selectedLanguage}
+          onSave={handleSaveTranslation}
+        />
+      )}
+
       <WizardProgress currentStep={currentStep} />
 
       <div className="preview-form-container">
@@ -397,6 +474,18 @@ const PreviewForm = () => {
             <p>Revisa cómo quedará tu currículum y haz ajustes rápidos si es necesario</p>
           </div>
           <div className="header-actions">
+            <LanguageSelector
+              selectedLanguage={selectedLanguage}
+              onLanguageChange={handleLanguageChange}
+              isTranslating={isTranslating}
+              translatedAt={localData.translations?.[selectedLanguage]?.translatedAt}
+              onEditTranslation={selectedLanguage !== 'es' && localData.translations?.[selectedLanguage]
+                ? () => setShowTranslationEditor(true)
+                : null}
+              onRetranslate={selectedLanguage !== 'es' && localData.translations?.[selectedLanguage]
+                ? handleRetranslate
+                : null}
+            />
             <div className="page-size-selector">
               <HugeiconsIcon icon={FileIcon} size={16} />
               <button
@@ -432,6 +521,7 @@ const PreviewForm = () => {
               pageSize={pageSize}
               showWatermark={true}
               colorPalette={localData.colorPalette}
+              language={selectedLanguage}
             />
           </div>
 

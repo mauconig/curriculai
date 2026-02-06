@@ -211,4 +211,123 @@ REGLAS:
   }
 });
 
+/**
+ * POST /api/ai/translate-resume
+ * Translate resume content to a target language using AI
+ */
+router.post('/translate-resume', async (req, res) => {
+  try {
+    const { resumeData, targetLanguage } = req.body;
+
+    if (!resumeData || !targetLanguage) {
+      return res.status(400).json({
+        error: 'Se requieren datos del currículum e idioma destino'
+      });
+    }
+
+    // Extract only translatable fields to reduce token usage
+    const translatableData = {};
+
+    if (resumeData.personalInfo?.location) {
+      translatableData.personalInfo = { location: resumeData.personalInfo.location };
+    }
+
+    if (resumeData.experience?.length > 0) {
+      translatableData.experience = resumeData.experience.map(exp => ({
+        position: exp.position || '',
+        description: exp.description || ''
+      }));
+    }
+
+    if (resumeData.education?.length > 0) {
+      translatableData.education = resumeData.education.map(edu => ({
+        degree: edu.degree || '',
+        field: edu.field || '',
+        description: edu.description || ''
+      }));
+    }
+
+    if (resumeData.skills?.length > 0) {
+      translatableData.skills = resumeData.skills.map(group => ({
+        category: group.category || '',
+        skills: group.skills || []
+      }));
+    }
+
+    if (resumeData.summary) {
+      translatableData.summary = resumeData.summary;
+    }
+
+    if (resumeData.additionalSections?.length > 0) {
+      translatableData.additionalSections = resumeData.additionalSections.map(section => ({
+        type: section.type,
+        items: section.items?.map(item => {
+          const translated = {};
+          for (const [key, value] of Object.entries(item)) {
+            if (key === 'id' || key === 'instanceId') continue;
+            if (typeof value === 'string') translated[key] = value;
+          }
+          return translated;
+        }) || []
+      }));
+    }
+
+    const LANGUAGE_NAMES = {
+      en: 'English', fr: 'French', de: 'German', pt: 'Portuguese',
+      it: 'Italian', nl: 'Dutch', zh: 'Chinese (Simplified)',
+      ja: 'Japanese', ko: 'Korean'
+    };
+
+    const langName = LANGUAGE_NAMES[targetLanguage] || targetLanguage;
+
+    const systemPrompt = `You are an expert CV/resume translator. Translate the resume content from Spanish to ${langName}.
+
+RULES:
+- Translate: job titles, descriptions, degree names, study fields, skill category names (e.g. "Técnicas" → "Technical"), professional summary, location names
+- Do NOT translate: personal names, company names, institution names, email addresses, phone numbers, URLs, dates
+- For technical skills (React, Node.js, Python, AWS, etc.): keep them as-is, do NOT translate
+- For soft skills or non-technical skills: translate them (e.g. "Liderazgo" → "Leadership")
+- Keep bullet point format (• ) exactly as-is
+- Maintain professional tone appropriate for the ${langName} job market
+- Return ONLY valid JSON matching the exact input structure, no markdown formatting, no code blocks
+- Do not add any text before or after the JSON`;
+
+    const userPrompt = `Translate the following resume data to ${langName}:\n\n${JSON.stringify(translatableData, null, 2)}`;
+
+    const completion = await groq.chat.completions.create({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      model: 'llama-3.3-70b-versatile',
+      temperature: 0.3,
+      max_tokens: 4096
+    });
+
+    const rawResponse = completion.choices[0]?.message?.content?.trim();
+
+    if (!rawResponse) {
+      throw new Error('No se pudo generar la traducción');
+    }
+
+    // Parse the JSON response, handling potential markdown code blocks
+    let translation;
+    try {
+      const jsonStr = rawResponse.replace(/^```(?:json)?\s*\n?/, '').replace(/\n?```\s*$/, '');
+      translation = JSON.parse(jsonStr);
+    } catch (parseError) {
+      console.error('Error parsing AI translation response:', rawResponse);
+      throw new Error('La respuesta de IA no es JSON válido');
+    }
+
+    res.json({ translation });
+  } catch (error) {
+    console.error('Error al traducir currículum con IA:', error);
+    res.status(500).json({
+      error: 'Error al traducir con IA',
+      message: error.message
+    });
+  }
+});
+
 export default router;

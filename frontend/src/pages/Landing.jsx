@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { FileIcon, StarsIcon, DownloadIcon, LayoutIcon, CheckmarkCircleIcon, ArrowRightIcon, MoonIcon, SunIcon } from '@hugeicons/core-free-icons';
+import { FileIcon, StarsIcon, DownloadIcon, LayoutIcon, CheckmarkCircleIcon, ArrowRightIcon, MoonIcon, SunIcon, LanguageSkillIcon } from '@hugeicons/core-free-icons';
 import { useTheme } from '../contexts/ThemeContext';
 import './Landing.css';
 
@@ -25,6 +25,11 @@ const Landing = () => {
       icon: <HugeiconsIcon icon={LayoutIcon} size={32} />,
       title: 'Múltiples Plantillas',
       description: 'Elige entre diseños modernos, clásicos o minimalistas según tu sector.'
+    },
+    {
+      icon: <HugeiconsIcon icon={LanguageSkillIcon} size={32} />,
+      title: 'Traducción con IA',
+      description: 'Traduce tu CV a 10 idiomas con un click. Edita y ajusta cada traducción.'
     },
     {
       icon: <HugeiconsIcon icon={DownloadIcon} size={32} />,
@@ -212,6 +217,10 @@ const Landing = () => {
               <div className="pricing-feature">
                 <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
                 <span>Todas las plantillas disponibles</span>
+              </div>
+              <div className="pricing-feature">
+                <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />
+                <span>Traducción IA a 10 idiomas</span>
               </div>
               <div className="pricing-feature">
                 <HugeiconsIcon icon={CheckmarkCircleIcon} size={20} className="check-icon-small" />

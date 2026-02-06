@@ -11,7 +11,10 @@ import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import ResumePreview from '../../components/editor/ResumePreview';
+import LanguageSelector from '../../components/editor/LanguageSelector';
+import TranslationEditor from '../../components/editor/TranslationEditor';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
+import aiService from '../../services/aiService';
 import pdfService from '../../services/pdfService';
 import toast from 'react-hot-toast';
 import './ExportForm.css';
@@ -24,6 +27,7 @@ const ExportForm = () => {
   const {
     currentStep,
     resumeData,
+    updateResumeData,
     previousStep
   } = useResumeWizard(9, resumeId);
 
@@ -34,9 +38,70 @@ const ExportForm = () => {
   const [pageSize, setPageSize] = useState('a4'); // 'a4' or 'letter'
   const pdfContainerRef = useRef(null);
 
+  // Translation state
+  const [selectedLanguage, setSelectedLanguage] = useState('es');
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showTranslationEditor, setShowTranslationEditor] = useState(false);
+
   // TODO: Check real payment status when Stripe is integrated
   // For now, assume payment is complete since it's a mockup
   const isPaid = true;
+
+  // Translation handlers
+  const handleLanguageChange = async (langCode) => {
+    setSelectedLanguage(langCode);
+
+    if (langCode === 'es') return;
+
+    // Check if cached translation exists
+    if (resumeData.translations?.[langCode]) return;
+
+    // Translate via AI
+    setIsTranslating(true);
+    const translatingToast = toast.loading('Traduciendo currículum...');
+    try {
+      const translation = await aiService.translateResume(resumeData, langCode);
+      translation.translatedAt = new Date().toISOString();
+
+      const updatedTranslations = { ...(resumeData.translations || {}), [langCode]: translation };
+      updateResumeData('translations', updatedTranslations);
+      toast.success('Traducción completada', { id: translatingToast });
+    } catch (error) {
+      toast.error('Error al traducir: ' + error.message, { id: translatingToast });
+      setSelectedLanguage('es');
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleRetranslate = async () => {
+    if (selectedLanguage === 'es') return;
+
+    setIsTranslating(true);
+    const translatingToast = toast.loading('Re-traduciendo currículum...');
+    try {
+      const translation = await aiService.translateResume(resumeData, selectedLanguage);
+      translation.translatedAt = new Date().toISOString();
+
+      const updatedTranslations = { ...(resumeData.translations || {}), [selectedLanguage]: translation };
+      updateResumeData('translations', updatedTranslations);
+      toast.success('Re-traducción completada', { id: translatingToast });
+    } catch (error) {
+      toast.error('Error al re-traducir: ' + error.message, { id: translatingToast });
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const handleSaveTranslation = (updatedTranslation) => {
+    const updatedTranslations = {
+      ...(resumeData.translations || {}),
+      [selectedLanguage]: { ...updatedTranslation, translatedAt: resumeData.translations?.[selectedLanguage]?.translatedAt }
+    };
+    updateResumeData('translations', updatedTranslations);
+    setShowTranslationEditor(false);
+    toast.success('Traducción actualizada');
+  };
 
   const handleBack = () => {
     setShowCancelModal(true);
@@ -213,9 +278,10 @@ const ExportForm = () => {
         pdf.restoreGraphicsState();
       }
 
-      // Generate filename
+      // Generate filename (include language code when not Spanish)
       const fileName = getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum';
-      pdf.save(`${fileName}_CV.pdf`);
+      const langSuffix = selectedLanguage !== 'es' ? `_${selectedLanguage.toUpperCase()}` : '';
+      pdf.save(`${fileName}_CV${langSuffix}.pdf`);
 
       setExportComplete(true);
       toast.success(`¡CV exportado exitosamente! (${totalPages} página${totalPages > 1 ? 's' : ''})`);
@@ -375,7 +441,8 @@ const ExportForm = () => {
 
         // Get PDF as base64
         const pdfBase64 = pdf.output('datauristring').split(',')[1];
-        const fileName = `${getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum'}_CV.pdf`;
+        const langSuffix = selectedLanguage !== 'es' ? `_${selectedLanguage.toUpperCase()}` : '';
+        const fileName = `${getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum'}_CV${langSuffix}.pdf`;
 
         // Save to backend
         await pdfService.savePDF(resumeId, fileName, pdfBase64);
@@ -412,6 +479,16 @@ const ExportForm = () => {
         onCancel={handleCancelCancel}
         variant="info"
       />
+
+      {showTranslationEditor && (
+        <TranslationEditor
+          isOpen={showTranslationEditor}
+          onClose={() => setShowTranslationEditor(false)}
+          resumeData={resumeData}
+          language={selectedLanguage}
+          onSave={handleSaveTranslation}
+        />
+      )}
 
       <WizardProgress currentStep={currentStep} />
 
@@ -464,6 +541,22 @@ const ExportForm = () => {
                 <h3>Descargar PDF</h3>
               </div>
               <p>Descarga tu curriculum en formato PDF de alta calidad, listo para enviar a empleadores.</p>
+
+              {/* Language Selector */}
+              <div className="language-selector-export">
+                <LanguageSelector
+                  selectedLanguage={selectedLanguage}
+                  onLanguageChange={handleLanguageChange}
+                  isTranslating={isTranslating}
+                  translatedAt={resumeData.translations?.[selectedLanguage]?.translatedAt}
+                  onEditTranslation={selectedLanguage !== 'es' && resumeData.translations?.[selectedLanguage]
+                    ? () => setShowTranslationEditor(true)
+                    : null}
+                  onRetranslate={selectedLanguage !== 'es' && resumeData.translations?.[selectedLanguage]
+                    ? handleRetranslate
+                    : null}
+                />
+              </div>
 
               {/* Page Size Selector */}
               <div className="page-size-selector-export">
@@ -631,6 +724,7 @@ const ExportForm = () => {
           showWatermark={false}
           showPageBreaks={false}
           colorPalette={resumeData.colorPalette}
+          language={selectedLanguage}
         />
       </div>
     </div>

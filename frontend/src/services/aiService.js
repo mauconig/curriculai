@@ -53,6 +53,23 @@ const aiService = {
       console.error('Error al mejorar resumen:', error);
       throw new Error(error.response?.data?.message || 'Error al conectar con el servicio de IA');
     }
+  },
+
+  /**
+   * Traducir currículum completo a otro idioma
+   * Retorna solo los campos traducibles (no nombres propios, empresas, etc.)
+   */
+  async translateResume(resumeData, targetLanguage) {
+    try {
+      const response = await axios.post(`${API_URL}/ai/translate-resume`, {
+        resumeData,
+        targetLanguage
+      });
+      return response.data.translation;
+    } catch (error) {
+      console.error('Error al traducir currículum:', error);
+      throw new Error(error.response?.data?.message || 'Error al conectar con el servicio de traducción');
+    }
   }
 };
 

@@ -126,6 +126,14 @@
   gap: 1.5rem;
 }
 
+/* Language Selector in Export */
+.language-selector-export {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem;
+  background: var(--bg-secondary);
+  border-radius: 0.5rem;
+}
+
 /* Page Size Selector */
 .page-size-selector-export {
   display: flex;
