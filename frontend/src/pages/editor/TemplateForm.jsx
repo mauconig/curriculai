@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowLeftIcon, ArrowRightIcon, ImageIcon, ImageNotFoundIcon, SearchAreaIcon, PaintBrushIcon } from '@hugeicons/core-free-icons';
+import { ArrowLeftIcon, ArrowRightIcon, ImageIcon, ImageNotFoundIcon, SearchAreaIcon, PaintBrushIcon, ArrowLeft02Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -166,6 +166,56 @@ const TEMPLATES_ATS = [
   }
 ];
 
+const ScrollableGrid = ({ children }) => {
+  const gridRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+  }, []);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener('scroll', checkScroll, { passive: true });
+    window.addEventListener('resize', checkScroll);
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      window.removeEventListener('resize', checkScroll);
+    };
+  }, [checkScroll]);
+
+  const scroll = (direction) => {
+    const el = gridRef.current;
+    if (!el) return;
+    const cardWidth = 240 + 20; // card width + gap
+    el.scrollBy({ left: direction * cardWidth * 2, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="templates-grid-wrapper">
+      {canScrollLeft && (
+        <button className="grid-scroll-btn grid-scroll-left" onClick={() => scroll(-1)}>
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={18} />
+        </button>
+      )}
+      <div className="templates-grid" ref={gridRef}>
+        {children}
+      </div>
+      {canScrollRight && (
+        <button className="grid-scroll-btn grid-scroll-right" onClick={() => scroll(1)}>
+          <HugeiconsIcon icon={ArrowRight02Icon} size={18} />
+        </button>
+      )}
+    </div>
+  );
+};
+
 const TemplateForm = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -287,7 +337,7 @@ const TemplateForm = () => {
             <HugeiconsIcon icon={ImageIcon} size={20} className="category-icon" />
             <h2>Con foto de perfil</h2>
           </div>
-          <div className="templates-grid">
+          <ScrollableGrid>
             {TEMPLATES_WITH_PHOTO.map((template) => (
               <TemplateCard
                 key={template.id}
@@ -297,7 +347,7 @@ const TemplateForm = () => {
                 colorPalette={selectedPalette}
               />
             ))}
-          </div>
+          </ScrollableGrid>
         </div>
 
         {/* Templates without Photo */}
@@ -306,7 +356,7 @@ const TemplateForm = () => {
             <HugeiconsIcon icon={ImageNotFoundIcon} size={20} className="category-icon" />
             <h2>Sin foto de perfil</h2>
           </div>
-          <div className="templates-grid">
+          <ScrollableGrid>
             {TEMPLATES_WITHOUT_PHOTO.map((template) => (
               <TemplateCard
                 key={template.id}
@@ -316,7 +366,7 @@ const TemplateForm = () => {
                 colorPalette={selectedPalette}
               />
             ))}
-          </div>
+          </ScrollableGrid>
         </div>
 
         {/* ATS Optimized Templates */}
@@ -329,7 +379,7 @@ const TemplateForm = () => {
           <p className="category-description">
             Diseñados para pasar filtros automáticos de selección de personal (Applicant Tracking Systems)
           </p>
-          <div className="templates-grid">
+          <ScrollableGrid>
             {TEMPLATES_ATS.map((template) => (
               <TemplateCard
                 key={template.id}
@@ -338,7 +388,7 @@ const TemplateForm = () => {
                 onSelect={handleSelectTemplate}
               />
             ))}
-          </div>
+          </ScrollableGrid>
         </div>
 
         {/* Navigation */}
