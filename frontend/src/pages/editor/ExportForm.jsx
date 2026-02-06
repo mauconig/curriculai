@@ -630,6 +630,7 @@ const ExportForm = () => {
           pageSize={pageSize}
           showWatermark={false}
           showPageBreaks={false}
+          colorPalette={resumeData.colorPalette}
         />
       </div>
     </div>

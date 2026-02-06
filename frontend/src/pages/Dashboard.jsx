@@ -8,6 +8,7 @@ import authService from '../services/authService';
 import resumeService from '../services/resumeService';
 import pdfService from '../services/pdfService';
 import toast from 'react-hot-toast';
+import { getPaletteStyle } from '../utils/colorPalettes';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -219,7 +220,7 @@ const Dashboard = () => {
                   return (
                     <div key={resume.id} className="resume-card" onClick={() => handleEditResume(resume.id)}>
                       {/* Mini CV Preview */}
-                      <div className={`mini-cv-preview template-${template}`}>
+                      <div className={`mini-cv-preview template-${template}`} style={getPaletteStyle(data.colorPalette, template)}>
                         <button
                           className="btn-delete-floating"
                           onClick={(e) => {

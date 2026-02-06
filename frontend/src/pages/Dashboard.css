@@ -613,7 +613,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--cv-primary, #667eea) 0%, var(--cv-secondary, #764ba2) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -667,7 +667,7 @@
 .mini-section-title {
   width: 40%;
   height: 4px;
-  background: #667eea;
+  background: var(--cv-primary, #667eea);
   border-radius: 2px;
   margin-bottom: 0.125rem;
 }
@@ -692,7 +692,7 @@
 .mini-cv-skills span {
   width: 28px;
   height: 6px;
-  background: #dbeafe;
+  background: var(--cv-primary-light, #dbeafe);
   border-radius: 3px;
 }
 
@@ -751,46 +751,24 @@
   text-transform: capitalize;
 }
 
-/* Template-specific preview styles */
+/* Template-specific preview styles (structural only - colors come from CSS vars) */
 
-/* Modern Template - Purple gradient, clean design */
-.mini-cv-preview.template-modern .mini-section-title {
-  background: #667eea;
+.mini-cv-preview .mini-cv-header {
+  border-bottom-color: var(--cv-primary, #667eea);
 }
 
-.mini-cv-preview.template-modern .mini-cv-header {
-  border-bottom-color: #667eea;
-}
-
-.mini-cv-preview.template-modern .mini-cv-photo {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-/* Classic Template - Traditional, formal dark styling */
-.mini-cv-preview.template-classic .mini-section-title {
-  background: #1f2937;
-}
-
+/* Classic Template - reversed layout */
 .mini-cv-preview.template-classic .mini-cv-header {
-  border-bottom-color: #1f2937;
   flex-direction: row-reverse;
-}
-
-.mini-cv-preview.template-classic .mini-cv-photo {
-  background: #1f2937;
 }
 
 .mini-cv-preview.template-classic .mini-cv-info {
   text-align: right;
 }
 
-/* Creative Template - Colorful header background */
-.mini-cv-preview.template-creative .mini-section-title {
-  background: #f97316;
-}
-
+/* Creative Template - colorful header banner */
 .mini-cv-preview.template-creative .mini-cv-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--cv-primary, #667eea) 0%, var(--cv-secondary, #764ba2) 100%);
   margin: -0.75rem -0.75rem 0.5rem -0.75rem;
   padding: 0.75rem;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -811,36 +789,19 @@
 }
 
 .mini-cv-preview.template-creative .mini-cv-photo span {
-  color: #667eea;
+  color: var(--cv-primary, #667eea);
 }
 
-/* Executive Template - Professional teal, structured */
-.mini-cv-preview.template-executive .mini-section-title {
-  background: #0f766e;
-}
-
+/* Executive Template - double border */
 .mini-cv-preview.template-executive .mini-cv-header {
-  border-bottom-color: #0f766e;
   border-bottom-width: 2px;
 }
 
-.mini-cv-preview.template-executive .mini-cv-photo {
-  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-}
-
 .mini-cv-preview.template-executive .mini-cv-name {
-  color: #0f766e;
+  color: var(--cv-primary, #0f766e);
 }
 
-/* Minimal Template - Simple, no photo, grayscale */
-.mini-cv-preview.template-minimal .mini-section-title {
-  background: #6b7280;
-}
-
-.mini-cv-preview.template-minimal .mini-cv-header {
-  border-bottom-color: #e5e7eb;
-}
-
+/* Minimal Template - no photo, simple */
 .mini-cv-preview.template-minimal .mini-cv-photo {
   display: none;
 }
@@ -901,30 +862,6 @@
 }
 
 /* Dark mode template-specific styles */
-.dark .mini-cv-preview.template-classic .mini-cv-header {
-  border-bottom-color: #9ca3af;
-}
-
-.dark .mini-cv-preview.template-classic .mini-cv-photo {
-  background: #4b5563;
-}
-
-.dark .mini-cv-preview.template-creative .mini-cv-header {
-  background: linear-gradient(135deg, #4f46e5 0%, #6b21a8 100%);
-}
-
-.dark .mini-cv-preview.template-executive .mini-cv-header {
-  border-bottom-color: #14b8a6;
-}
-
-.dark .mini-cv-preview.template-executive .mini-cv-name {
-  color: #14b8a6;
-}
-
-.dark .mini-cv-preview.template-minimal .mini-cv-header {
-  border-bottom-color: #4b5563;
-}
-
 .dark .mini-cv-preview.template-minimal .mini-section-line {
   background: #4b5563;
 }

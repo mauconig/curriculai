@@ -1,0 +1,43 @@
+.color-palette-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.palette-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.palette-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.2s;
+  padding: 0;
+  outline: none;
+}
+
+.palette-swatch:hover {
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.palette-swatch.selected {
+  border-color: white;
+  box-shadow: 0 0 0 2px currentColor, 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+/* Dark mode */
+.dark .palette-swatch.selected {
+  border-color: #1f2937;
+  box-shadow: 0 0 0 2px #9ca3af, 0 2px 8px rgba(0, 0, 0, 0.3);
+}

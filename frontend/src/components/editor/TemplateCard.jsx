@@ -1,5 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { TickIcon } from '@hugeicons/core-free-icons';
+import { getPaletteStyle } from '../../utils/colorPalettes';
 import './TemplateCard.css';
 
 const SAMPLE_DATA = {
@@ -31,14 +32,16 @@ const SAMPLE_DATA = {
   skills: ['React', 'Node.js', 'TypeScript', 'PostgreSQL', 'AWS']
 };
 
-const TemplateCard = ({ template, isSelected, onSelect }) => {
+const TemplateCard = ({ template, isSelected, onSelect, colorPalette }) => {
+  const paletteStyle = getPaletteStyle(colorPalette, template.id);
+
   return (
     <div
       className={`template-card ${isSelected ? 'selected' : ''}`}
       onClick={() => onSelect(template.id)}
     >
       <div className="template-preview">
-        <div className={`template-realistic ${template.style}`}>
+        <div className={`template-realistic ${template.style}`} style={paletteStyle}>
           {/* Header Section */}
           <div className="realistic-header">
             {template.hasPhoto && (

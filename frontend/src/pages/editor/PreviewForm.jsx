@@ -431,6 +431,7 @@ const PreviewForm = () => {
               template={localData.template || 'modern'}
               pageSize={pageSize}
               showWatermark={true}
+              colorPalette={localData.colorPalette}
             />
           </div>
 

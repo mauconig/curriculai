@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowLeftIcon, ArrowRightIcon, ImageIcon, ImageNotFoundIcon, SearchAreaIcon } from '@hugeicons/core-free-icons';
+import { ArrowLeftIcon, ArrowRightIcon, ImageIcon, ImageNotFoundIcon, SearchAreaIcon, PaintBrushIcon } from '@hugeicons/core-free-icons';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
 import TemplateCard from '../../components/editor/TemplateCard';
+import ColorPaletteSelector from '../../components/editor/ColorPaletteSelector';
 import { useResumeWizard } from '../../hooks/useResumeWizard';
+import { getTemplateSupportsColorPalette } from '../../utils/colorPalettes';
 import { BUTTON_LABELS } from '../../utils/constants';
 import toast from 'react-hot-toast';
 import './TemplateForm.css';
@@ -109,15 +111,19 @@ const TemplateForm = () => {
   } = useResumeWizard(6, resumeId);
 
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [selectedPalette, setSelectedPalette] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [initialized, setInitialized] = useState(false);
 
-  // Load existing template selection (solo una vez cuando dataLoaded cambia a true)
+  // Load existing template + palette selection (solo una vez cuando dataLoaded cambia a true)
   useEffect(() => {
-    if (!dataLoaded || initialized) return; // Solo ejecutar una vez
+    if (!dataLoaded || initialized) return;
 
     if (resumeData.template) {
       setSelectedTemplate(resumeData.template);
+    }
+    if (resumeData.colorPalette) {
+      setSelectedPalette(resumeData.colorPalette);
     }
     setInitialized(true);
   }, [dataLoaded]);
@@ -128,6 +134,13 @@ const TemplateForm = () => {
       updateResumeData('template', selectedTemplate);
     }
   }, [selectedTemplate, initialized]);
+
+  // Auto-save when palette changes
+  useEffect(() => {
+    if (initialized && selectedPalette) {
+      updateResumeData('colorPalette', selectedPalette);
+    }
+  }, [selectedPalette, initialized]);
 
   const handleSelectTemplate = (templateId) => {
     setSelectedTemplate(templateId);
@@ -179,6 +192,24 @@ const TemplateForm = () => {
           <ThemeToggle />
         </div>
 
+        {/* Color Palette Selector - at the top so user picks colors first */}
+        <div className="template-category">
+          <div className="category-header">
+            <HugeiconsIcon icon={PaintBrushIcon} size={20} className="category-icon" />
+            <h2>Paleta de colores</h2>
+          </div>
+          <p className="category-description">
+            Elige los colores que se aplicarán a tu plantilla
+          </p>
+          <ColorPaletteSelector
+            selectedPalette={selectedPalette}
+            onSelectPalette={(paletteId) => {
+              setSelectedPalette(paletteId);
+            }}
+            templateId={selectedTemplate}
+          />
+        </div>
+
         {/* Templates with Photo */}
         <div className="template-category">
           <div className="category-header">
@@ -192,6 +223,7 @@ const TemplateForm = () => {
                 template={template}
                 isSelected={selectedTemplate === template.id}
                 onSelect={handleSelectTemplate}
+                colorPalette={selectedPalette}
               />
             ))}
           </div>
@@ -210,6 +242,7 @@ const TemplateForm = () => {
                 template={template}
                 isSelected={selectedTemplate === template.id}
                 onSelect={handleSelectTemplate}
+                colorPalette={selectedPalette}
               />
             ))}
           </div>

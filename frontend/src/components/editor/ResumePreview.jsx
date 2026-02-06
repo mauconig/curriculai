@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { MailIcon, SmartPhoneIcon, LocationIcon, GlobeIcon, LinkedinIcon } from '@hugeicons/core-free-icons';
+import { getPaletteStyle } from '../../utils/colorPalettes';
 import './ResumePreview.css';
 
 /**
@@ -12,7 +13,7 @@ import './ResumePreview.css';
  * @param {boolean} showWatermark - Mostrar marca de agua
  * @param {boolean} showPageBreaks - Mostrar indicadores de salto de página
  */
-const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', showWatermark = false, showPageBreaks = true }, ref) => {
+const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', showWatermark = false, showPageBreaks = true, colorPalette }, ref) => {
   const contentRef = useRef(null);
   const [pageBreakPositions, setPageBreakPositions] = useState([]);
 
@@ -342,7 +343,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
   };
 
   return (
-    <div className={`resume-preview template-${template} page-${pageSize} ${showPageBreaks ? 'show-page-breaks' : ''}`}>
+    <div className={`resume-preview template-${template} page-${pageSize} ${showPageBreaks ? 'show-page-breaks' : ''}`} style={getPaletteStyle(colorPalette, template)}>
       <div className="preview-paper" ref={contentRef}>
         {showWatermark && <div className="preview-watermark" />}
 

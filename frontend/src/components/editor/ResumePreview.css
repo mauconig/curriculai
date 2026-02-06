@@ -29,7 +29,7 @@
   gap: 1.25rem;
   margin-bottom: 1.5rem;
   padding-bottom: 2.5rem;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid var(--cv-primary);
 }
 
 .preview-photo {
@@ -38,7 +38,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--cv-primary) 0%, var(--cv-secondary) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -90,7 +90,7 @@
 }
 
 .contact-item svg {
-  color: #667eea;
+  color: var(--cv-primary);
 }
 
 /* Sections */
@@ -101,12 +101,12 @@
 .preview-section-title {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #667eea;
+  color: var(--cv-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 0 0 0.75rem 0;
   padding-bottom: 0.25rem;
-  border-bottom: 1px solid #667eea;
+  border-bottom: 1px solid var(--cv-primary);
 }
 
 /* Items */
@@ -208,8 +208,8 @@
 .preview-skill {
   font-size: 0.75rem;
   padding: 0.125rem 0.5rem;
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
+  background: var(--cv-primary-light);
+  color: var(--cv-primary);
   border-radius: 0.25rem;
 }
 
@@ -226,18 +226,11 @@
 /* TEMPLATE VARIATIONS     */
 /* ======================= */
 
-/* Modern (Default) - Clean with accent colors */
-.template-modern .preview-section-title {
-  color: #667eea;
-  border-bottom-color: #667eea;
-}
-
 /* Classic - Traditional centered header */
 .template-classic .preview-header {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-bottom: 2px solid #1f2937;
   gap: 0.5rem;
   padding-bottom: 1rem;
   height: auto !important;
@@ -247,7 +240,6 @@
 .template-classic .preview-photo {
   width: 110px;
   height: 110px;
-  background: #1f2937;
   flex-shrink: 0;
   order: 1;
 }
@@ -269,23 +261,17 @@
 }
 
 .template-classic .preview-section-title {
-  color: #1f2937;
-  border-bottom-color: #1f2937;
   text-align: center;
 }
 
 .template-classic .preview-skill {
-  background: #1f2937;
+  background: var(--cv-primary);
   color: white;
-}
-
-.template-classic .contact-item svg {
-  color: #1f2937;
 }
 
 /* Creative - Colorful header banner */
 .template-creative .preview-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--cv-primary) 0%, var(--cv-secondary) 100%);
   margin: -20mm -18mm 1.5rem -18mm;
   padding: 15mm 18mm 1rem 18mm;
   border-bottom: none;
@@ -306,7 +292,7 @@
 }
 
 .template-creative .preview-initials {
-  color: #667eea;
+  color: var(--cv-primary);
   font-size: 1.5rem;
 }
 
@@ -329,18 +315,19 @@
 }
 
 .template-creative .preview-skill {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--cv-primary) 0%, var(--cv-secondary) 100%);
   color: white;
 }
 
 /* Executive - Formal, professional */
 .template-executive .preview-header {
-  border-bottom: 3px double #1f2937;
+  margin-top: 20px;
+  padding-bottom: 70px;
+  border-bottom: 3px double var(--cv-primary);
 }
 
 .template-executive .preview-photo {
   border-radius: 0.5rem;
-  background: #1f2937;
 }
 
 .template-executive .preview-name {
@@ -349,19 +336,13 @@
 }
 
 .template-executive .preview-section-title {
-  color: #1f2937;
-  border-bottom-color: #1f2937;
   font-weight: 800;
 }
 
 .template-executive .preview-skill {
-  background: #1f2937;
+  background: var(--cv-primary);
   color: white;
   border-radius: 0;
-}
-
-.template-executive .contact-item svg {
-  color: #1f2937;
 }
 
 /* Minimal - Clean, no photo, simple lines */
@@ -371,7 +352,6 @@
 }
 
 .template-minimal .preview-section-title {
-  color: #6b7280;
   border-bottom: none;
   font-weight: 600;
   letter-spacing: 1px;
@@ -383,21 +363,11 @@
   color: #374151;
 }
 
-.template-minimal .contact-item svg {
-  color: #6b7280;
-}
-
-/* Modern Text - No photo variant */
-.template-modern-text .preview-header {
-  border-bottom: 2px solid #667eea;
-}
-
 /* Classic Text - No photo variant */
 .template-classic-text .preview-header {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  border-bottom: 2px solid #1f2937;
 }
 
 .template-classic-text .preview-contact-info {
@@ -405,18 +375,12 @@
 }
 
 .template-classic-text .preview-section-title {
-  color: #1f2937;
-  border-bottom-color: #1f2937;
   text-align: center;
 }
 
 .template-classic-text .preview-skill {
-  background: #1f2937;
+  background: var(--cv-primary);
   color: white;
-}
-
-.template-classic-text .contact-item svg {
-  color: #1f2937;
 }
 
 /* ATS Standard - Clean, simple, no graphics */
@@ -646,8 +610,8 @@
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    #667eea 0px,
-    #667eea 8px,
+    var(--cv-primary, #667eea) 0px,
+    var(--cv-primary, #667eea) 8px,
     transparent 8px,
     transparent 16px
   );
@@ -680,7 +644,7 @@
 .page-break-label,
 .page-break-label-next {
   font-size: 0.65rem;
-  color: #667eea;
+  color: var(--cv-primary, #667eea);
   background: white;
   padding: 0.125rem 0.5rem;
   border-radius: 0.25rem;
@@ -703,13 +667,13 @@
   bottom: -2rem;
   left: 50%;
   transform: translateX(-50%);
-  background: #667eea;
+  background: var(--cv-primary, #667eea);
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure preview container can show overflow for indicators */
