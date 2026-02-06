@@ -284,6 +284,193 @@
   border-radius: 0;
 }
 
+/* Elegant - Left accent border, refined */
+.template-realistic.elegant .realistic-header {
+  border-bottom: none;
+  border-left: 3px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.5rem;
+}
+
+.template-realistic.elegant .realistic-title {
+  font-style: italic;
+}
+
+.template-realistic.elegant .realistic-section-title {
+  border-bottom: none;
+  border-left: 2px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.375rem;
+}
+
+.template-realistic.elegant .realistic-skill {
+  background: transparent;
+  border: 1px solid var(--cv-primary, #1e3a5f);
+  color: var(--cv-primary, #1e3a5f);
+}
+
+/* Bold - Thick top bar, strong typography */
+.template-realistic.bold {
+  border-top: 4px solid var(--cv-primary, #dc2626);
+}
+
+.template-realistic.bold .realistic-header {
+  border-bottom: none;
+  padding-bottom: 0.375rem;
+}
+
+.template-realistic.bold .realistic-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.template-realistic.bold .realistic-section-title {
+  border-bottom: 2px solid var(--cv-primary, #dc2626);
+  font-weight: 800;
+}
+
+.template-realistic.bold .realistic-skill {
+  background: var(--cv-primary, #dc2626);
+  color: white;
+}
+
+/* Compact - Dense layout, space-efficient */
+.template-realistic.compact {
+  font-size: 0.4375rem;
+  line-height: 1.2;
+  padding: 0.5rem;
+}
+
+.template-realistic.compact .realistic-header {
+  gap: 0.375rem;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.template-realistic.compact .realistic-photo {
+  width: 24px;
+  height: 24px;
+  font-size: 0.375rem;
+}
+
+.template-realistic.compact .realistic-section {
+  margin-bottom: 0.25rem;
+}
+
+.template-realistic.compact .realistic-section-title {
+  font-size: 0.4rem;
+  margin-bottom: 0.125rem;
+  padding-bottom: 0;
+  border-bottom: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.template-realistic.compact .realistic-section-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  background: var(--cv-primary, #2563eb);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.template-realistic.compact .realistic-skill {
+  font-size: 0.325rem;
+  padding: 0.0625rem 0.1875rem;
+}
+
+/* Corporate - Structured, boxed sections */
+.template-realistic.corporate .realistic-header {
+  border-bottom: 1px solid #d1d5db;
+}
+
+.template-realistic.corporate .realistic-photo {
+  border-radius: 0.25rem;
+}
+
+.template-realistic.corporate .realistic-section-title {
+  border-bottom: none;
+  background: var(--cv-primary-light, rgba(71, 85, 105, 0.1));
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.125rem;
+  margin-bottom: 0.25rem;
+}
+
+.template-realistic.corporate .realistic-skill {
+  border: 1px solid var(--cv-primary, #475569);
+  background: transparent;
+  color: var(--cv-primary, #475569);
+  border-radius: 0.25rem;
+}
+
+/* Clean - Maximum whitespace, minimal (no photo only) */
+.template-realistic.clean .realistic-header {
+  border-bottom: none;
+  padding-bottom: 0.5rem;
+}
+
+.template-realistic.clean .realistic-name {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.template-realistic.clean .realistic-section-title {
+  border-bottom: none;
+  font-weight: 600;
+  color: #374151;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.template-realistic.clean .realistic-section {
+  margin-bottom: 0.625rem;
+}
+
+.template-realistic.clean .realistic-skill {
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+}
+
+/* Academic - Research/academic style (no photo only) */
+.template-realistic.academic .realistic-header {
+  border-bottom: 1px solid #374151;
+}
+
+.template-realistic.academic .realistic-name {
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+}
+
+.template-realistic.academic .realistic-section-title {
+  border-bottom: none;
+  font-style: italic;
+  font-weight: 700;
+  text-transform: none;
+}
+
+.template-realistic.academic .realistic-company {
+  font-style: normal;
+}
+
+.template-realistic.academic .realistic-skill {
+  background: transparent;
+  color: #374151;
+  padding: 0;
+  font-weight: 400;
+}
+
+.template-realistic.academic .realistic-skill::before {
+  content: '• ';
+}
+
+.template-realistic.academic .realistic-skills {
+  display: block;
+}
+
 /* ATS Standard - Clean, simple, no graphics */
 .template-realistic.ats .realistic-header {
   border-bottom: 1px solid #000;
@@ -396,6 +583,39 @@
 
 .template-realistic.ats-simple .realistic-skill::before {
   content: '• ';
+}
+
+/* ATS Modern - Modern ATS-friendly */
+.template-realistic.ats-modern .realistic-header {
+  border-bottom: 1px solid #4b5563;
+  padding-bottom: 0.375rem;
+}
+
+.template-realistic.ats-modern .realistic-name {
+  font-size: 0.7rem;
+  color: #1f2937;
+}
+
+.template-realistic.ats-modern .realistic-title {
+  color: #4b5563;
+}
+
+.template-realistic.ats-modern .realistic-contact {
+  color: #4b5563;
+}
+
+.template-realistic.ats-modern .realistic-section-title {
+  color: #1f2937;
+  border-bottom: none;
+  background: #f3f4f6;
+  padding: 0.0625rem 0.1875rem;
+  border-radius: 0.0625rem;
+}
+
+.template-realistic.ats-modern .realistic-skill {
+  background: #f3f4f6;
+  color: #1f2937;
+  border: none;
 }
 
 /* Template Info */

@@ -861,11 +861,378 @@
   color: #9ca3af;
 }
 
+/* Elegant Template - left accent border, refined */
+.mini-cv-preview.template-elegant .mini-cv-header {
+  border-bottom: none;
+  border-left: 3px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.5rem;
+}
+
+.mini-cv-preview.template-elegant .mini-cv-name {
+  font-style: italic;
+}
+
+.mini-cv-preview.template-elegant .mini-section-title {
+  width: 3px;
+  height: auto;
+  min-height: 4px;
+  border-radius: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.mini-cv-preview.template-elegant .mini-cv-section {
+  position: relative;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--cv-primary, #1e3a5f);
+}
+
+.mini-cv-preview.template-elegant .mini-cv-skills span {
+  background: transparent;
+  border: 1px solid var(--cv-primary, #1e3a5f);
+}
+
+/* Elegant Text - same style without photo */
+.mini-cv-preview.template-elegant-text .mini-cv-header {
+  border-bottom: none;
+  border-left: 3px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.5rem;
+}
+
+.mini-cv-preview.template-elegant-text .mini-cv-name {
+  font-style: italic;
+}
+
+.mini-cv-preview.template-elegant-text .mini-cv-section {
+  position: relative;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--cv-primary, #1e3a5f);
+}
+
+.mini-cv-preview.template-elegant-text .mini-cv-skills span {
+  background: transparent;
+  border: 1px solid var(--cv-primary, #1e3a5f);
+}
+
+/* Bold Template - thick top bar, strong typography */
+.mini-cv-preview.template-bold .mini-cv-paper {
+  border-top: 4px solid var(--cv-primary, #dc2626);
+}
+
+.mini-cv-preview.template-bold .mini-cv-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mini-cv-preview.template-bold .mini-section-title {
+  height: 5px;
+  width: 50%;
+  border-radius: 0;
+}
+
+.mini-cv-preview.template-bold .mini-cv-skills span {
+  background: var(--cv-primary, #dc2626);
+  border-radius: 1px;
+}
+
+/* Bold Text - same style without photo */
+.mini-cv-preview.template-bold-text .mini-cv-paper {
+  border-top: 4px solid var(--cv-primary, #dc2626);
+}
+
+.mini-cv-preview.template-bold-text .mini-cv-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mini-cv-preview.template-bold-text .mini-section-title {
+  height: 5px;
+  width: 50%;
+  border-radius: 0;
+}
+
+.mini-cv-preview.template-bold-text .mini-cv-skills span {
+  background: var(--cv-primary, #dc2626);
+  border-radius: 1px;
+}
+
+/* Compact Template - dense layout */
+.mini-cv-preview.template-compact .mini-cv-paper {
+  padding: 0.5rem;
+  font-size: 0.5625rem;
+}
+
+.mini-cv-preview.template-compact .mini-cv-header {
+  gap: 0.375rem;
+  padding-bottom: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.mini-cv-preview.template-compact .mini-cv-photo {
+  width: 26px;
+  height: 26px;
+  font-size: 0.5rem;
+}
+
+.mini-cv-preview.template-compact .mini-cv-name {
+  font-size: 0.625rem;
+}
+
+.mini-cv-preview.template-compact .mini-cv-sections {
+  gap: 0.25rem;
+}
+
+.mini-cv-preview.template-compact .mini-section-title {
+  width: auto;
+  height: 3px;
+  background: none;
+  position: relative;
+  padding-left: 8px;
+}
+
+.mini-cv-preview.template-compact .mini-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--cv-primary, #2563eb);
+}
+
+.mini-cv-preview.template-compact .mini-section-line {
+  height: 2px;
+}
+
+.mini-cv-preview.template-compact .mini-cv-skills span {
+  width: 22px;
+  height: 5px;
+}
+
+/* Compact Text - same style without photo */
+.mini-cv-preview.template-compact-text .mini-cv-paper {
+  padding: 0.5rem;
+  font-size: 0.5625rem;
+}
+
+.mini-cv-preview.template-compact-text .mini-cv-header {
+  gap: 0.375rem;
+  padding-bottom: 0.375rem;
+  margin-bottom: 0.375rem;
+}
+
+.mini-cv-preview.template-compact-text .mini-cv-name {
+  font-size: 0.625rem;
+}
+
+.mini-cv-preview.template-compact-text .mini-cv-sections {
+  gap: 0.25rem;
+}
+
+.mini-cv-preview.template-compact-text .mini-section-title {
+  width: auto;
+  height: 3px;
+  background: none;
+  position: relative;
+  padding-left: 8px;
+}
+
+.mini-cv-preview.template-compact-text .mini-section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 4px;
+  background: var(--cv-primary, #2563eb);
+}
+
+.mini-cv-preview.template-compact-text .mini-section-line {
+  height: 2px;
+}
+
+.mini-cv-preview.template-compact-text .mini-cv-skills span {
+  width: 22px;
+  height: 5px;
+}
+
+/* Corporate Template - structured, boxed sections */
+.mini-cv-preview.template-corporate .mini-section-title {
+  width: 100%;
+  height: auto;
+  padding: 2px 4px;
+  background: var(--cv-primary-light, rgba(71, 85, 105, 0.1));
+  border-radius: 1px;
+  min-height: 6px;
+}
+
+.mini-cv-preview.template-corporate .mini-cv-skills span {
+  border: 1px solid var(--cv-primary, #475569);
+  background: transparent;
+  border-radius: 8px;
+}
+
+/* Clean Template - maximum whitespace, no photo */
+.mini-cv-preview.template-clean .mini-cv-header {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mini-cv-preview.template-clean .mini-section-title {
+  background: transparent;
+  border-bottom: none;
+  width: 35%;
+  height: 4px;
+  background: #374151;
+}
+
+.mini-cv-preview.template-clean .mini-cv-sections {
+  gap: 0.5rem;
+}
+
+.mini-cv-preview.template-clean .mini-cv-skills span {
+  background: transparent;
+  border: 1px solid #d1d5db;
+}
+
+/* Academic Template - academic/research style, no photo */
+.mini-cv-preview.template-academic .mini-cv-header {
+  border-bottom: 2px solid #374151;
+}
+
+.mini-cv-preview.template-academic .mini-cv-name {
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.02em;
+}
+
+.mini-cv-preview.template-academic .mini-section-title {
+  background: #374151;
+  width: 45%;
+  height: 3px;
+}
+
+.mini-cv-preview.template-academic .mini-cv-skills span {
+  background: transparent;
+  width: auto;
+  height: auto;
+  min-width: 24px;
+  min-height: 3px;
+  border-bottom: 1px dotted #6b7280;
+}
+
+/* Modern Text - no photo variant */
+.mini-cv-preview.template-modern-text .mini-cv-header {
+  border-bottom-color: var(--cv-primary, #667eea);
+}
+
+/* Classic Text - reversed layout, no photo */
+.mini-cv-preview.template-classic-text .mini-cv-header {
+  flex-direction: row-reverse;
+}
+
+.mini-cv-preview.template-classic-text .mini-cv-info {
+  text-align: right;
+}
+
+/* ATS templates - simple, no decorations */
+.mini-cv-preview.template-ats-standard .mini-cv-header,
+.mini-cv-preview.template-ats-professional .mini-cv-header,
+.mini-cv-preview.template-ats-simple .mini-cv-header,
+.mini-cv-preview.template-ats-modern .mini-cv-header {
+  border-bottom-color: #374151;
+}
+
+.mini-cv-preview.template-ats-standard .mini-section-title,
+.mini-cv-preview.template-ats-professional .mini-section-title,
+.mini-cv-preview.template-ats-simple .mini-section-title {
+  background: #374151;
+}
+
+.mini-cv-preview.template-ats-modern .mini-section-title {
+  background: #f3f4f6;
+  width: 100%;
+  min-height: 6px;
+  border-radius: 1px;
+}
+
+.mini-cv-preview.template-ats-standard .mini-cv-skills span,
+.mini-cv-preview.template-ats-professional .mini-cv-skills span,
+.mini-cv-preview.template-ats-simple .mini-cv-skills span,
+.mini-cv-preview.template-ats-modern .mini-cv-skills span {
+  background: #e5e7eb;
+}
+
 /* Dark mode template-specific styles */
 .dark .mini-cv-preview.template-minimal .mini-section-line {
   background: #4b5563;
 }
 
 .dark .mini-cv-preview.template-minimal .mini-cv-skills span {
+  background: #374151;
+}
+
+/* Dark mode - Elegant */
+.dark .mini-cv-preview.template-elegant .mini-cv-skills span,
+.dark .mini-cv-preview.template-elegant-text .mini-cv-skills span {
+  border-color: var(--cv-primary, #1e3a5f);
+  background: transparent;
+}
+
+/* Dark mode - Bold */
+.dark .mini-cv-preview.template-bold .mini-cv-skills span,
+.dark .mini-cv-preview.template-bold-text .mini-cv-skills span {
+  opacity: 0.8;
+}
+
+/* Dark mode - Corporate */
+.dark .mini-cv-preview.template-corporate .mini-cv-skills span {
+  border-color: var(--cv-primary, #475569);
+}
+
+/* Dark mode - Clean */
+.dark .mini-cv-preview.template-clean .mini-section-title {
+  background: #9ca3af;
+}
+
+.dark .mini-cv-preview.template-clean .mini-cv-skills span {
+  border-color: #4b5563;
+}
+
+/* Dark mode - Academic */
+.dark .mini-cv-preview.template-academic .mini-cv-header {
+  border-bottom-color: #9ca3af;
+}
+
+.dark .mini-cv-preview.template-academic .mini-section-title {
+  background: #9ca3af;
+}
+
+.dark .mini-cv-preview.template-academic .mini-cv-skills span {
+  border-bottom-color: #6b7280;
+}
+
+/* Dark mode - ATS Modern */
+.dark .mini-cv-preview.template-ats-modern .mini-section-title {
+  background: #374151;
+}
+
+/* Dark mode - ATS templates */
+.dark .mini-cv-preview.template-ats-standard .mini-section-title,
+.dark .mini-cv-preview.template-ats-professional .mini-section-title,
+.dark .mini-cv-preview.template-ats-simple .mini-section-title {
+  background: #6b7280;
+}
+
+.dark .mini-cv-preview.template-ats-standard .mini-cv-skills span,
+.dark .mini-cv-preview.template-ats-professional .mini-cv-skills span,
+.dark .mini-cv-preview.template-ats-simple .mini-cv-skills span,
+.dark .mini-cv-preview.template-ats-modern .mini-cv-skills span {
   background: #374151;
 }

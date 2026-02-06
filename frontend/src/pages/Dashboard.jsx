@@ -208,7 +208,7 @@ const Dashboard = () => {
                   const data = resume.data || {};
                   const personalInfo = data.personalInfo || {};
                   const template = resume.template || 'modern';
-                  const hasPhoto = ['modern', 'classic', 'creative', 'executive'].includes(template);
+                  const hasPhoto = ['modern', 'classic', 'creative', 'executive', 'elegant', 'bold', 'compact', 'corporate'].includes(template);
 
                   // Get initials
                   const getInitials = () => {

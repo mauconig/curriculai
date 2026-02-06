@@ -145,7 +145,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
   };
 
   // Determinar si la plantilla tiene foto
-  const hasPhoto = ['modern', 'classic', 'creative', 'executive'].includes(template);
+  const hasPhoto = ['modern', 'classic', 'creative', 'executive', 'elegant', 'bold', 'compact', 'corporate'].includes(template);
 
   // Renderizar sección de contacto
   const renderContact = () => (

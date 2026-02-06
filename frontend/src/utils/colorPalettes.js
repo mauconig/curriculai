@@ -206,14 +206,26 @@ export const DEFAULT_PALETTE_BY_TEMPLATE = {
   'classic': 'dark',
   'creative': 'purple-indigo',
   'executive': 'teal',
+  'elegant': 'navy',
+  'bold': 'crimson',
+  'compact': 'ocean-blue',
+  'corporate': 'slate',
   'minimal': 'slate',
   'modern-text': 'purple-indigo',
   'classic-text': 'dark',
+  'elegant-text': 'navy',
+  'bold-text': 'crimson',
+  'compact-text': 'ocean-blue',
+  'clean': 'slate',
+  'academic': 'charcoal',
 };
 
 export const TEMPLATES_WITH_PALETTE_SUPPORT = [
   'modern', 'classic', 'creative', 'executive',
-  'minimal', 'modern-text', 'classic-text'
+  'elegant', 'bold', 'compact', 'corporate',
+  'minimal', 'modern-text', 'classic-text',
+  'elegant-text', 'bold-text', 'compact-text',
+  'clean', 'academic'
 ];
 
 export const getTemplateSupportsColorPalette = (templateId) => {

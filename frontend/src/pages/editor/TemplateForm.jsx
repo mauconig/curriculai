@@ -41,6 +41,34 @@ const TEMPLATES_WITH_PHOTO = [
     description: 'Perfecto para puestos directivos',
     style: 'executive',
     hasPhoto: true
+  },
+  {
+    id: 'elegant',
+    name: 'Elegante',
+    description: 'Acento lateral, tipografía refinada',
+    style: 'elegant',
+    hasPhoto: true
+  },
+  {
+    id: 'bold',
+    name: 'Audaz',
+    description: 'Tipografía impactante y llamativa',
+    style: 'bold',
+    hasPhoto: true
+  },
+  {
+    id: 'compact',
+    name: 'Compacto',
+    description: 'Diseño denso, maximiza el espacio',
+    style: 'compact',
+    hasPhoto: true
+  },
+  {
+    id: 'corporate',
+    name: 'Corporativo',
+    description: 'Estructurado, estilo empresarial',
+    style: 'corporate',
+    hasPhoto: true
   }
 ];
 
@@ -64,6 +92,41 @@ const TEMPLATES_WITHOUT_PHOTO = [
     name: 'Clásico Texto',
     description: 'Tradicional sin foto',
     style: 'classic',
+    hasPhoto: false
+  },
+  {
+    id: 'elegant-text',
+    name: 'Elegante Texto',
+    description: 'Elegante sin foto, acento lateral',
+    style: 'elegant',
+    hasPhoto: false
+  },
+  {
+    id: 'bold-text',
+    name: 'Audaz Texto',
+    description: 'Impactante sin foto',
+    style: 'bold',
+    hasPhoto: false
+  },
+  {
+    id: 'compact-text',
+    name: 'Compacto Texto',
+    description: 'Máximo contenido sin foto',
+    style: 'compact',
+    hasPhoto: false
+  },
+  {
+    id: 'clean',
+    name: 'Limpio',
+    description: 'Espacios amplios, líneas finas',
+    style: 'clean',
+    hasPhoto: false
+  },
+  {
+    id: 'academic',
+    name: 'Académico',
+    description: 'Ideal para investigación y docencia',
+    style: 'academic',
     hasPhoto: false
   }
 ];
@@ -90,6 +153,14 @@ const TEMPLATES_ATS = [
     name: 'ATS Simple',
     description: 'Sin formato complejo, 100% legible',
     style: 'ats-simple',
+    hasPhoto: false,
+    isATS: true
+  },
+  {
+    id: 'ats-modern',
+    name: 'ATS Moderno',
+    description: 'Compatible ATS con toque moderno',
+    style: 'ats-modern',
     hasPhoto: false,
     isATS: true
   }
