@@ -471,6 +471,7 @@
 }
 
 .dark .header-logo,
+.dark .header-logo h1,
 .dark .user-name {
   color: #f3f4f6;
 }
