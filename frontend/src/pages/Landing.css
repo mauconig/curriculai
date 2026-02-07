@@ -332,72 +332,331 @@
   transition: background 0.3s ease;
 }
 
-.templates-grid {
+.templates-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
   margin-top: 3rem;
+  align-items: start;
 }
 
-.template-card {
-  background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 1rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: center;
-  border: 2px solid transparent;
-}
-
-.template-card:hover,
-.template-card.active {
-  border-color: #3b82f6;
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
-  transform: translateY(-5px);
-}
-
-.dark .template-card:hover,
-.dark .template-card.active {
-  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
-}
-
-.template-preview-small {
-  width: 100%;
-  height: 200px;
-  background: var(--bg-secondary);
-  border-radius: 0.5rem;
-  margin-bottom: 1.5rem;
-  border: 3px solid var(--border-color);
-  overflow: hidden;
-  transition: border-color 0.3s, background-color 0.3s;
-}
-
-.preview-header {
-  height: 60px;
-  transition: background-color 0.3s;
-}
-
-.preview-body {
-  padding: 1rem;
+.template-card-landing {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+/* Landing-specific overrides for template previews */
+.template-card-landing .template-realistic {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: 320px;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  width: 100%;
+}
+
+.template-card-landing .template-realistic:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+}
+
+.dark .template-card-landing .template-realistic {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark .template-card-landing .template-realistic:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Template labels */
+.template-card-label {
+  text-align: center;
+  margin-top: 0.75rem;
+}
+
+.template-card-label h3 {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.templates-more {
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ========== Realistic CV Preview (matches product TemplateCard) ========== */
+.template-realistic {
+  background: white;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.5rem;
+  line-height: 1.3;
+  min-height: 280px;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  text-align: left;
+}
+
+.realistic-header {
+  display: flex;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.preview-line {
-  height: 8px;
-  background: var(--border-color);
-  border-radius: 4px;
-}
-
-.template-card h3 {
-  font-size: 1.25rem;
+.realistic-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cv-primary, #667eea) 0%, var(--cv-secondary, #764ba2) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.5rem;
   font-weight: 600;
+  flex-shrink: 0;
+}
+
+.realistic-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.realistic-name {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 0.125rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.realistic-title {
+  font-size: 0.5rem;
+  color: var(--cv-primary, #667eea);
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+}
+
+.realistic-contact {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.4rem;
+  color: #6b7280;
+}
+
+.realistic-contact span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.realistic-section {
   margin-bottom: 0.5rem;
 }
 
-.template-card p {
-  color: var(--text-secondary);
+.realistic-section-title {
+  font-size: 0.45rem;
+  font-weight: 700;
+  color: var(--cv-primary, #667eea);
+  margin: 0 0 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--cv-primary, #667eea);
+  padding-bottom: 0.125rem;
+}
+
+.realistic-text {
+  font-size: 0.4rem;
+  color: #374151;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.realistic-item {
+  margin-bottom: 0.375rem;
+}
+
+.realistic-item:last-child {
+  margin-bottom: 0;
+}
+
+.realistic-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.realistic-item-header strong {
+  font-size: 0.45rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+.realistic-date {
+  font-size: 0.375rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.realistic-company {
+  font-size: 0.4rem;
+  color: #6b7280;
+  margin: 0;
+  font-style: italic;
+}
+
+.realistic-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.realistic-skill {
+  font-size: 0.375rem;
+  padding: 0.125rem 0.25rem;
+  background: var(--cv-primary-light, rgba(102, 126, 234, 0.1));
+  color: var(--cv-primary, #667eea);
+  border-radius: 0.125rem;
+  font-weight: 500;
+}
+
+/* Creative - gradient banner header */
+.template-realistic.creative .realistic-header {
+  background: linear-gradient(135deg, var(--cv-primary, #667eea) 0%, var(--cv-secondary, #764ba2) 100%);
+  margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+  padding: 0.75rem;
+  border-bottom: none;
+  color: white;
+}
+
+.template-realistic.creative .realistic-photo {
+  background: white;
+  color: var(--cv-primary, #667eea);
+  border: 2px solid white;
+}
+
+.template-realistic.creative .realistic-name {
+  color: white;
+}
+
+.template-realistic.creative .realistic-title {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.template-realistic.creative .realistic-contact {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.template-realistic.creative .realistic-skill {
+  background: linear-gradient(135deg, var(--cv-primary, #667eea) 0%, var(--cv-secondary, #764ba2) 100%);
+  color: white;
+}
+
+/* Elegant - left accent border */
+.template-realistic.elegant .realistic-header {
+  border-bottom: none;
+  border-left: 3px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.5rem;
+}
+
+.template-realistic.elegant .realistic-title {
+  font-style: italic;
+}
+
+.template-realistic.elegant .realistic-section-title {
+  border-bottom: none;
+  border-left: 2px solid var(--cv-primary, #1e3a5f);
+  padding-left: 0.375rem;
+}
+
+.template-realistic.elegant .realistic-skill {
+  background: transparent;
+  border: 1px solid var(--cv-primary, #1e3a5f);
+  color: var(--cv-primary, #1e3a5f);
+}
+
+/* Bold - thick top bar, strong typography */
+.template-realistic.bold {
+  border-top: 4px solid var(--cv-primary, #dc2626);
+}
+
+.template-realistic.bold .realistic-header {
+  border-bottom: none;
+  padding-bottom: 0.375rem;
+}
+
+.template-realistic.bold .realistic-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.template-realistic.bold .realistic-section-title {
+  border-bottom: 2px solid var(--cv-primary, #dc2626);
+  font-weight: 800;
+}
+
+.template-realistic.bold .realistic-skill {
+  background: var(--cv-primary, #dc2626);
+  color: white;
+}
+
+/* ATS - clean, no graphics */
+.template-realistic.ats .realistic-header {
+  border-bottom: 1px solid #000;
+  padding-bottom: 0.375rem;
+}
+
+.template-realistic.ats .realistic-name {
+  font-size: 0.75rem;
+  color: #000;
+}
+
+.template-realistic.ats .realistic-title {
+  color: #000;
+  font-weight: 400;
+}
+
+.template-realistic.ats .realistic-contact {
+  color: #000;
+}
+
+.template-realistic.ats .realistic-section-title {
+  color: #000;
+  border-bottom-color: #000;
+  font-weight: 700;
+}
+
+.template-realistic.ats .realistic-skill {
+  background: transparent;
+  color: #000;
+  border: none;
+  padding: 0;
+  font-weight: 400;
+}
+
+.template-realistic.ats .realistic-skills {
+  gap: 0.125rem;
+}
+
+.template-realistic.ats .realistic-skill::after {
+  content: ' \00b7';
+  margin-left: 0.25rem;
+}
+
+.template-realistic.ats .realistic-skill:last-child::after {
+  content: '';
 }
 
 /* Pricing Section */
@@ -626,7 +885,15 @@ html.dark {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .templates-grid,
+  .templates-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .templates-row .template-card-landing:nth-child(n+4) {
+    display: none;
+  }
+
   .benefits-list {
     grid-template-columns: 1fr;
   }
@@ -703,8 +970,13 @@ html.dark {
     padding: 1.5rem;
   }
 
-  .template-card {
-    padding: 1.5rem;
+  .templates-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .templates-row .template-card-landing:nth-child(n+3) {
+    display: none;
   }
 
   .benefit-item {
@@ -773,8 +1045,13 @@ html.dark {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .templates-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .templates-row {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+  }
+
+  .templates-row .template-card-landing:nth-child(n+4) {
+    display: flex;
   }
 }
 

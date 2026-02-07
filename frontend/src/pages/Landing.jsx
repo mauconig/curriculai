@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { FileIcon, StarsIcon, DownloadIcon, LayoutIcon, CheckmarkCircleIcon, ArrowRightIcon, MoonIcon, SunIcon, LanguageSkillIcon } from '@hugeicons/core-free-icons';
@@ -7,7 +6,6 @@ import './Landing.css';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [selectedTemplate, setSelectedTemplate] = useState('modern');
   const { isDark, toggleTheme } = useTheme();
 
   const features = [
@@ -38,26 +36,6 @@ const Landing = () => {
     }
   ];
 
-  const templates = [
-    {
-      id: 'modern',
-      name: 'Moderno',
-      description: 'Diseño limpio y colorido',
-      color: '#3b82f6'
-    },
-    {
-      id: 'classic',
-      name: 'Clásico',
-      description: 'Formato tradicional',
-      color: '#1f2937'
-    },
-    {
-      id: 'minimal',
-      name: 'Minimalista',
-      description: 'Estilo minimalista',
-      color: '#10b981'
-    }
-  ];
 
   const benefits = [
     'Solo $1 por currículum creado',
@@ -119,7 +97,7 @@ const Landing = () => {
           <div className="hero-image">
             <div className="template-preview">
               <div className="template-mockup">
-                <div className="mockup-header" style={{ backgroundColor: templates.find(t => t.id === selectedTemplate)?.color }}>
+                <div className="mockup-header" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
                   <div className="mockup-avatar"></div>
                   <div className="mockup-info">
                     <div className="mockup-line"></div>
@@ -164,29 +142,247 @@ const Landing = () => {
       {/* Templates Section */}
       <section className="templates-section">
         <div className="container">
-          <h2 className="section-title">Elige tu plantilla favorita</h2>
+          <h2 className="section-title">20 plantillas profesionales</h2>
           <p className="section-subtitle">
-            Diseños profesionales optimizados para cualquier sector
+            Con foto, sin foto y optimizadas para ATS. Todas con paletas de colores personalizables.
           </p>
-          <div className="templates-grid">
-            {templates.map((template) => (
-              <div
-                key={template.id}
-                className={`template-card ${selectedTemplate === template.id ? 'active' : ''}`}
-                onClick={() => setSelectedTemplate(template.id)}
-              >
-                <div className="template-preview-small" style={{ borderColor: template.color }}>
-                  <div className="preview-header" style={{ backgroundColor: template.color }}></div>
-                  <div className="preview-body">
-                    <div className="preview-line"></div>
-                    <div className="preview-line"></div>
+
+          <div className="templates-row">
+            {/* 1. Modern */}
+            <div className="template-card-landing">
+              <div className="template-realistic modern" style={{'--cv-primary': '#667eea', '--cv-secondary': '#764ba2', '--cv-primary-light': 'rgba(102, 126, 234, 0.1)'}}>
+                <div className="realistic-header">
+                  <div className="realistic-photo"><span>MG</span></div>
+                  <div className="realistic-info">
+                    <h4 className="realistic-name">María García López</h4>
+                    <p className="realistic-title">Desarrolladora Full Stack</p>
+                    <div className="realistic-contact">
+                      <span>maria.garcia@email.com</span>
+                      <span>+34 612 345 678</span>
+                    </div>
                   </div>
                 </div>
-                <h3>{template.name}</h3>
-                <p>{template.description}</p>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">RESUMEN</h5>
+                  <p className="realistic-text">Desarrolladora con 5+ años de experiencia en aplicaciones web escalables. Especializada en React, Node.js y arquitecturas cloud.</p>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">EXPERIENCIA</h5>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Senior Developer</strong>
+                      <span className="realistic-date">Ene 2022 — Presente</span>
+                    </div>
+                    <p className="realistic-company">TechCorp Solutions</p>
+                  </div>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Full Stack Developer</strong>
+                      <span className="realistic-date">Mar 2019 — Dic 2021</span>
+                    </div>
+                    <p className="realistic-company">StartupXYZ</p>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">HABILIDADES</h5>
+                  <div className="realistic-skills">
+                    <span className="realistic-skill">React</span>
+                    <span className="realistic-skill">Node.js</span>
+                    <span className="realistic-skill">TypeScript</span>
+                    <span className="realistic-skill">PostgreSQL</span>
+                  </div>
+                </div>
               </div>
-            ))}
+              <div className="template-card-label">
+                <h3>Moderno</h3>
+              </div>
+            </div>
+
+            {/* 2. Creative */}
+            <div className="template-card-landing">
+              <div className="template-realistic creative" style={{'--cv-primary': '#8b5cf6', '--cv-secondary': '#d946ef', '--cv-primary-light': 'rgba(139, 92, 246, 0.1)'}}>
+                <div className="realistic-header">
+                  <div className="realistic-photo"><span>LP</span></div>
+                  <div className="realistic-info">
+                    <h4 className="realistic-name">Laura Pérez Ruiz</h4>
+                    <p className="realistic-title">Directora de Marketing</p>
+                    <div className="realistic-contact">
+                      <span>laura@email.com</span>
+                      <span>+34 633 111 222</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">EXPERIENCIA</h5>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Head of Marketing</strong>
+                      <span className="realistic-date">2021 — Presente</span>
+                    </div>
+                    <p className="realistic-company">BrandAgency</p>
+                  </div>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Marketing Manager</strong>
+                      <span className="realistic-date">2018 — 2021</span>
+                    </div>
+                    <p className="realistic-company">CreativeStudio</p>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">HABILIDADES</h5>
+                  <div className="realistic-skills">
+                    <span className="realistic-skill">SEO</span>
+                    <span className="realistic-skill">Google Ads</span>
+                    <span className="realistic-skill">Analytics</span>
+                    <span className="realistic-skill">Figma</span>
+                  </div>
+                </div>
+              </div>
+              <div className="template-card-label">
+                <h3>Creativo</h3>
+              </div>
+            </div>
+
+            {/* 3. Elegant */}
+            <div className="template-card-landing">
+              <div className="template-realistic elegant" style={{'--cv-primary': '#1e3a5f', '--cv-secondary': '#0f2744', '--cv-primary-light': 'rgba(30, 58, 95, 0.1)'}}>
+                <div className="realistic-header">
+                  <div className="realistic-photo"><span>AM</span></div>
+                  <div className="realistic-info">
+                    <h4 className="realistic-name">Ana Martínez Silva</h4>
+                    <p className="realistic-title">Product Manager</p>
+                    <div className="realistic-contact">
+                      <span>ana@email.com</span>
+                      <span>+34 655 444 333</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">EXPERIENCIA</h5>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>PM Lead</strong>
+                      <span className="realistic-date">2022 — Presente</span>
+                    </div>
+                    <p className="realistic-company">Digital Agency</p>
+                  </div>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Product Owner</strong>
+                      <span className="realistic-date">2019 — 2022</span>
+                    </div>
+                    <p className="realistic-company">TechStartup</p>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">HABILIDADES</h5>
+                  <div className="realistic-skills">
+                    <span className="realistic-skill">Scrum</span>
+                    <span className="realistic-skill">Jira</span>
+                    <span className="realistic-skill">SQL</span>
+                    <span className="realistic-skill">Notion</span>
+                  </div>
+                </div>
+              </div>
+              <div className="template-card-label">
+                <h3>Elegante</h3>
+              </div>
+            </div>
+
+            {/* 4. Bold */}
+            <div className="template-card-landing">
+              <div className="template-realistic bold" style={{'--cv-primary': '#dc2626', '--cv-secondary': '#991b1b', '--cv-primary-light': 'rgba(220, 38, 38, 0.1)'}}>
+                <div className="realistic-header">
+                  <div className="realistic-photo"><span>CR</span></div>
+                  <div className="realistic-info">
+                    <h4 className="realistic-name">Carlos Rodríguez</h4>
+                    <p className="realistic-title">Ingeniero de Software</p>
+                    <div className="realistic-contact">
+                      <span>carlos@email.com</span>
+                      <span>+34 698 765 432</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">EXPERIENCIA</h5>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Backend Engineer</strong>
+                      <span className="realistic-date">2021 — Presente</span>
+                    </div>
+                    <p className="realistic-company">FinTech Corp</p>
+                  </div>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Software Engineer</strong>
+                      <span className="realistic-date">2018 — 2021</span>
+                    </div>
+                    <p className="realistic-company">DataSystems</p>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">HABILIDADES</h5>
+                  <div className="realistic-skills">
+                    <span className="realistic-skill">Java</span>
+                    <span className="realistic-skill">Spring</span>
+                    <span className="realistic-skill">PostgreSQL</span>
+                    <span className="realistic-skill">Kafka</span>
+                  </div>
+                </div>
+              </div>
+              <div className="template-card-label">
+                <h3>Audaz</h3>
+              </div>
+            </div>
+
+            {/* 5. ATS Standard */}
+            <div className="template-card-landing">
+              <div className="template-realistic ats">
+                <div className="realistic-header">
+                  <div className="realistic-info">
+                    <h4 className="realistic-name">Diego López Fernández</h4>
+                    <p className="realistic-title">Analista de Datos</p>
+                    <div className="realistic-contact">
+                      <span>diego@email.com</span>
+                      <span>+34 677 888 999</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">EXPERIENCIA</h5>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Data Analyst</strong>
+                      <span className="realistic-date">2022 — Presente</span>
+                    </div>
+                    <p className="realistic-company">BigData Corp</p>
+                  </div>
+                  <div className="realistic-item">
+                    <div className="realistic-item-header">
+                      <strong>Junior Data Analyst</strong>
+                      <span className="realistic-date">2020 — 2022</span>
+                    </div>
+                    <p className="realistic-company">ConsultingGroup</p>
+                  </div>
+                </div>
+                <div className="realistic-section">
+                  <h5 className="realistic-section-title">HABILIDADES</h5>
+                  <div className="realistic-skills">
+                    <span className="realistic-skill">Python</span>
+                    <span className="realistic-skill">SQL</span>
+                    <span className="realistic-skill">Tableau</span>
+                    <span className="realistic-skill">Excel</span>
+                  </div>
+                </div>
+              </div>
+              <div className="template-card-label">
+                <h3>ATS Estándar</h3>
+              </div>
+            </div>
           </div>
+
+          <p className="templates-more">+ 15 plantillas más disponibles: Clásico, Ejecutivo, Compacto, Corporativo, Minimalista, Académico y más</p>
         </div>
       </section>
 
