@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { FileIcon, AddIcon, LogoutIcon, UserIcon, DownloadIcon, EditIcon, DeleteIcon, ClockIcon } from '@hugeicons/core-free-icons';
+import { FileIcon, AddIcon, LogoutIcon, UserIcon, DownloadIcon, EditIcon, DeleteIcon } from '@hugeicons/core-free-icons';
 import ThemeToggle from '../components/common/ThemeToggle';
 import ConfirmModal from '../components/common/ConfirmModal';
+import ExportModal from '../components/dashboard/ExportModal';
 import authService from '../services/authService';
 import resumeService from '../services/resumeService';
 import pdfService from '../services/pdfService';
@@ -17,8 +18,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [resumes, setResumes] = useState([]);
   const [pdfs, setPdfs] = useState([]);
-  const [downloadingPdf, setDownloadingPdf] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ open: false, resume: null });
+  const [exportModal, setExportModal] = useState({ open: false, resume: null });
 
   useEffect(() => {
     checkAuth();
@@ -77,21 +78,12 @@ const Dashboard = () => {
     navigate(`/editor/contacto?id=${resumeId}`);
   };
 
-  const handleDownloadPdf = async (pdf) => {
-    setDownloadingPdf(pdf.id);
-    try {
-      await pdfService.downloadPDF(pdf.id, pdf.filename);
-      toast.success('PDF descargado');
-    } catch (error) {
-      console.error('Error al descargar PDF:', error);
-      toast.error('Error al descargar el PDF');
-    } finally {
-      setDownloadingPdf(null);
-    }
+  const handleOpenExportModal = (resume) => {
+    setExportModal({ open: true, resume });
   };
 
-  const handleExportResume = (resumeId) => {
-    navigate(`/editor/exportacion?id=${resumeId}`);
+  const handleResumeUpdated = (updatedResume) => {
+    setResumes(prev => prev.map(r => r.id === updatedResume.id ? updatedResume : r));
   };
 
   const handleDeleteResume = (resume) => {
@@ -140,6 +132,14 @@ const Dashboard = () => {
         onConfirm={confirmDelete}
         onCancel={() => setDeleteModal({ open: false, resume: null })}
         variant="danger"
+      />
+
+      <ExportModal
+        isOpen={exportModal.open}
+        onClose={() => setExportModal({ open: false, resume: null })}
+        resume={exportModal.resume}
+        latestPdf={exportModal.resume ? getLatestPdf(exportModal.resume.id) : null}
+        onResumeUpdated={handleResumeUpdated}
       />
 
       {/* Header */}
@@ -320,32 +320,15 @@ const Dashboard = () => {
                             Editar
                           </button>
 
-                          {latestPdf ? (
-                            <button
-                              className={`btn-download ${downloadingPdf === latestPdf.id ? 'loading' : ''}`}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDownloadPdf(latestPdf);
-                              }}
-                              disabled={downloadingPdf === latestPdf.id}
-                            >
-                              {downloadingPdf === latestPdf.id ? (
-                                <HugeiconsIcon icon={ClockIcon} size={14} className="spinning" />
-                              ) : (
-                                <HugeiconsIcon icon={DownloadIcon} size={14} />
-                              )}
-                            </button>
-                          ) : (
-                            <button
-                              className="btn-export"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleExportResume(resume.id);
-                              }}
-                            >
-                              <HugeiconsIcon icon={DownloadIcon} size={14} />
-                            </button>
-                          )}
+                          <button
+                            className={latestPdf ? 'btn-download' : 'btn-export'}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenExportModal(resume);
+                            }}
+                          >
+                            <HugeiconsIcon icon={DownloadIcon} size={14} />
+                          </button>
                         </div>
                       </div>
                     </div>

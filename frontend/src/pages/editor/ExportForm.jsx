@@ -5,8 +5,7 @@ import {
   ArrowLeftIcon, DownloadIcon, TickIcon, FileIcon, ShareIcon, MailIcon, CopyIcon,
   ClockIcon, CheckmarkCircleIcon, AlertCircleIcon
 } from '@hugeicons/core-free-icons';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { generatePDF, downloadGeneratedPDF, getPDFBase64 } from '../../utils/pdfGenerator';
 import WizardProgress from '../../components/editor/WizardProgress';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import ThemeToggle from '../../components/common/ThemeToggle';
@@ -129,159 +128,11 @@ const ExportForm = () => {
 
     setIsExporting(true);
     try {
-      // Get the paper element inside the container
-      const paperElement = pdfContainerRef.current.querySelector('.preview-paper');
-      if (!paperElement) {
-        throw new Error('No se encontró el elemento del CV');
-      }
+      const { pdf, totalPages } = await generatePDF(pdfContainerRef.current, { pageSize });
 
-      // Page dimensions in mm (the template CSS already includes padding: 20mm 18mm)
-      const pageDimensions = {
-        a4: { width: 210, height: 297 },
-        letter: { width: 215.9, height: 279.4 }
-      };
-      const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
-
-      // Use high scale factor for crisp text (4x = ~300 DPI print quality)
-      const scale = 4;
-
-      // Query ONLY individual items (not entire sections) - each item is an atomic block
-      const items = paperElement.querySelectorAll('.preview-item, .preview-skill-group');
-      const pageHeightPx = pageHeight * 3.7795275591; // mm to px at 96 DPI
-      const paperRect = paperElement.getBoundingClientRect();
-
-      // Calculate which items would be cut and add spacing to push them to next page
-      let accumulatedSpacing = 0;
-      const spacers = [];
-      let currentPageBottom = pageHeightPx;
-
-      items.forEach((element) => {
-        const rect = element.getBoundingClientRect();
-        const originalTop = rect.top - paperRect.top;
-        const originalBottom = originalTop + rect.height;
-
-        // Calculate adjusted positions with current accumulated spacing
-        let adjustedTop = originalTop + accumulatedSpacing;
-        let adjustedBottom = originalBottom + accumulatedSpacing;
-
-        // Check ALL page boundaries this item might cross
-        while (adjustedTop < currentPageBottom && adjustedBottom > currentPageBottom) {
-          // Item would be cut across this page boundary
-          // Check if this is the first item in a section (title should stay with it)
-          const section = element.closest('.preview-section');
-          const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
-                                        section?.querySelector('.preview-skill-group') === element;
-
-          let targetElement = element;
-          let spacerHeight = currentPageBottom - adjustedTop;
-
-          // If first item in section, push the section title with it
-          if (isFirstItemInSection && section) {
-            const sectionOriginalTop = section.getBoundingClientRect().top - paperRect.top;
-            const sectionAdjustedTop = sectionOriginalTop + accumulatedSpacing;
-            spacerHeight = currentPageBottom - sectionAdjustedTop;
-            targetElement = section;
-          }
-
-          // Add top margin for visual breathing room on new page
-          spacerHeight += 80;
-
-          spacers.push({ element: targetElement, spacerHeight });
-          accumulatedSpacing += spacerHeight;
-          currentPageBottom += pageHeightPx;
-
-          // Recalculate adjusted positions with new spacing
-          adjustedTop = originalTop + accumulatedSpacing;
-          adjustedBottom = originalBottom + accumulatedSpacing;
-        }
-
-        // Move currentPageBottom forward if element is past current boundary
-        while (adjustedBottom > currentPageBottom) {
-          currentPageBottom += pageHeightPx;
-        }
-      });
-
-      // Apply spacers to push content to next page
-      spacers.forEach(({ element, spacerHeight }) => {
-        element.style.marginTop = `${parseFloat(element.style.marginTop || 0) + spacerHeight}px`;
-      });
-
-      // Wait for layout to update
-      await new Promise(resolve => setTimeout(resolve, 50));
-
-      // Use html2canvas to capture the CV at high resolution
-      // Don't remove padding - the template's built-in padding IS the margin
-      const canvas = await html2canvas(paperElement, {
-        scale: scale,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        letterRendering: true,
-        imageTimeout: 0
-      });
-
-      // Remove the spacers we added
-      spacers.forEach(({ element, spacerHeight }) => {
-        const currentMargin = parseFloat(element.style.marginTop || 0);
-        element.style.marginTop = `${currentMargin - spacerHeight}px`;
-        if (element.style.marginTop === '0px') {
-          element.style.marginTop = '';
-        }
-      });
-
-      // Create PDF with the selected page size
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: pageSize === 'a4' ? 'a4' : 'letter',
-        compress: true
-      });
-
-      // Convert canvas to image
-      const imgData = canvas.toDataURL('image/png');
-
-      // Calculate scaling: image should match page width exactly (no extra margins)
-      const imgAspectRatio = canvas.width / canvas.height;
-      const imgWidthInMm = pageWidth;
-      const imgHeightInMm = imgWidthInMm / imgAspectRatio;
-
-      // Calculate how many pages we need
-      const totalPages = Math.ceil(imgHeightInMm / pageHeight);
-
-      // For each page, extract the relevant portion
-      for (let pageNum = 0; pageNum < totalPages; pageNum++) {
-        if (pageNum > 0) {
-          pdf.addPage();
-        }
-
-        // Calculate the vertical position offset for this page
-        // No extra margins - template already has padding built in
-        const yOffset = -(pageNum * pageHeight);
-
-        // Add clip region for this page
-        pdf.saveGraphicsState();
-        pdf.rect(0, 0, pageWidth, pageHeight);
-        pdf.clip();
-        pdf.discardPath();
-
-        // Add the full image at the calculated offset
-        pdf.addImage(
-          imgData,
-          'PNG',
-          0,
-          yOffset,
-          imgWidthInMm,
-          imgHeightInMm
-        );
-
-        pdf.restoreGraphicsState();
-      }
-
-      // Generate filename (include language code when not Spanish)
       const fileName = getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum';
       const langSuffix = selectedLanguage !== 'es' ? `_${selectedLanguage.toUpperCase()}` : '';
-      pdf.save(`${fileName}_CV${langSuffix}.pdf`);
+      downloadGeneratedPDF(pdf, `${fileName}_CV${langSuffix}.pdf`);
 
       setExportComplete(true);
       toast.success(`¡CV exportado exitosamente! (${totalPages} página${totalPages > 1 ? 's' : ''})`);
@@ -311,146 +162,19 @@ const ExportForm = () => {
 
     setIsFinalizing(true);
     try {
-      // Generate PDF and save to backend
       const paperElement = pdfContainerRef.current?.querySelector('.preview-paper');
       if (paperElement) {
-        // Page dimensions in mm (template CSS already includes padding)
-        const pageDimensions = {
-          a4: { width: 210, height: 297 },
-          letter: { width: 215.9, height: 279.4 }
-        };
-        const { width: pageWidth, height: pageHeight } = pageDimensions[pageSize];
+        const { pdf } = await generatePDF(pdfContainerRef.current, { pageSize, breathingRoom: 50 });
 
-        const scale = 4;
-        const pageHeightPx = pageHeight * 3.7795275591;
-        const paperRect = paperElement.getBoundingClientRect();
-
-        // Query ONLY individual items - each item is an atomic block
-        const items = paperElement.querySelectorAll('.preview-item, .preview-skill-group');
-        let accumulatedSpacing = 0;
-        const spacers = [];
-        let currentPageBottom = pageHeightPx;
-
-        items.forEach((element) => {
-          const rect = element.getBoundingClientRect();
-          const originalTop = rect.top - paperRect.top;
-          const originalBottom = originalTop + rect.height;
-
-          // Calculate adjusted positions with current accumulated spacing
-          let adjustedTop = originalTop + accumulatedSpacing;
-          let adjustedBottom = originalBottom + accumulatedSpacing;
-
-          // Check ALL page boundaries this item might cross
-          while (adjustedTop < currentPageBottom && adjustedBottom > currentPageBottom) {
-            // Item would be cut across this page boundary
-            const section = element.closest('.preview-section');
-            const isFirstItemInSection = section?.querySelector('.preview-item') === element ||
-                                          section?.querySelector('.preview-skill-group') === element;
-
-            let targetElement = element;
-            let spacerHeight = currentPageBottom - adjustedTop;
-
-            if (isFirstItemInSection && section) {
-              const sectionOriginalTop = section.getBoundingClientRect().top - paperRect.top;
-              const sectionAdjustedTop = sectionOriginalTop + accumulatedSpacing;
-              spacerHeight = currentPageBottom - sectionAdjustedTop;
-              targetElement = section;
-            }
-
-            // Add top margin for visual breathing room on new page
-            spacerHeight += 50;
-
-            spacers.push({ element: targetElement, spacerHeight });
-            accumulatedSpacing += spacerHeight;
-            currentPageBottom += pageHeightPx;
-
-            // Recalculate adjusted positions with new spacing
-            adjustedTop = originalTop + accumulatedSpacing;
-            adjustedBottom = originalBottom + accumulatedSpacing;
-          }
-
-          // Move currentPageBottom forward if element is past current boundary
-          while (adjustedBottom > currentPageBottom) {
-            currentPageBottom += pageHeightPx;
-          }
-        });
-
-        // Apply spacers
-        spacers.forEach(({ element, spacerHeight }) => {
-          element.style.marginTop = `${parseFloat(element.style.marginTop || 0) + spacerHeight}px`;
-        });
-
-        await new Promise(resolve => setTimeout(resolve, 50));
-
-        const canvas = await html2canvas(paperElement, {
-          scale: scale,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          logging: false,
-          letterRendering: true,
-          imageTimeout: 0
-        });
-
-        // Remove spacers
-        spacers.forEach(({ element, spacerHeight }) => {
-          const currentMargin = parseFloat(element.style.marginTop || 0);
-          element.style.marginTop = `${currentMargin - spacerHeight}px`;
-          if (element.style.marginTop === '0px') {
-            element.style.marginTop = '';
-          }
-        });
-
-        // Create PDF
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: pageSize === 'a4' ? 'a4' : 'letter',
-          compress: true
-        });
-
-        const imgData = canvas.toDataURL('image/png');
-        const imgAspectRatio = canvas.width / canvas.height;
-        const imgWidthInMm = pageWidth;
-        const imgHeightInMm = imgWidthInMm / imgAspectRatio;
-        const totalPages = Math.ceil(imgHeightInMm / pageHeight);
-
-        for (let pageNum = 0; pageNum < totalPages; pageNum++) {
-          if (pageNum > 0) {
-            pdf.addPage();
-          }
-
-          const yOffset = -(pageNum * pageHeight);
-
-          pdf.saveGraphicsState();
-          pdf.rect(0, 0, pageWidth, pageHeight);
-          pdf.clip();
-          pdf.discardPath();
-
-          pdf.addImage(
-            imgData,
-            'PNG',
-            0,
-            yOffset,
-            imgWidthInMm,
-            imgHeightInMm
-          );
-
-          pdf.restoreGraphicsState();
-        }
-
-        // Get PDF as base64
-        const pdfBase64 = pdf.output('datauristring').split(',')[1];
+        const pdfBase64 = getPDFBase64(pdf);
         const langSuffix = selectedLanguage !== 'es' ? `_${selectedLanguage.toUpperCase()}` : '';
         const fileName = `${getCVTitle().replace(/\s+/g, '_') || 'Mi_Curriculum'}_CV${langSuffix}.pdf`;
 
-        // Save to backend
         await pdfService.savePDF(resumeId, fileName, pdfBase64);
         toast.success('CV guardado exitosamente');
       }
     } catch (error) {
       console.error('Error saving PDF:', error);
-      // Don't block navigation if save fails
       toast.error('No se pudo guardar el PDF, pero puedes descargarlo manualmente');
     } finally {
       setIsFinalizing(false);
