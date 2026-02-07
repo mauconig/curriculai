@@ -1,52 +1,36 @@
-# Plan de Implementación Completo - CurriculAI
-
-## 📋 Índice
-
-1. [Resumen del Proyecto](#resumen-del-proyecto)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Esquema de Base de Datos](#esquema-de-base-de-datos)
-4. [Fases de Implementación](#fases-de-implementación)
-5. [Archivos Críticos](#archivos-críticos)
-6. [Checklist de Verificación](#checklist-de-verificación)
-7. [Decisiones Técnicas](#decisiones-técnicas)
-
----
+# Plan de Implementacion - CurriculAI
 
 ## Resumen del Proyecto
 
-**CurriculAI** es una aplicación web React para crear y mejorar currículums con IA, completamente en español.
+**CurriculAI** es una aplicacion web React para crear y mejorar curriculums con IA, completamente en espanol.
 
-### Características MVP
+### Caracteristicas MVP
 
-1. ✅ Login con Google OAuth
-2. ✅ Crear/Editar currículum con formularios
-3. ✅ Sugerencias de IA para mejoras
-4. ✅ Exportar y guardar PDFs en base de datos
-5. ✅ Múltiples plantillas (Moderno, Clásico, Minimalista)
-6. ✅ Gestionar múltiples currículums por usuario
-7. ✅ Dockerización para deployment fácil en VPS
-
-### Tiempo Estimado
-
-- **MVP completo**: 12-14 días
-- **Con Docker y deployment**: +2 días más
-- **Total**: 14-16 días
+1. Login con Google OAuth
+2. Crear/Editar curriculum con wizard de 9 pasos
+3. 20 plantillas de CV (con foto, sin foto, ATS) + paletas de colores
+4. Sugerencias de IA (Groq API - llama-3.1-8b-instant)
+5. Traduccion de CV a multiples idiomas con cache
+6. Exportar PDF con html-to-image + jsPDF (smart page breaks)
+7. ExportModal en Dashboard (exportar sin navegar al editor)
+8. Guardar PDFs en base de datos
+9. Gestionar multiples curriculums por usuario
+10. Pagos con Stripe ($1 por CV) - pendiente
+11. Dockerizacion para deployment - pendiente
 
 ---
 
-## Stack Tecnológico
+## Stack Tecnologico
 
 ### Frontend
-- **Framework**: React 18
-- **Build Tool**: Vite
+- **Framework**: React 18 + Vite
 - **Routing**: React Router v6
 - **Forms**: react-hook-form + Zod
 - **HTTP Client**: Axios
-- **PDF Generation**: jsPDF + html2canvas
+- **PDF Generation**: html-to-image (toCanvas) + jsPDF
 - **Notifications**: react-hot-toast
-- **Icons**: lucide-react
-- **Date Formatting**: date-fns (español)
-- **IDs**: nanoid
+- **Icons**: @hugeicons/react + @hugeicons/core-free-icons
+- **Image Crop**: react-image-crop
 
 ### Backend
 - **Runtime**: Node.js 18+
@@ -56,19 +40,17 @@
 - **Sessions**: express-session
 - **Security**: Helmet + express-rate-limit + CORS
 - **File Upload**: Multer
-- **AI API**: Groq (Llama 3.1)
+- **AI API**: Groq (Llama 3.1 8B Instant)
 
-### Deployment
-- **Containerization**: Docker + Docker Compose
-- **Web Server**: Nginx (reverse proxy)
-- **VPS**: Cualquier proveedor Linux
+### Deployment (Pendiente)
+- Docker + Docker Compose
+- Nginx (reverse proxy)
 
 ---
 
 ## Esquema de Base de Datos
 
 ### Tabla: users
-
 ```sql
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -81,15 +63,12 @@ CREATE TABLE users (
 );
 ```
 
-**Descripción**: Almacena información de usuarios autenticados con Google.
-
 ### Tabla: resumes
-
 ```sql
 CREATE TABLE resumes (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
-  title TEXT DEFAULT 'Mi Currículum',
+  title TEXT DEFAULT 'Mi Curriculum',
   data TEXT NOT NULL,              -- JSON con estructura completa
   template TEXT DEFAULT 'modern',
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -98,17 +77,14 @@ CREATE TABLE resumes (
 );
 ```
 
-**Descripción**: Almacena currículums. El campo `data` contiene el JSON completo con toda la información del CV.
-
 ### Tabla: pdfs
-
 ```sql
 CREATE TABLE pdfs (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   resume_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   filename TEXT NOT NULL,
-  pdf_data BLOB NOT NULL,          -- PDF almacenado como blob
+  pdf_data BLOB NOT NULL,
   file_size INTEGER,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (resume_id) REFERENCES resumes(id) ON DELETE CASCADE,
@@ -116,889 +92,266 @@ CREATE TABLE pdfs (
 );
 ```
 
-**Descripción**: Almacena PDFs generados como BLOBs. Permite historial de versiones.
-
-### Estructura del JSON de Currículum
+### Estructura del JSON de Curriculum
 
 ```javascript
 {
-  id: Number,              // ID único (autoincrement de DB)
-  userId: Number,          // ID del usuario propietario
-  title: String,           // Título del currículum
-  createdAt: Date,
-  updatedAt: Date,
-
   personalInfo: {
-    firstName: String,
-    lastName: String,
-    email: String,
-    phone: String,
-    location: String,      // "Madrid, España"
-    linkedin: String,      // Opcional
-    website: String,       // Opcional
-    summary: String        // Resumen profesional
+    firstName, lastName, email, phone, location,
+    linkedin, website, photo  // base64 o URL
   },
-
-  experience: [
-    {
-      id: String,
-      company: String,
-      position: String,
-      location: String,
-      startDate: String,   // "2020-01"
-      endDate: String,     // "2022-12" o "Presente"
-      current: Boolean,
-      description: String,
-      achievements: [String]
-    }
-  ],
-
-  education: [
-    {
-      id: String,
-      institution: String,
-      degree: String,       // "Licenciatura en Ingeniería"
-      field: String,        // "Informática"
-      location: String,
-      startDate: String,
-      endDate: String,
-      current: Boolean,
-      description: String
-    }
-  ],
-
-  skills: [
-    {
-      id: String,
-      category: String,     // "Técnicas", "Idiomas", "Blandas"
-      items: [String]       // ["React", "Node.js"]
-    }
-  ],
-
-  template: String,         // "modern", "classic", "minimal"
-  language: "es"
+  summary: "Resumen profesional...",
+  experience: [{
+    id, company, position, location,
+    startDate, endDate, current, description, achievements
+  }],
+  education: [{
+    id, institution, degree, field, location,
+    startDate, endDate, current, description
+  }],
+  skills: [{
+    id, category, items: ["skill1", "skill2"]
+    // Categorias: Tecnicas, Idiomas, Herramientas
+  }],
+  colorPalette: "default",  // nombre de paleta de colorPalettes.js
+  translations: {
+    en: { summary, experience, education, skills, translatedAt },
+    fr: { ... }
+  }
 }
 ```
 
 ---
 
-## Fases de Implementación
-
-### ✅ Fase 1: Setup del Proyecto (DÍA 1) - COMPLETADA
-
-**Tareas:**
-1. ✅ Inicializar root package.json con workspaces
-2. ✅ Crear frontend con Vite + React
-3. ✅ Crear backend con Express
-4. ✅ Instalar todas las dependencias
-5. ✅ Configurar archivos .env
-6. ✅ Crear .gitignore
-7. ✅ Crear estructura de carpetas
-
-**Verificación:**
-- ✅ Backend responde en http://localhost:3000/health
-- ✅ Frontend carga en http://localhost:5173
-
-**Archivos creados:**
-- `package.json` (root)
-- `frontend/` (completo con Vite)
-- `backend/src/server.js`
-- `backend/.env` y `backend/.env.example`
-- `frontend/.env` y `frontend/.env.example`
-- `.gitignore`
-- `shared/types.js`
-- `README.md`
-
----
-
-### ✅ Fase 2: Base de Datos y Autenticación (DÍA 2-3) - COMPLETADA
-
-**Objetivo**: Configurar SQLite y Google OAuth para autenticación de usuarios.
-
-**Archivos a crear:**
-
-1. **`backend/src/db/database.js`** - Configuración SQLite
-   ```javascript
-   import Database from 'better-sqlite3';
-
-   const dbPath = process.env.DATABASE_PATH || './src/db/curriculai.db';
-   const db = new Database(dbPath);
-   db.pragma('foreign_keys = ON');
-
-   export default db;
-   ```
-
-2. **`backend/src/db/migrations.js`** - Crear tablas
-   - Tabla `users`
-   - Tabla `resumes`
-   - Tabla `pdfs`
-
-3. **`backend/src/models/User.js`** - Modelo de usuario
-   - `findById(id)`
-   - `findOrCreate(userData)`
-   - `updateLastLogin(id)`
-
-4. **`backend/src/models/Resume.js`** - Modelo de currículum
-   - `create(userId, data)`
-   - `findByUser(userId)`
-   - `findById(id)`
-   - `update(id, data)`
-   - `delete(id)`
-
-5. **`backend/src/models/PDF.js`** - Modelo de PDF
-   - `create(userId, resumeId, pdfData)`
-   - `findByResumeAndUser(resumeId, userId)`
-   - `findByIdAndUser(id, userId)`
-   - `delete(id)`
-
-6. **`backend/src/config/passport.js`** - Configuración Google OAuth
-   - Estrategia de Google
-   - Serialización/deserialización de usuario
-
-7. **`backend/src/routes/auth.js`** - Rutas de autenticación
-   - `GET /api/auth/google` - Iniciar login
-   - `GET /api/auth/google/callback` - Callback de Google
-   - `POST /api/auth/logout` - Cerrar sesión
-   - `GET /api/auth/me` - Verificar sesión actual
-
-8. **`backend/src/middleware/auth.js`** - Middleware de autenticación
-   ```javascript
-   export const requireAuth = (req, res, next) => {
-     if (req.isAuthenticated()) {
-       return next();
-     }
-     res.status(401).json({ error: 'No autenticado' });
-   };
-   ```
-
-9. **Actualizar `backend/src/server.js`**
-   - Añadir express-session
-   - Inicializar Passport
-   - Ejecutar migraciones al inicio
-   - Añadir rutas de autenticación
-
-**Tareas:**
-1. ✅ Configurar SQLite y crear archivo de base de datos
-2. ✅ Implementar migraciones
-3. ✅ Crear modelos User, Resume, PDF
-4. ✅ Obtener credenciales de Google OAuth
-5. ✅ Configurar Passport.js
-6. ✅ Crear rutas de autenticación
-7. ✅ Probar login con Google en localhost
-8. ✅ Corregir alineación de botones en Dashboard
-9. ✅ Inicializar Git y subir a GitHub
-
-**Verificación:**
-- [x] Base de datos `curriculai.db` creada
-- [x] Tablas creadas correctamente
-- [x] Login con Google funciona
-- [x] Callback redirige correctamente
-- [x] Sesión persiste después de refrescar
-- [x] Logout funciona
-- [x] Dashboard con botones perfectamente alineados
-- [x] Repositorio en GitHub: https://github.com/mauconig/curriculai
-
----
-
-### ✅ Fase 3: Editor de Currículum Multi-Paso (DÍA 2-5) - COMPLETADA
-
-**Objetivo**: Crear un wizard paso a paso para crear currículums con asistencia de IA.
-
-**Flujo del Wizard (9 pasos):**
-1. **Contacto** - ✅ Información básica + foto opcional con crop
-2. **Experiencia** - ✅ Experiencia laboral con validación
-3. **Educación** - ✅ Formación académica
-4. **Habilidades** - ✅ Skills organizadas por categorías (Técnicas, Idiomas, Herramientas)
-5. **Resumen** - ✅ Resumen profesional con botones de IA
-6. **Plantilla** - ✅ Selección de diseño del CV (10 plantillas)
-7. **Preview** - ✅ Vista previa final con selector de tamaño de página
-8. **Pago** - ✅ Checkout para pagar $1 USD (UI mockup, pendiente Stripe)
-9. **Exportación** - ⏳ Pendiente implementar
-
-**Modelo de Negocio:**
-- Currículum se guarda como BORRADOR durante todo el proceso
-- Solo se marca como COMPLETADO después del pago
-- Pago único de $1 USD por CV exportado
-- Sin suscripciones ni membresías
-
-**Cada paso incluye:**
-- Formulario con validación
-- Botón "Mejorar con IA" para profesionalizar el contenido
-- Navegación siguiente/anterior
-- Auto-guardado de progreso
-- Indicador de paso actual
-
-**Archivos a crear:**
-
-### Parte 1: Formulario de Contacto ⏳
-
-1. **`frontend/src/pages/editor/ContactForm.jsx`**
-   - Campos: nombre, apellido, email, teléfono, ubicación
-   - Campo opcional: foto de perfil
-   - Upload de imagen
-   - Botón "Mejorar con IA" para sugerencias de ubicación/presentación
-   - Validación con Zod
-
-2. **`frontend/src/services/resumeService.js`** - API client
-   - `createResume(data)` - Crear nuevo CV
-   - `getResumes()` - Listar CVs del usuario
-   - `getResume(id)` - Obtener CV específico
-   - `updateResume(id, data)` - Actualizar CV
-   - `deleteResume(id)` - Eliminar CV
-   - `uploadPhoto(file)` - Subir foto de perfil
-
-3. **`frontend/src/components/editor/WizardProgress.jsx`**
-   - Indicador visual de pasos
-   - Muestra paso actual
-   - Navegación entre pasos completados
-
-4. **`frontend/src/components/editor/AIButton.jsx`**
-   - Botón reutilizable "Mejorar con IA"
-   - Loading state
-   - Integración con backend AI
-
-5. **`frontend/src/hooks/useResumeWizard.js`**
-   - Gestión de estado del wizard
-   - Navegación entre pasos
-   - Auto-guardado con debounce
-   - Validación por paso
-
-6. **`frontend/src/utils/constants.js`** - Textos en español
-   - Labels de formularios
-   - Mensajes de validación
-   - Textos de ayuda
-   - Pasos del wizard
-
-### Parte 2: Formulario de Experiencia ⏳
-
-7. **`frontend/src/pages/editor/ExperienceForm.jsx`**
-   - Array dinámico de experiencias
-   - Campos: empresa, puesto, ubicación, fechas, descripción
-   - Checkbox "Trabajo actual"
-   - Botón "Mejorar con IA" por experiencia
-   - Añadir/eliminar experiencias
-
-### Parte 3: Formulario de Educación ⏳
-
-8. **`frontend/src/pages/editor/EducationForm.jsx`**
-   - Array dinámico de estudios
-   - Campos: institución, título, campo, ubicación, fechas
-   - Checkbox "Estudiando actualmente"
-   - Botón "Mejorar con IA" por estudio
-
-### Parte 4: Formulario de Habilidades ⏳
-
-9. **`frontend/src/pages/editor/SkillsForm.jsx`**
-   - Categorías de habilidades
-   - Input de tags/chips
-   - Botón "Sugerir habilidades con IA"
-   - Arrastrar y soltar para ordenar
-
-### Parte 5: Formulario de Resumen ⏳
-
-10. **`frontend/src/pages/editor/SummaryForm.jsx`**
-    - Textarea para resumen profesional
-    - Contador de caracteres
-    - Botón "Generar con IA" basado en datos previos
-    - Sugerencias de mejora
-
-### Parte 6: Preview y Finalización ⏳
-
-11. **`frontend/src/pages/editor/PreviewStep.jsx`**
-    - Vista previa del CV completo
-    - Selector de plantilla
-    - Botón "Guardar CV"
-    - Botón "Exportar PDF"
-    - Editar cualquier sección
-
-**Backend Updates:**
-
-12. **`backend/src/routes/photos.js`** - Upload de fotos
-    - `POST /api/photos/upload` - Subir foto
-    - Resize y optimización con sharp
-    - Guardar en filesystem o DB
-
-13. **`backend/src/services/aiService.js`** - Servicios de IA
-    - `improveSummary(text)` - Mejorar resumen
-    - `improveExperience(experience)` - Mejorar experiencia
-    - `improveEducation(education)` - Mejorar educación
-    - `suggestSkills(profile)` - Sugerir habilidades
-
-**Verificación Fase 3:**
-- [x] Wizard de 9 pasos funciona
-- [x] Navegación entre pasos
-- [x] Validación en cada paso
-- [x] Auto-guardado funciona
-- [x] Upload de foto funciona con crop modal
-- [x] Botón "Mejorar con IA" en resumen
-- [x] Vista previa muestra datos correctos
-- [x] Puedo guardar CV completo
-- [x] Puedo editar CV guardado
-- [x] Selector de tamaño de página (A4/Carta)
-- [x] Marca de agua en preview
-
----
-
-### ✅ Fase 4: UI del Editor (DÍA 5-6) - COMPLETADA
-
-**Objetivo**: Crear la interfaz de usuario para editar currículums.
-
-**Archivos a crear:**
-
-1. **`frontend/src/pages/Login.jsx`** - Página de login
-   - Botón "Continuar con Google"
-   - Branding de CurriculAI
-   - Redirección automática si ya está autenticado
-
-2. **`frontend/src/pages/Dashboard.jsx`** - Dashboard principal
-   - Lista de currículums del usuario
-   - Botón "Crear nuevo currículum"
-   - Cards con preview de cada CV
-   - Botones editar/eliminar
-
-3. **`frontend/src/pages/Editor.jsx`** - Editor de currículum
-   - Tabs o secciones para cada parte
-   - Vista previa en tiempo real
-   - Auto-guardado
-   - Botones de acción
-
-4. **`frontend/src/components/resume/PersonalInfo.jsx`**
-   - Formulario de información personal
-   - Validación con Zod
-
-5. **`frontend/src/components/resume/Experience.jsx`**
-   - Array dinámico de experiencias
-   - Añadir/eliminar entradas
-   - useFieldArray de react-hook-form
-
-6. **`frontend/src/components/resume/Education.jsx`**
-   - Array dinámico de formación académica
-   - Similar a Experience
-
-7. **`frontend/src/components/resume/Skills.jsx`**
-   - Array de categorías de habilidades
-   - Inputs de tags o chips
-
-8. **`frontend/src/hooks/useResume.js`** - Hook personalizado
-   - Gestionar estado del currículum
-   - Auto-guardado con debounce
-   - Sincronización con backend
-
-**Verificación:**
-- [x] Puedo hacer login con Google
-- [x] Dashboard muestra mis currículums
-- [x] Puedo crear nuevo currículum
-- [x] Formularios se llenan correctamente
-- [x] Auto-guardado funciona
-- [x] Validación funciona
-- [x] Puedo añadir/eliminar experiencias
-- [x] Puedo añadir/eliminar formación
-- [x] Puedo añadir/eliminar habilidades por categoría
-- [x] Dark mode toggle funciona
-- [x] Custom date picker implementado
-
----
-
-### ✅ Fase 5: Vista Previa y Plantillas (DÍA 7) - COMPLETADA
-
-**Objetivo**: Crear plantillas visuales para el currículum.
-
-**10 Plantillas Implementadas:**
-
-**Con foto de perfil:**
-1. **Moderno** - Diseño limpio con acentos de color
-2. **Clásico** - Estilo tradicional y profesional
-3. **Creativo** - Ideal para industrias creativas
-4. **Ejecutivo** - Perfecto para puestos directivos
-
-**Sin foto de perfil:**
-5. **Minimalista** - Simple y elegante, sin distracciones
-6. **Moderno Texto** - Enfocado en el contenido
-7. **Clásico Texto** - Tradicional sin foto
-
-**Optimizados para ATS (Applicant Tracking Systems):**
-8. **ATS Estándar** - Máxima compatibilidad con sistemas ATS
-9. **ATS Profesional** - Formato limpio optimizado para parsing
-10. **ATS Simple** - Sin formato complejo, 100% legible
-
-**Archivos creados:**
-- `frontend/src/pages/editor/TemplateSelector.jsx`
-- `frontend/src/pages/editor/TemplateSelector.css`
-- `frontend/src/components/resume/ResumePreview.jsx`
-- `frontend/src/components/resume/ResumePreview.css`
-
-**Verificación:**
-- [x] Vista previa muestra currículum en tiempo real
-- [x] Puedo cambiar entre 10 plantillas
-- [x] Plantillas categorizadas (con foto, sin foto, ATS)
-- [x] Selector de tamaño de página (A4/Carta)
-- [x] Marca de agua "VISTA PREVIA" en preview
-- [x] Caracteres españoles se ven correctamente
-- [x] Layout responsive funciona
-
----
-
-### 🔄 Fase 6: Exportación y Guardado de PDFs (DÍA 8)
-
-**Objetivo**: Generar PDFs y guardarlos en la base de datos.
-
-**Archivos a crear:**
-
-1. **`frontend/src/services/pdfService.js`**
-   - `generateAndSavePDF(resumeData, templateName)`
-   - `downloadPDF(pdfId)`
-   - Usa jsPDF + html2canvas
-
-2. **`backend/src/services/pdfService.js`**
-   - `savePDF(userId, resumeId, file)`
-   - `getPDF(pdfId, userId)`
-   - `listPDFs(userId, resumeId)`
-
-3. **`backend/src/routes/pdfs.js`**
-   - `POST /api/pdfs/upload` - Subir PDF
-   - `GET /api/pdfs/:id/download` - Descargar PDF
-   - `GET /api/pdfs/resume/:resumeId` - Listar PDFs de un CV
-
-**Flujo de exportación:**
-1. Usuario clickea "Exportar a PDF"
-2. Frontend genera PDF con html2canvas + jsPDF
-3. PDF se descarga localmente
-4. Simultáneamente se sube al backend
-5. Backend guarda BLOB en base de datos
-6. Frontend muestra confirmación
-
-**Verificación:**
-- [ ] Puedo exportar PDF con plantilla Moderno
-- [ ] Puedo exportar PDF con plantilla Clásico
-- [ ] Puedo exportar PDF con plantilla Minimalista
-- [ ] PDF se descarga localmente
-- [ ] PDF se guarda en base de datos
-- [ ] Puedo ver historial de PDFs
-- [ ] Puedo descargar PDF guardado
-- [ ] Caracteres españoles se ven en PDF
-
----
-
-### 🔄 Fase 7: Backend Groq API (DÍA 9)
-
-**Objetivo**: Integrar Groq API para sugerencias de IA.
-
-**Archivos a crear:**
-
-1. **`backend/src/services/groqService.js`**
-   - `getAISuggestions(resumeSection, type)`
-   - Configuración de Groq API
-   - Llamadas HTTP
-
-2. **`backend/src/utils/prompts.js`**
-   - `improveSummary(currentSummary)`
-   - `improveExperience(experience)`
-   - `suggestSkills(currentSkills, experience)`
-   - Prompts en español optimizados
-
-3. **`backend/src/routes/ai.js`**
-   - `POST /api/ai/suggestions` - Obtener sugerencias
-   - Protegido con `requireAuth`
-   - Rate limiting
-
-4. **`backend/src/middleware/cors.js`**
-   - Configuración CORS
-   - Permitir credenciales
-
-**Configuración Groq:**
-- API Key en `.env`
+## Fases de Implementacion
+
+### Fase 1: Setup del Proyecto - COMPLETADA
+
+- Vite + React frontend, Express backend
+- Landing page, Login page
+- Estructura de carpetas, .env, .gitignore
+
+### Fase 2: Base de Datos y Autenticacion - COMPLETADA
+
+- SQLite con WAL mode
+- Modelos User, Resume, PDF
+- Google OAuth con Passport.js
+- Rutas de auth + middleware requireAuth
+
+### Fase 3: Editor Multi-Paso - COMPLETADA
+
+**Wizard de 9 pasos:**
+1. ContactForm - Info personal + foto con crop (ImageCropModal)
+2. ExperienceForm - Experiencia laboral (ExperienceItem)
+3. EducationForm - Formacion academica (EducationItem)
+4. SkillsForm - Habilidades por categorias (chips/tags)
+5. SummaryForm - Resumen profesional + botones IA
+6. TemplateSelector - 20 plantillas + paletas de colores
+7. PreviewForm - Vista previa con selector A4/Carta + watermark
+8. PaymentForm - Checkout UI (pendiente Stripe)
+9. ExportForm - Generacion PDF + descarga + guardado
+
+**Hook**: `useResumeWizard.js` gestiona estado, navegacion, auto-guardado con debounce.
+
+### Fase 4: UI del Editor - COMPLETADA
+
+- Dark mode (ThemeContext + ThemeToggle)
+- CustomDatePicker con calendario en espanol
+- WizardProgress con navegacion de 9 pasos
+- ConfirmModal reutilizable
+- Responsive design
+
+### Fase 5: Vista Previa y Plantillas - COMPLETADA
+
+**20 plantillas en ResumePreview.jsx:**
+
+Con foto (8): modern, classic, creative, executive, elegant, bold, compact, corporate
+Sin foto (8): minimal, modern-text, classic-text, elegant-text, bold-text, compact-text, corporate-text, creative-text
+ATS (4): ats-standard, ats-professional, ats-simple, ats-executive
+
+**Sistema de colores:**
+- Paletas en `colorPalettes.js`
+- CSS variables: `--cv-primary`, `--cv-secondary`, `--cv-primary-light`
+- Cada plantilla respeta las variables de color
+
+**Componentes:**
+- `ResumePreview.jsx` - Renderiza cualquiera de las 20 plantillas
+- `TemplateCard.jsx` - Card de preview en el selector
+
+### Fase 6: Exportacion PDF - COMPLETADA
+
+**Utilidad compartida**: `pdfGenerator.js`
+- `generatePDF(containerEl, { pageSize, scale, breathingRoom })` → `{ pdf, totalPages }`
+- `downloadGeneratedPDF(pdf, fileName)` → descarga local
+- `getPDFBase64(pdf)` → base64 para guardar en servidor
+
+**Algoritmo de page breaks:**
+1. Query `.preview-item, .preview-skill-group` (bloques atomicos)
+2. Calcular si un item cruza el borde de pagina
+3. Si es el primer item de una seccion, mover la seccion entera
+4. Aplicar spacers (margin-top) para empujar items a la siguiente pagina
+5. Capturar con `html-to-image` (toCanvas, pixelRatio: 4)
+6. Remover spacers
+7. Construir PDF con jsPDF (clip por pagina)
+
+**ExportModal en Dashboard:**
+- Modal para exportar desde Dashboard sin navegar al editor
+- Incluye: LanguageSelector, page size toggle, download button
+- Hidden ResumePreview off-screen para captura
+- Quick download de PDFs existentes del servidor
+
+**Backend:**
+- `POST /api/pdfs` - Guardar PDF (base64 → BLOB)
+- `GET /api/pdfs/:id/download` - Descargar PDF
+- `GET /api/pdfs/resume/:resumeId` - Listar PDFs de un resume
+
+### Fase 7: Backend Groq API - COMPLETADA
+
+- `groqService.js` - Wrapper de Groq API
 - Modelo: `llama-3.1-8b-instant`
-- Temperature: 0.7
-- Max tokens: 500
+- Endpoints:
+  - `POST /api/ai/suggestions` - Mejorar/generar texto
+  - `POST /api/ai/translate` - Traducir CV a otro idioma
+- Rate limiting aplicado
+- Prompts optimizados en espanol
 
-**Verificación:**
-- [ ] Endpoint `/api/ai/suggestions` funciona
-- [ ] Requiere autenticación
-- [ ] Devuelve sugerencias en español
-- [ ] Rate limiting funciona
-- [ ] Manejo de errores correcto
+### Fase 8: UI Sugerencias IA + Traducciones - COMPLETADA
 
----
+- AIButton.jsx con loading state
+- aiService.js: `getSuggestions()`, `translateResume()`
+- LanguageSelector con idiomas disponibles
+- Cache de traducciones: `resumeData.translations[langCode]`
+- Traducciones persistidas en servidor via `resumeService.updateResume()`
+- Disponible en ExportForm y ExportModal
 
-### 🔄 Fase 8: UI de Sugerencias de IA (DÍA 10)
+### Fase 9: Pagos con Stripe - EN PROGRESO (30%)
 
-**Objetivo**: Interfaz para mostrar y aplicar sugerencias de IA.
+**Completado:**
+- UI de checkout (PaymentForm.jsx)
+- Seleccion de metodo de pago
+- Resumen del pedido ($1 USD)
 
-**Archivos a crear:**
+**Pendiente:**
+- Integracion con Stripe API
+- Stripe Checkout Session
+- Webhook para confirmacion de pago
+- Campo "paid" en modelo Resume
+- Condicionar exportacion a pago completado
 
-1. **`frontend/src/services/aiService.js`**
-   - `getSuggestions(section, type)`
-   - Cliente HTTP para backend
+### Fase 10: Pulido y Testing - PENDIENTE
 
-2. **`frontend/src/hooks/useAISuggestions.js`**
-   - `fetchSuggestions(section, type)`
-   - Estado de loading
-   - Manejo de errores
-
-3. **`frontend/src/components/common/AISuggestionsModal.jsx`**
-   - Modal con sugerencias
-   - Botones "Aplicar" / "Descartar"
-   - Loading state
-
-**Integración:**
-- Botón "Mejorar con IA" en cada sección
-- Modal se abre al clickear
-- Muestra sugerencias formateadas
-- Al aplicar, actualiza formulario
-
-**Verificación:**
-- [ ] Botón "Mejorar con IA" aparece en secciones
-- [ ] Click muestra loading spinner
-- [ ] Sugerencias aparecen en modal
-- [ ] Puedo aplicar sugerencia
-- [ ] Puedo descartar sugerencia
-- [ ] Formulario se actualiza al aplicar
-- [ ] Toast de confirmación aparece
-
----
-
-### 🔄 Fase 9: Pulido y Testing (DÍA 11)
-
-**Objetivo**: Mejorar UX y hacer testing manual completo.
-
-**Tareas:**
-1. Mejorar diseño visual (CSS)
-2. Añadir iconos (lucide-react)
-3. Mejorar UX (validación, feedback)
-4. Responsive design (móvil/tablet)
-5. Testing manual de flujo completo
-6. Actualizar README con instrucciones finales
-
-**Mejoras UX:**
-- Animaciones de transición
+- Testing manual end-to-end
+- Responsive testing (movil/tablet)
+- Manejo de errores mejorado
+- Animaciones y transiciones
 - Loading skeletons
-- Estados vacíos (empty states)
-- Mensajes de error claros
-- Confirmaciones antes de eliminar
+- Empty states
 
-**Verificación:**
-- [ ] Flujo completo funciona sin errores
-- [ ] Responsive en móvil (320px+)
-- [ ] Responsive en tablet (768px+)
-- [ ] No hay errores en consola
-- [ ] Navegación intuitiva
+### Fase 11: Dockerizacion - PENDIENTE
 
----
-
-### 🔄 Fase 10: Dockerización (DÍA 12-13) - FASE FINAL
-
-**Objetivo**: Containerizar la aplicación para deployment.
-
-**Archivos a crear:**
-
-1. **`Dockerfile`** (root) - Frontend build
-   ```dockerfile
-   FROM node:18-alpine AS builder
-   WORKDIR /app/frontend
-   COPY frontend/package*.json ./
-   RUN npm ci
-   COPY frontend/ ./
-   RUN npm run build
-
-   FROM nginx:alpine
-   COPY --from=builder /app/frontend/dist /usr/share/nginx/html
-   COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-   EXPOSE 80
-   CMD ["nginx", "-g", "daemon off;"]
-   ```
-
-2. **`backend/Dockerfile`** - Backend container
-   ```dockerfile
-   FROM node:18-alpine
-   WORKDIR /app
-   RUN apk add --no-cache python3 make g++
-   COPY package*.json ./
-   RUN npm ci --only=production
-   COPY . .
-   RUN mkdir -p /app/data
-   EXPOSE 3000
-   CMD ["node", "src/server.js"]
-   ```
-
-3. **`docker/docker-compose.yml`** - Desarrollo
-4. **`docker/docker-compose.prod.yml`** - Producción
-5. **`docker/nginx.conf`** - Reverse proxy
-6. **`.dockerignore`** - Excluir archivos
-
-**Scripts Docker:**
-- `docker:build` - Construir imágenes
-- `docker:up` - Levantar contenedores
-- `docker:down` - Bajar contenedores
-- `docker:logs` - Ver logs
-- `docker:backup` - Backup de DB
-
-**Verificación:**
-- [ ] `docker-compose build` funciona
-- [ ] `docker-compose up` levanta todo
-- [ ] Frontend accesible en http://localhost
-- [ ] Backend responde
-- [ ] Login con Google funciona
-- [ ] Base de datos persiste (volumen)
-- [ ] Health check funciona
+- Dockerfile frontend (build + Nginx)
+- Dockerfile backend (Node.js + SQLite)
+- docker-compose.yml (dev)
+- docker-compose.prod.yml (produccion)
+- nginx.conf (reverse proxy)
+- Health checks, volumenes, backups
 
 ---
 
-## Archivos Críticos (Por Prioridad)
+## Decisiones Tecnicas
 
-### Alta Prioridad (Bloquean todo)
+### html-to-image vs html2canvas
+- html2canvas generaba PDFs borrosos (re-renderiza en canvas pixel a pixel)
+- html-to-image usa SVG foreignObject (mantiene texto como vectores)
+- Resultado: PDFs mucho mas nitidos con html-to-image
 
-1. ✅ `package.json` (root)
-2. ✅ `backend/src/server.js`
-3. ✅ `shared/types.js`
-4. ✅ `backend/src/db/database.js`
-5. ✅ `backend/src/db/migrations.js`
-6. ✅ `backend/src/config/passport.js`
-7. ✅ `backend/src/middleware/auth.js`
-8. ✅ `backend/src/models/User.js`
-9. ✅ `backend/src/models/Resume.js`
-10. ✅ `backend/src/models/PDF.js`
+### Groq vs OpenAI
+- Gratis (14,400 peticiones/dia)
+- Mas rapido (optimizado para velocidad)
+- Llama tiene buen soporte en espanol
+- API compatible con OpenAI
 
-### Media Prioridad (Features principales)
+### SQLite vs PostgreSQL
+- Simplicidad (no requiere servidor)
+- Archivo unico, facil de respaldar
+- Suficiente para apps pequenas-medianas
+- Cero configuracion en VPS
 
-11. ✅ `frontend/src/pages/Login.jsx`
-12. ✅ `frontend/src/pages/Dashboard.jsx`
-13. ⏳ `frontend/src/pages/Editor.jsx`
-14. ✅ `frontend/src/services/authService.js`
-15. ⏳ `frontend/src/services/resumeService.js`
-16. ⏳ `frontend/src/components/templates/ModernTemplate.jsx`
-17. ⏳ `frontend/src/services/pdfService.js`
-18. ⏳ `backend/src/services/groqService.js`
-19. ⏳ `backend/src/utils/prompts.js`
-20. ⏳ `backend/src/routes/pdfs.js`
+### Google OAuth vs email/password
+- Mas seguro (Google maneja autenticacion)
+- Menos friccion (sin formularios de registro)
+- Verificacion de email automatica
 
-### Baja Prioridad (Deployment)
-
-21. ⏳ `Dockerfile`
-22. ⏳ `backend/Dockerfile`
-23. ⏳ `docker/docker-compose.yml`
-24. ⏳ `docker/docker-compose.prod.yml`
-25. ⏳ `docker/nginx.conf`
+### pdfGenerator.js como utilidad compartida
+- Evita duplicacion de ~250 lineas entre ExportForm y ExportModal
+- Un solo lugar para mantener el algoritmo de page breaks
+- Parametros configurables (pageSize, scale, breathingRoom)
 
 ---
 
-## Checklist de Verificación End-to-End
+## Endpoints de la API
 
-### Setup
-- [x] `npm run install:all` funciona
-- [x] Frontend arranca en http://localhost:5173
-- [x] Backend arranca en http://localhost:3000
-- [ ] Variables de entorno configuradas (Google OAuth + Groq)
-- [ ] Base de datos SQLite creada
+### Autenticacion
+```
+GET  /api/auth/google          # Iniciar login con Google
+GET  /api/auth/google/callback # Callback de Google
+POST /api/auth/logout          # Cerrar sesion
+GET  /api/auth/status          # Usuario actual
+```
 
-### Autenticación
-- [ ] Página de login se muestra
-- [ ] Botón "Continuar con Google" funciona
-- [ ] Redirección a Google OAuth
-- [ ] Callback exitoso, usuario creado en DB
-- [ ] Sesión persiste después de refrescar
-- [ ] Dashboard se muestra después de login
-- [ ] Logout funciona correctamente
-- [ ] Rutas protegidas redirigen a login
+### Curriculums (requiere auth)
+```
+POST   /api/resumes            # Crear curriculum
+GET    /api/resumes            # Listar curriculums del usuario
+GET    /api/resumes/:id        # Obtener curriculum
+PUT    /api/resumes/:id        # Actualizar curriculum
+DELETE /api/resumes/:id        # Eliminar curriculum
+```
 
-### Gestión de Currículums
-- [ ] Dashboard muestra lista vacía inicialmente
-- [ ] Botón "Crear nuevo currículum" funciona
-- [ ] Se crea currículum en DB
-- [ ] Puedo editar currículum existente
-- [ ] Puedo crear múltiples currículums
-- [ ] Puedo eliminar currículum
-- [ ] Solo veo mis currículums
+### PDFs (requiere auth)
+```
+POST /api/pdfs                 # Guardar PDF (base64)
+GET  /api/pdfs/:id/download    # Descargar PDF
+GET  /api/pdfs/resume/:resumeId# Listar PDFs de un CV
+```
 
-### Editor
-- [ ] Llenar información personal
-- [ ] Añadir experiencia laboral (múltiples)
-- [ ] Añadir formación académica
-- [ ] Añadir habilidades categorizadas
-- [ ] Auto-guardado funciona
-- [ ] Refrescar mantiene datos
-- [ ] Validación funciona
+### IA (requiere auth)
+```
+POST /api/ai/suggestions       # Sugerencias de IA
+POST /api/ai/translate         # Traducir CV
+```
 
-### Vista Previa y Plantillas
-- [ ] Vista previa en tiempo real
-- [ ] Cambiar a plantilla Moderno
-- [ ] Cambiar a plantilla Clásico
-- [ ] Cambiar a plantilla Minimalista
-- [ ] Cambios se reflejan inmediatamente
+### Fotos (requiere auth)
+```
+POST /api/photos/upload        # Subir foto de perfil
+```
 
-### Exportación PDF
-- [ ] Exportar con plantilla Moderno
-- [ ] Exportar con plantilla Clásico
-- [ ] Exportar con plantilla Minimalista
-- [ ] Caracteres españoles correctos
-- [ ] PDF se descarga localmente
-- [ ] PDF se guarda en DB
-- [ ] Historial de PDFs funciona
-- [ ] Descargar PDF guardado funciona
-
-### Sugerencias de IA
-- [ ] Clickear "Mejorar con IA" en resumen
-- [ ] Loading spinner aparece
-- [ ] Sugerencias en español
-- [ ] Aplicar sugerencia funciona
-- [ ] Descartar sugerencia funciona
-- [ ] Funciona para experiencia
-- [ ] Funciona para educación
-- [ ] Manejo de errores correcto
-
-### UX y Responsive
-- [ ] Chrome funciona
-- [ ] Firefox funciona
-- [ ] Edge funciona
-- [ ] Responsive móvil (320px+)
-- [ ] Responsive tablet (768px+)
-- [ ] Notificaciones toast funcionan
-- [ ] No hay errores en consola
-
-### Docker y Deployment
-- [ ] `docker-compose build` funciona
-- [ ] `docker-compose up` levanta todo
-- [ ] Frontend accesible en http://localhost
-- [ ] Backend responde
-- [ ] Login con Google funciona en Docker
-- [ ] Volumen SQLite persiste datos
-- [ ] Health check funciona
-- [ ] Logs accesibles
-- [ ] Backup de DB funciona
+### Sistema
+```
+GET /health                    # Health check
+```
 
 ---
 
-## Decisiones Técnicas
+## Proximos Pasos
 
-### ¿Por qué Vite en vez de Create React App?
-- ⚡ Más rápido (HMR instantáneo)
-- 🎯 Configuración más simple
-- 📦 Bundle más pequeño
-- ✨ Mejor experiencia de desarrollo
+1. **Integrar Stripe** - Pagos reales de $1 por CV
+2. **Pulido y Testing** - UX, responsive, manejo de errores
+3. **Dockerizacion** - Containers para deployment en VPS
 
-### ¿Por qué react-hook-form en vez de Formik?
-- 🚀 Mejor performance (menos re-renders)
-- 📝 API más simple
-- 🎯 Mejor con TypeScript
-- 📦 Más ligero (9KB vs 35KB)
+## Features v2.0 (Post-MVP)
 
-### ¿Por qué Groq en vez de OpenAI?
-- 💰 Gratis (14,400 peticiones/día)
-- ⚡ Más rápido (optimizado para velocidad)
-- 🇪🇸 Llama tiene excelente soporte español
-- 🎓 API compatible con OpenAI
-
-### ¿Por qué SQLite en vez de PostgreSQL/MySQL?
-- 🎯 Simplicidad (no requiere servidor)
-- 📦 Archivo único, fácil de respaldar
-- ⚡ Más rápido para apps pequeñas-medianas
-- 🔧 Cero configuración en VPS
-- 💰 Sin costos de hosting de DB
-- 🐳 Fácil de dockerizar
-
-### ¿Por qué better-sqlite3 en vez de sqlite3?
-- ⚡ Síncrono = más rápido y simple
-- 🎯 API más limpia
-- 📦 Mejor performance
-- 🔧 Menos problemas con async/await
-
-### ¿Por qué Google OAuth en vez de email/password?
-- 🔐 Más seguro (Google maneja autenticación)
-- ⚡ Más rápido (sin formularios de registro)
-- 👤 Menos fricción (usuarios ya tienen Google)
-- 🎯 Sin gestionar passwords/resets
-- ✅ Verificación de email automática
-
-### ¿Por qué Docker en vez de deployment manual?
-- 📦 Entorno consistente (dev = producción)
-- 🚀 Deployment rápido (docker-compose up)
-- 🔧 Fácil rollback (images versionadas)
-- 🐳 Portabilidad (funciona en cualquier VPS)
-- 📊 Fácil escalar (añadir replicas)
+- Cartas de presentacion con IA
+- Analisis de ofertas (comparar CV con job descriptions)
+- Importar desde LinkedIn
+- Compartir curriculum (link publico temporal)
+- Estadisticas de visualizaciones
+- PWA (modo offline)
+- Internacionalizacion completa de la UI
 
 ---
 
-## Próximos Pasos (v2.0)
-
-### Características ya incluidas en MVP
-- ✅ Múltiples currículums por usuario
-- ✅ Cuentas de usuario (Google OAuth)
-- ✅ Sincronización cloud (SQLite)
-- ✅ Historial de PDFs
-- ✅ Dockerización
-
-### Nuevas features v2.0
-1. **Más plantillas** - 5-10 diseños adicionales
-2. **Cartas de presentación** - Generar cover letters con IA
-3. **Análisis de ofertas** - Comparar CV con job descriptions
-4. **Historial de versiones** - Ver cambios anteriores
-5. **Importar LinkedIn** - Auto-fill desde perfil
-6. **Optimización ATS** - Verificar compatibilidad
-7. **Compartir currículum** - Link público temporal
-8. **Colaboración** - Compartir con mentores
-9. **Estadísticas** - Visualizaciones/exportaciones
-10. **Temas personalizados** - Colores y fuentes
-
-### Mejoras Técnicas v2.0
-- Migrar a TypeScript
-- Tests unitarios (Jest + React Testing Library)
-- Tests E2E (Playwright)
-- CI/CD pipeline (GitHub Actions)
-- PWA (modo offline con service workers)
-- Internacionalización (inglés, portugués)
-- Migrar a PostgreSQL (si crece mucho)
-- Redis para caché de sugerencias
-- WebSockets para colaboración en tiempo real
-- S3/CloudStorage para PDFs (si crece mucho)
-
----
-
-## Notas Importantes
-
-### Seguridad
-- ✅ API keys en `.env`, nunca en código
-- ✅ Rate limiting (100 peticiones/15min)
-- ✅ Helmet.js para security headers
-- ✅ CORS restringido a frontend domain
-- ✅ Validación de inputs (Zod)
-- ✅ React previene XSS por defecto
-- ✅ HTTPS en producción
-
-### Performance
-- ✅ Auto-guardado con debounce (500ms)
-- ✅ React.memo para componentes pesados
-- ✅ Lazy loading de rutas
-- ✅ Bundle size optimizado con Vite
-- ✅ SQLite indexado correctamente
-
-### Internacionalización (Español)
-- ✅ Todo el texto en español neutro
-- ✅ Formato de fechas: "enero 2020"
-- ✅ Verbos de acción: Desarrollé, Implementé, Lideré
-- ✅ Terminología: "Currículum", "Experiencia Laboral"
-
----
-
-## Recursos
-
-### APIs
-- **Google OAuth**: https://console.cloud.google.com/
-- **Groq API**: https://console.groq.com/
-
-### Documentación
-- **React**: https://react.dev/
-- **Vite**: https://vitejs.dev/
-- **Express**: https://expressjs.com/
-- **better-sqlite3**: https://github.com/WiseLibs/better-sqlite3
-- **Passport.js**: https://www.passportjs.org/
-- **react-hook-form**: https://react-hook-form.com/
-
-### Herramientas
-- **Docker**: https://www.docker.com/
-- **Node.js**: https://nodejs.org/
-
----
-
-**Última actualización**: 4 de Febrero 2026
-**Estado actual**: Fases 1-5 completadas, Fase 6-8 parcialmente completadas
-**Próxima tarea**: Completar Fase 9 (Exportación) e integrar Stripe para pagos
+**Ultima actualizacion**: 6 de Febrero 2026
+**Estado actual**: Fases 1-8 completadas (90% MVP)
+**Proxima tarea**: Integracion Stripe para pagos
 **Repositorio**: https://github.com/mauconig/curriculai

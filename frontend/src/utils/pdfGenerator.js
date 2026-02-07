@@ -1,4 +1,4 @@
-import { toCanvas } from 'html-to-image';
+import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 
 const PAGE_DIMENSIONS = {
@@ -43,6 +43,14 @@ export async function generatePDF(containerEl, { pageSize = 'a4', scale = 4, bre
     let adjustedTop = originalTop + accumulatedSpacing;
     let adjustedBottom = originalBottom + accumulatedSpacing;
 
+    // Skip items that are too tall to fit on a single page — let them split naturally
+    if (rect.height > pageHeightPx * 0.75) {
+      while (adjustedBottom > currentPageBottom) {
+        currentPageBottom += pageHeightPx;
+      }
+      return;
+    }
+
     while (adjustedTop < currentPageBottom && adjustedBottom > currentPageBottom) {
       const section = element.closest('.preview-section');
       const isFirstItemInSection =
@@ -81,12 +89,12 @@ export async function generatePDF(containerEl, { pageSize = 'a4', scale = 4, bre
 
   await new Promise((resolve) => setTimeout(resolve, 50));
 
-  // Capture at high resolution using browser's native SVG renderer
-  const canvas = await toCanvas(paperElement, {
-    pixelRatio: scale,
+  // Capture at high resolution using html2canvas
+  const canvas = await html2canvas(paperElement, {
+    scale,
+    useCORS: true,
     backgroundColor: '#ffffff',
-    cacheBusts: true,
-    includeQueryParams: true
+    logging: false
   });
 
   // Remove spacers

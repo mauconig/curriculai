@@ -1,6 +1,6 @@
-# Referencia Rápida - CurriculAI
+# Referencia Rapida - CurriculAI
 
-## 🚀 Comandos Esenciales
+## Comandos Esenciales
 
 ### Desarrollo Local
 
@@ -8,7 +8,7 @@
 # Instalar todas las dependencias
 npm run install:all
 
-# Ejecutar frontend + backend simultáneamente
+# Ejecutar frontend + backend simultaneamente
 npm run dev
 
 # Solo frontend (puerto 5173)
@@ -18,93 +18,102 @@ npm run dev:frontend
 npm run dev:backend
 ```
 
-### Docker
+---
 
-```bash
-# Build y start (desarrollo)
-docker-compose -f docker/docker-compose.yml up -d --build
+## Estructura de Archivos Clave
 
-# Build y start (producción)
-docker-compose -f docker/docker-compose.prod.yml up -d --build
+```
+frontend/src/
+  pages/
+    Landing.jsx + .css            # Landing page publica
+    Login.jsx + .css              # Login con Google
+    Dashboard.jsx + .css          # Lista de CVs + ExportModal
+    editor/
+      ContactForm.jsx + .css      # Paso 1: Info personal + foto
+      ExperienceForm.jsx + .css   # Paso 2: Experiencia laboral
+      EducationForm.jsx + .css    # Paso 3: Educacion
+      SkillsForm.jsx + .css       # Paso 4: Habilidades
+      SummaryForm.jsx + .css      # Paso 5: Resumen profesional
+      TemplateSelector.jsx + .css # Paso 6: 20 plantillas + colores
+      PreviewForm.jsx + .css      # Paso 7: Vista previa
+      PaymentForm.jsx + .css      # Paso 8: Checkout (mockup)
+      ExportForm.jsx + .css       # Paso 9: Exportacion PDF
+  components/
+    common/
+      ConfirmModal.jsx + .css     # Modal de confirmacion reutilizable
+      ThemeToggle.jsx + .css      # Dark mode toggle
+      CustomDatePicker.jsx + .css # Calendario en espanol
+    editor/
+      WizardProgress.jsx + .css   # Barra de progreso 9 pasos
+      ResumePreview.jsx + .css    # Vista previa (20 plantillas)
+      TemplateCard.jsx + .css     # Card en selector de plantillas
+      LanguageSelector.jsx + .css # Selector de idioma
+      ExperienceItem.jsx + .css   # Item de experiencia
+      EducationItem.jsx + .css    # Item de educacion
+      AIButton.jsx + .css         # Boton "Mejorar con IA"
+      ImageCropModal.jsx + .css   # Modal para recortar foto
+    dashboard/
+      ExportModal.jsx + .css      # Modal exportacion desde Dashboard
+  services/
+    authService.js                # Auth con Google OAuth
+    resumeService.js              # CRUD de curriculums
+    pdfService.js                 # Upload/download PDFs
+    aiService.js                  # Sugerencias IA + traducciones
+  utils/
+    constants.js                  # Textos en espanol
+    colorPalettes.js              # Paletas de colores
+    pdfGenerator.js               # Generacion PDF compartida
+  hooks/
+    useResumeWizard.js            # Estado del wizard
+  contexts/
+    ThemeContext.jsx               # Dark mode context
 
-# Ver logs
-docker-compose logs -f
-
-# Detener
-docker-compose down
-
-# Detener y eliminar volúmenes
-docker-compose down -v
+backend/src/
+  server.js                       # Express server principal
+  db/
+    database.js                   # Config SQLite (WAL mode)
+    migrations.js                 # Crear tablas
+  models/
+    User.js                       # Modelo usuario
+    Resume.js                     # Modelo curriculum (JSON data)
+    PDF.js                        # Modelo PDF (BLOB storage)
+  routes/
+    auth.js                       # Login/logout Google OAuth
+    resumes.js                    # CRUD curriculums
+    pdfs.js                       # PDF upload/download
+    ai.js                         # Sugerencias IA + traducciones
+    photos.js                     # Upload fotos de perfil
+  services/
+    groqService.js                # Groq API (llama-3.1-8b-instant)
+  config/
+    passport.js                   # Google OAuth config
+  middleware/
+    auth.js                       # requireAuth, optionalAuth
 ```
 
 ---
 
-## 📁 Estructura de Archivos Clave
-
-```
-├── frontend/src/
-│   ├── pages/
-│   │   ├── Login.jsx              # Página de login
-│   │   ├── Dashboard.jsx          # Lista de currículums
-│   │   └── Editor.jsx             # Editor principal
-│   ├── components/
-│   │   ├── resume/                # Componentes de formulario
-│   │   └── templates/             # Plantillas de CV
-│   ├── services/
-│   │   ├── authService.js         # Autenticación
-│   │   ├── resumeService.js       # CRUD currículums
-│   │   ├── aiService.js           # Sugerencias IA
-│   │   └── pdfService.js          # Exportar PDF
-│   └── utils/
-│       └── constants.js           # Textos en español
-│
-├── backend/src/
-│   ├── routes/
-│   │   ├── auth.js                # Login/logout
-│   │   ├── resumes.js             # CRUD endpoints
-│   │   ├── pdfs.js                # PDF upload/download
-│   │   └── ai.js                  # IA sugerencias
-│   ├── models/
-│   │   ├── User.js                # Modelo usuario
-│   │   ├── Resume.js              # Modelo currículum
-│   │   └── PDF.js                 # Modelo PDF
-│   ├── db/
-│   │   ├── database.js            # Config SQLite
-│   │   └── migrations.js          # Crear tablas
-│   ├── config/
-│   │   └── passport.js            # Google OAuth
-│   └── services/
-│       ├── groqService.js         # Groq API
-│       └── pdfService.js          # Guardar PDFs
-│
-└── shared/
-    └── types.js                   # Esquema de datos
-```
-
----
-
-## 🗄️ Estructura de Base de Datos
+## Base de Datos
 
 ### Tablas
 
-1. **users** - Usuarios autenticados
+1. **users** - Usuarios autenticados con Google
    - `id`, `google_id`, `email`, `name`, `picture`
 
-2. **resumes** - Currículums
+2. **resumes** - Curriculums (datos en JSON)
    - `id`, `user_id`, `title`, `data` (JSON), `template`
 
-3. **pdfs** - PDFs exportados
-   - `id`, `resume_id`, `user_id`, `filename`, `pdf_data` (BLOB)
+3. **pdfs** - PDFs exportados (BLOB)
+   - `id`, `resume_id`, `user_id`, `filename`, `pdf_data` (BLOB), `file_size`
 
 ### Relaciones
-
 - `users` 1→N `resumes` (CASCADE DELETE)
 - `users` 1→N `pdfs` (CASCADE DELETE)
 - `resumes` 1→N `pdfs` (CASCADE DELETE)
 
 ---
 
-## 🔐 Variables de Entorno
+## Variables de Entorno
 
 ### Backend (.env)
 
@@ -136,228 +145,218 @@ VITE_API_URL=http://localhost:3000/api
 
 ---
 
-## 🔌 Endpoints de la API
+## Endpoints de la API
 
-### Autenticación
-
+### Autenticacion
 ```
 GET  /api/auth/google          # Iniciar login con Google
 GET  /api/auth/google/callback # Callback de Google
-POST /api/auth/logout          # Cerrar sesión
-GET  /api/auth/me              # Usuario actual
+POST /api/auth/logout          # Cerrar sesion
+GET  /api/auth/status          # Usuario actual
 ```
 
-### Currículums (requiere auth)
-
+### Curriculums (requiere auth)
 ```
-POST   /api/resumes            # Crear currículum
-GET    /api/resumes            # Listar currículums del usuario
-GET    /api/resumes/:id        # Obtener currículum
-PUT    /api/resumes/:id        # Actualizar currículum
-DELETE /api/resumes/:id        # Eliminar currículum
+POST   /api/resumes            # Crear curriculum
+GET    /api/resumes            # Listar curriculums del usuario
+GET    /api/resumes/:id        # Obtener curriculum
+PUT    /api/resumes/:id        # Actualizar curriculum
+DELETE /api/resumes/:id        # Eliminar curriculum
 ```
 
 ### PDFs (requiere auth)
-
 ```
-POST /api/pdfs/upload               # Subir PDF
-GET  /api/pdfs/:id/download         # Descargar PDF
-GET  /api/pdfs/resume/:resumeId     # Listar PDFs de un CV
+POST /api/pdfs                 # Guardar PDF (base64)
+GET  /api/pdfs/:id/download    # Descargar PDF
+GET  /api/pdfs/resume/:resumeId# Listar PDFs de un CV
 ```
 
 ### IA (requiere auth)
-
 ```
-POST /api/ai/suggestions       # Obtener sugerencias de IA
+POST /api/ai/suggestions       # Sugerencias de IA
+POST /api/ai/translate         # Traducir CV
+```
+
+### Fotos (requiere auth)
+```
+POST /api/photos/upload        # Subir foto de perfil
 ```
 
 ### Sistema
-
 ```
 GET /health                    # Health check
 ```
 
 ---
 
-## 🎨 Plantillas Disponibles
+## Plantillas Disponibles (20)
 
-1. **modern** - Moderno
-   - Diseño limpio con colores
-   - Layout de dos columnas
-   - Ideal para tecnología
+### Con foto de perfil (8)
+| Slug | Nombre |
+|------|--------|
+| `modern` | Moderno |
+| `classic` | Clasico |
+| `creative` | Creativo |
+| `executive` | Ejecutivo |
+| `elegant` | Elegante |
+| `bold` | Bold |
+| `compact` | Compacto |
+| `corporate` | Corporativo |
 
-2. **classic** - Clásico
-   - Formato tradicional
-   - Una columna
-   - Perfecto para sectores formales
+### Sin foto de perfil (8)
+| Slug | Nombre |
+|------|--------|
+| `minimal` | Minimalista |
+| `modern-text` | Moderno Texto |
+| `classic-text` | Clasico Texto |
+| `elegant-text` | Elegante Texto |
+| `bold-text` | Bold Texto |
+| `compact-text` | Compacto Texto |
+| `corporate-text` | Corporativo Texto |
+| `creative-text` | Creativo Texto |
 
-3. **minimal** - Minimalista
-   - Estilo minimalista
-   - Mucho espacio en blanco
-   - Fuentes sans-serif
+### ATS - Optimizados para sistemas de tracking (4)
+| Slug | Nombre |
+|------|--------|
+| `ats-standard` | ATS Estandar |
+| `ats-professional` | ATS Profesional |
+| `ats-simple` | ATS Simple |
+| `ats-executive` | ATS Ejecutivo |
+
+### Sistema de colores
+- Paletas definidas en `colorPalettes.js`
+- CSS variables: `--cv-primary`, `--cv-secondary`, `--cv-primary-light`
+- Se aplican via `getPaletteStyle(paletteName, template)`
 
 ---
 
-## 🤖 Groq API
+## Groq API (IA)
 
-### Configuración
+### Configuracion
+- Modelo: `llama-3.1-8b-instant`
+- Limites gratuitos: 14,400 peticiones/dia
 
-```javascript
-// Modelo
-llama-3.1-8b-instant
-
-// Límites gratuitos
-14,400 peticiones/día
-```
-
-### Tipos de Sugerencias
-
-1. **improveSummary** - Mejorar resumen profesional
-2. **improveExperience** - Mejorar experiencia laboral
-3. **suggestSkills** - Sugerir habilidades faltantes
+### Funcionalidades
+1. **Sugerencias** - Mejorar/generar resumen profesional, experiencia, habilidades
+2. **Traducciones** - Traducir CV completo a otro idioma
+   - Cache en `resumeData.translations[langCode]`
+   - No re-traduce si ya existe cache
 
 ---
 
-## 📝 Flujo de Trabajo
+## Flujo de Trabajo
 
 ### 1. Usuario se registra
 ```
-Login.jsx → Google OAuth → Callback → Dashboard.jsx
+Landing.jsx → Login.jsx → Google OAuth → Dashboard.jsx
 ```
 
-### 2. Crear currículum
+### 2. Crear curriculum
 ```
-Dashboard → "Crear nuevo" → Editor.jsx → Formularios
+Dashboard → "Crear nuevo" → Wizard 9 pasos → Auto-guardado
 ```
 
-### 3. Editar secciones
+### 3. Wizard de edicion
 ```
-Editor → PersonalInfo/Experience/Education/Skills → Auto-save
+Contacto → Experiencia → Educacion → Habilidades → Resumen →
+Plantilla → Preview → Pago → Exportacion
 ```
 
 ### 4. Mejorar con IA
 ```
-Editor → "Mejorar con IA" → Groq API → Modal sugerencias → Aplicar
+SummaryForm → "Mejorar con IA" → Groq API → Texto mejorado
 ```
 
-### 5. Exportar PDF
+### 5. Exportar PDF (desde Editor)
 ```
-Editor → "Exportar a PDF" → html2canvas + jsPDF → Descarga local + Upload a DB
+ExportForm → Elegir idioma + tamano → html-to-image + jsPDF → Descarga + Server save
+```
+
+### 6. Exportar PDF (desde Dashboard)
+```
+Dashboard → Click boton descarga → ExportModal → Elegir idioma + tamano → PDF
 ```
 
 ---
 
-## 🐛 Debugging
+## PDF Generation
+
+### Flujo tecnico
+1. `<ResumePreview>` se renderiza off-screen (`left: -9999px`)
+2. Algoritmo de smart page breaks aplica spacers (margin-top)
+3. `html-to-image` captura como canvas (pixelRatio: 4 = ~300 DPI)
+4. jsPDF construye PDF con clipping por pagina
+5. Spacers se remueven despues de la captura
+
+### API (pdfGenerator.js)
+```javascript
+import { generatePDF, downloadGeneratedPDF, getPDFBase64 } from '../utils/pdfGenerator';
+
+const { pdf, totalPages } = await generatePDF(containerEl, {
+  pageSize: 'a4',     // 'a4' | 'letter'
+  scale: 4,           // pixelRatio (default 4)
+  breathingRoom: 80   // px extra al inicio de nueva pagina
+});
+
+downloadGeneratedPDF(pdf, 'MiCV.pdf');        // descarga local
+const base64 = getPDFBase64(pdf);              // para guardar en servidor
+```
+
+---
+
+## Debugging
 
 ### Ver logs del backend
-
 ```bash
-# Desarrollo
-cd backend
-npm run dev
-
-# Docker
-docker logs curriculai-backend-1 -f
+cd backend && npm run dev
 ```
 
 ### Ver logs del frontend
-
 ```bash
-# Desarrollo
-cd frontend
-npm run dev
-
-# Navegador
-F12 → Console
+cd frontend && npm run dev
+# Navegador: F12 → Console
 ```
 
 ### Verificar base de datos
-
 ```bash
-# Acceder a SQLite
 sqlite3 backend/src/db/curriculai.db
-
-# Comandos útiles
-.tables                    # Listar tablas
-.schema users             # Ver esquema
-SELECT * FROM users;      # Query
-.quit                     # Salir
+.tables
+.schema resumes
+SELECT * FROM users;
+.quit
 ```
 
-### Probar endpoints
-
+### Build del frontend
 ```bash
-# Health check
-curl http://localhost:3000/health
-
-# Con autenticación (requiere cookies)
-curl -H "Cookie: connect.sid=..." http://localhost:3000/api/resumes
+cd frontend && npx vite build
 ```
 
 ---
 
-## ⚡ Tips de Performance
-
-1. **Auto-guardado**: Debounce de 500ms
-2. **Formularios**: react-hook-form (minimal re-renders)
-3. **Imágenes**: Lazy loading
-4. **Bundle**: Code splitting con React.lazy()
-5. **Base de datos**: Índices en columnas frecuentes
-
----
-
-## 🔒 Seguridad
-
-### Checklist
+## Seguridad
 
 - [x] API keys en .env
-- [x] CORS configurado
+- [x] CORS configurado (solo frontend domain)
 - [x] Rate limiting (100 req/15min)
 - [x] Helmet.js habilitado
-- [x] Validación de inputs (Zod)
+- [x] Validacion de inputs (Zod)
 - [x] Sesiones con httpOnly cookies
-- [ ] HTTPS en producción
-- [ ] Backups automáticos
+- [ ] HTTPS en produccion
+- [ ] Backups automaticos
 
 ---
 
-## 📊 Monitoreo
-
-### Métricas importantes
-
-```bash
-# Uso de recursos Docker
-docker stats
-
-# Tamaño de base de datos
-ls -lh backend/src/db/curriculai.db
-
-# Número de usuarios
-sqlite3 backend/src/db/curriculai.db "SELECT COUNT(*) FROM users;"
-
-# Número de currículums
-sqlite3 backend/src/db/curriculai.db "SELECT COUNT(*) FROM resumes;"
-```
-
----
-
-## 🆘 Problemas Comunes
+## Problemas Comunes
 
 ### Backend no arranca
-
 **Causa**: Puerto 3000 en uso
 ```bash
 # Windows
 netstat -ano | findstr :3000
 taskkill /PID <PID> /F
-
-# Linux/Mac
-lsof -i :3000
-kill -9 <PID>
 ```
 
 ### Frontend no arranca
-
 **Causa**: Puerto 5173 en uso
 ```bash
 # Cambiar puerto en vite.config.js
@@ -365,72 +364,26 @@ server: { port: 5174 }
 ```
 
 ### Google OAuth no funciona
-
-**Verificar**:
-1. GOOGLE_CLIENT_ID correcto
-2. Callback URL coincide
+1. Verificar GOOGLE_CLIENT_ID correcto en .env
+2. Callback URL coincide con Google Console
 3. Dominio autorizado en Google Console
 
-### Base de datos bloqueada
-
-```bash
-# Reiniciar backend
-npm run dev
-
-# O eliminar lock file
-rm backend/src/db/curriculai.db-wal
-rm backend/src/db/curriculai.db-shm
-```
+### PDF borroso
+- Verificar que se usa `html-to-image` (no html2canvas)
+- Aumentar `scale` en pdfGenerator (default: 4)
 
 ---
 
-## 📚 Recursos Útiles
+## Enlaces
 
-### Documentación
-
-- [Plan Completo](./PLAN.md)
-- [Guía de Deployment](./DEPLOYMENT.md)
+- [Plan Completo](./plan.md)
+- [Estado del Proyecto](./status.md)
+- [Guia de Deployment](./DEPLOYMENT.md)
 - [README Principal](../README.md)
-
-### APIs Externas
-
 - [Google Cloud Console](https://console.cloud.google.com/)
 - [Groq Console](https://console.groq.com/)
-
-### Herramientas
-
-- [React DevTools](https://react.dev/learn/react-developer-tools)
-- [Postman](https://www.postman.com/) - Probar API
-- [DB Browser for SQLite](https://sqlitebrowser.org/) - Ver base de datos
+- [Repositorio GitHub](https://github.com/mauconig/curriculai)
 
 ---
 
-## 🎯 Checklist de Fase Actual
-
-### Fase 1: Setup ✅ COMPLETADA
-
-- [x] package.json configurado
-- [x] Frontend con Vite creado
-- [x] Backend con Express creado
-- [x] Dependencias instaladas
-- [x] .env configurados
-- [x] .gitignore creado
-- [x] Estructura de carpetas
-- [x] README.md creado
-- [x] Documentación creada
-
-### Fase 2: Base de Datos y Auth ⏳ SIGUIENTE
-
-- [ ] Configurar SQLite
-- [ ] Crear migraciones
-- [ ] Modelos User, Resume, PDF
-- [ ] Configurar Passport.js
-- [ ] Rutas de autenticación
-- [ ] Obtener credenciales Google OAuth
-- [ ] Probar login
-
-**Próximo paso**: Obtener credenciales de Google OAuth y Groq API
-
----
-
-**Última actualización**: Fase 1 completada
+**Ultima actualizacion**: 6 de Febrero 2026

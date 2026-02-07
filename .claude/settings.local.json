@@ -25,7 +25,8 @@
       "Bash(findstr:*)",
       "Bash(node --input-type=module -e:*)",
       "Bash(npx -y acorn:*)",
-      "Bash(xxd:*)"
+      "Bash(xxd:*)",
+      "Bash(npm ls:*)"
     ]
   },
   "mcpServers": {

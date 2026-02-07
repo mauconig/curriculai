@@ -154,6 +154,57 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
+/* Dark Mode */
+.dark .crop-modal {
+  background: #1f2937;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.dark .crop-modal-header {
+  border-bottom-color: #374151;
+}
+
+.dark .crop-modal-header h3 {
+  color: #f3f4f6;
+}
+
+.dark .crop-modal-close {
+  background: #374151;
+  color: #9ca3af;
+}
+
+.dark .crop-modal-close:hover {
+  background: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .crop-container {
+  background: #111827;
+}
+
+.dark .crop-controls {
+  border-top-color: #374151;
+  border-bottom-color: #374151;
+}
+
+.dark .zoom-label span {
+  color: #d1d5db;
+}
+
+.dark .zoom-slider {
+  background: #374151;
+}
+
+.dark .btn-cancel {
+  background: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+.dark .btn-cancel:hover {
+  background: #4b5563;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .crop-modal {

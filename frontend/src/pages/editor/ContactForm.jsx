@@ -258,16 +258,31 @@ const ContactForm = () => {
 
             <div className="photo-upload-container">
               {photoPreview ? (
-                <div className="photo-preview">
-                  <img src={photoPreview} alt="Preview" />
-                  <button
-                    type="button"
-                    className="remove-photo-btn"
-                    onClick={handleRemovePhoto}
-                    title={BUTTON_LABELS.removePhoto}
-                  >
-                    <HugeiconsIcon icon={CancelIcon} size={16} />
-                  </button>
+                <div className="photo-preview-wrapper">
+                  <div className="photo-preview">
+                    <img src={photoPreview} alt="Preview" />
+                  </div>
+                  <div className="photo-actions">
+                    <label className="btn-change-photo">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoChange}
+                        disabled={uploadingPhoto}
+                        style={{ display: 'none' }}
+                      />
+                      <HugeiconsIcon icon={UploadIcon} size={12} />
+                      Cambiar foto
+                    </label>
+                    <button
+                      type="button"
+                      className="btn-remove-photo"
+                      onClick={handleRemovePhoto}
+                    >
+                      <HugeiconsIcon icon={CancelIcon} size={14} />
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <label className="photo-upload-label">
@@ -383,14 +398,14 @@ const ContactForm = () => {
                 {FORM_LABELS.linkedin}
               </label>
               <div className="input-with-prefix">
-                <span className="input-prefix">https://</span>
+                <span className="input-prefix">linkedin.com/in/</span>
                 <input
                   type="text"
                   id="linkedin"
                   name="linkedin"
                   value={formData.linkedin}
                   onChange={handleInputChange}
-                  placeholder={FORM_PLACEHOLDERS.linkedin}
+                  placeholder="tu-usuario"
                 />
               </div>
               <p className="help-text">{HELP_TEXTS.linkedin}</p>

@@ -105,19 +105,18 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
   const renderDescription = (text) => {
     if (!text) return null;
 
-    // Split by bullet points (• ) and filter empty strings
-    const parts = text.split(/(?=•\s)/).filter(part => part.trim());
+    // Split by newlines, trim each line, remove empties
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    const hasBullets = lines.some(l => l.startsWith('•'));
 
-    if (parts.length <= 1) {
-      // No bullet points, render as single paragraph
+    if (!hasBullets || lines.length <= 1) {
       return <p className="preview-description">{text}</p>;
     }
 
-    // Multiple bullet points, render as list
     return (
       <ul className="preview-description-list">
-        {parts.map((part, idx) => (
-          <li key={idx}>{part.replace(/^•\s*/, '')}</li>
+        {lines.map((line, idx) => (
+          <li key={idx}>{line.replace(/^•\s*/, '')}</li>
         ))}
       </ul>
     );
@@ -213,7 +212,7 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
       {personalInfo.linkedin && (
         <span className="contact-item">
           <HugeiconsIcon icon={LinkedinIcon} size={10} />
-          {personalInfo.linkedin}
+          linkedin.com/in/{personalInfo.linkedin}
         </span>
       )}
       {personalInfo.website && (
