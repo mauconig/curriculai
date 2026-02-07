@@ -26,7 +26,8 @@
       "Bash(node --input-type=module -e:*)",
       "Bash(npx -y acorn:*)",
       "Bash(xxd:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(ssh -o ConnectTimeout=10 root@147.93.180.120 \"sed -i ''s/^#PasswordAuthentication yes/PasswordAuthentication no/'' /etc/ssh/sshd_config && sed -i ''s/^PasswordAuthentication yes/PasswordAuthentication no/'' /etc/ssh/sshd_config && sed -i ''s/^PermitRootLogin yes/PermitRootLogin prohibit-password/'' /etc/ssh/sshd_config && echo ''MaxAuthTries 3'' >> /etc/ssh/sshd_config && echo ''LoginGraceTime 30'' >> /etc/ssh/sshd_config && echo ''=== VERIFY CONFIG ==='' && grep -E ''^\\(PasswordAuthentication|PermitRootLogin|MaxAuthTries|LoginGraceTime\\)'' /etc/ssh/sshd_config && systemctl restart sshd && echo ''SSH restarted successfully''\")"
     ]
   },
   "mcpServers": {
