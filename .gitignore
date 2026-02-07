@@ -45,3 +45,6 @@ screenshot*.js
 
 # VPS docs (sensitive)
 docs/VPS.md
+
+# Claude Code local settings (may contain sensitive info)
+.claude/settings.local.json
