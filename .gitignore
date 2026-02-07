@@ -42,3 +42,6 @@ screenshot*.js
 
 # Playwright MCP
 .playwright-mcp/
+
+# VPS docs (sensitive)
+docs/VPS.md
