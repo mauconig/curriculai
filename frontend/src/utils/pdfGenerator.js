@@ -1,4 +1,4 @@
-import html2canvas from 'html2canvas';
+import { toCanvas } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
 const PAGE_DIMENSIONS = {
@@ -13,7 +13,7 @@ const PAGE_DIMENSIONS = {
  * @param {HTMLElement} containerEl - Element containing .preview-paper
  * @param {Object} options
  * @param {'a4'|'letter'} options.pageSize
- * @param {number} options.scale - html2canvas scale (default 4 = ~300 DPI)
+ * @param {number} options.scale - pixel ratio (default 4 = ~300 DPI)
  * @param {number} options.breathingRoom - extra px margin at top of new page (default 80)
  * @returns {Promise<{ pdf: jsPDF, totalPages: number }>}
  */
@@ -81,15 +81,12 @@ export async function generatePDF(containerEl, { pageSize = 'a4', scale = 4, bre
 
   await new Promise((resolve) => setTimeout(resolve, 50));
 
-  // Capture at high resolution
-  const canvas = await html2canvas(paperElement, {
-    scale,
-    useCORS: true,
-    allowTaint: true,
+  // Capture at high resolution using browser's native SVG renderer
+  const canvas = await toCanvas(paperElement, {
+    pixelRatio: scale,
     backgroundColor: '#ffffff',
-    logging: false,
-    letterRendering: true,
-    imageTimeout: 0
+    cacheBusts: true,
+    includeQueryParams: true
   });
 
   // Remove spacers

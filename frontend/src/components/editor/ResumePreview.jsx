@@ -181,8 +181,8 @@ const ResumePreview = forwardRef(({ data, template = 'modern', pageSize = 'a4', 
 
   // Formatear fecha with language-aware "Presente"/"Actual"
   const formatDate = (dateStr, isCurrent) => {
-    if (!dateStr) return '';
     if (isCurrent || dateStr === 'Presente' || dateStr === 'Actual') return dateStrings.present;
+    if (!dateStr) return '';
     return dateStr;
   };
 
